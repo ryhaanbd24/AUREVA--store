@@ -957,6 +957,11 @@
             const pData = await pRes.json();
             if (Array.isArray(pData)) {
               PRODUCTS = pData;
+              if (typeof renderProducts === "function") renderProducts();
+              if (typeof renderCart === "function") renderCart();
+              if (window.__aurevaCfg && typeof window.__aurevaApply === "function") {
+                window.__aurevaApply(window.__aurevaCfg);
+              }
             }
           }
           if (cfgRes.ok) {
@@ -1308,12 +1313,20 @@
       }
 
       function applySiteConfig(cfg) {
+        window.__aurevaCfg = cfg;
+        window.__aurevaApply = applySiteConfig;
         if (!cfg || typeof cfg !== "object") return;
         renderCustomBlocks(cfg);
 
         if (cfg.logoUrl) {
           const logoLink = document.querySelector("header a");
-          if (logoLink) logoLink.innerHTML = `<img src="${cfg.logoUrl}" alt="Logo" class="h-9 w-auto object-contain" />`;
+          if (logoLink && logoLink.firstElementChild) {
+            const img = document.createElement("img");
+            img.src = cfg.logoUrl;
+            img.alt = "Logo";
+            img.className = "w-9 h-9 rounded-full object-cover shrink-0";
+            logoLink.replaceChild(img, logoLink.firstElementChild);
+          }
         }
         if (cfg.bgColor) document.body.style.backgroundColor = cfg.bgColor;
 
@@ -1472,10 +1485,15 @@
         imgPicker.addEventListener("change", async (e) => {
           const file = e.target.files[0];
           if (!file || !activeImgEl) return;
-          const dataUrl = await compressImage(file, 900);
+          const isLogo = Boolean(activeImgEl.closest("header a"));
+          const dataUrl = await compressImage(file, isLogo ? 400 : 900);
           activeImgEl.src = dataUrl;
-          const sel = getCssPath(activeImgEl);
-          if (sel) currentCfg.customImages[sel] = dataUrl;
+          if (isLogo) {
+            currentCfg.logoUrl = dataUrl;
+          } else {
+            const sel = getCssPath(activeImgEl);
+            if (sel) currentCfg.customImages[sel] = dataUrl;
+          }
         });
 
         document.getElementById("veAddBlockType").addEventListener("change", (e) => {
@@ -1583,3 +1601,4 @@
     })();
   </script>
 </body>
+</html>
