@@ -7,35 +7,24 @@ const { getConfiguredCouriers, bookParcel, trackParcel } = require("./services/c
 const app = express();
 const PORT = process.env.PORT || 3000;
 const BASE_URL = (process.env.BASE_URL || `http://localhost:${PORT}`).replace(/\/$/, "");
-const STORE_ID = process.env.SSLCOMMERZ_STORE_ID || "";
-const STORE_PASSWD = process.env.SSLCOMMERZ_STORE_PASSWD || "";
-const IS_LIVE = String(process.env.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
 const ADMIN_KEY = process.env.ADMIN_KEY || "aureva-admin-2026";
-const COURIER_AUTO_BOOK = String(process.env.COURIER_AUTO_BOOK || "true").toLowerCase() === "true";
-
-const SSLCOMMERZ_INIT_URL = IS_LIVE
-  ? "https://securepay.sslcommerz.com/gwprocess/v4/api.php"
-  : "https://sandbox.sslcommerz.com/gwprocess/v4/api.php";
-
-const SSLCOMMERZ_VALIDATE_URL = IS_LIVE
-  ? "https://securepay.sslcommerz.com/validator/api/validationserverAPI.php"
-  : "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php";
 
 const DATA_DIR = path.join(__dirname, "data");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const CONSULTATIONS_FILE = path.join(DATA_DIR, "consultations.json");
+const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-function readJson(filePath) {
+function readJson(filePath, fallback = []) {
   try {
-    if (!fs.existsSync(filePath)) return [];
+    if (!fs.existsSync(filePath)) return fallback;
     const raw = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(raw || "[]");
+    return JSON.parse(raw || JSON.stringify(fallback));
   } catch {
-    return [];
+    return fallback;
   }
 }
 
@@ -43,12 +32,54 @@ function writeJson(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
 }
 
+function getSettings() {
+  const saved = readJson(SETTINGS_FILE, {});
+  return {
+    SSLCOMMERZ_STORE_ID: saved.SSLCOMMERZ_STORE_ID || process.env.SSLCOMMERZ_STORE_ID || "",
+    SSLCOMMERZ_STORE_PASSWD: saved.SSLCOMMERZ_STORE_PASSWD || process.env.SSLCOMMERZ_STORE_PASSWD || "",
+    SSLCOMMERZ_IS_LIVE: saved.SSLCOMMERZ_IS_LIVE ?? process.env.SSLCOMMERZ_IS_LIVE ?? "false",
+    COURIER_PROVIDER: saved.COURIER_PROVIDER || process.env.COURIER_PROVIDER || "auto",
+    COURIER_AUTO_BOOK: saved.COURIER_AUTO_BOOK ?? process.env.COURIER_AUTO_BOOK ?? "true",
+    STEADFAST_API_KEY: saved.STEADFAST_API_KEY || process.env.STEADFAST_API_KEY || "",
+    STEADFAST_SECRET_KEY: saved.STEADFAST_SECRET_KEY || process.env.STEADFAST_SECRET_KEY || "",
+    PATHAO_IS_LIVE: saved.PATHAO_IS_LIVE ?? process.env.PATHAO_IS_LIVE ?? "true",
+    PATHAO_CLIENT_ID: saved.PATHAO_CLIENT_ID || process.env.PATHAO_CLIENT_ID || "",
+    PATHAO_CLIENT_SECRET: saved.PATHAO_CLIENT_SECRET || process.env.PATHAO_CLIENT_SECRET || "",
+    PATHAO_USERNAME: saved.PATHAO_USERNAME || process.env.PATHAO_USERNAME || "",
+    PATHAO_PASSWORD: saved.PATHAO_PASSWORD || process.env.PATHAO_PASSWORD || "",
+    PATHAO_STORE_ID: saved.PATHAO_STORE_ID || process.env.PATHAO_STORE_ID || "",
+    REDX_IS_LIVE: saved.REDX_IS_LIVE ?? process.env.REDX_IS_LIVE ?? "true",
+    REDX_API_TOKEN: saved.REDX_API_TOKEN || process.env.REDX_API_TOKEN || "",
+    REDX_DEFAULT_AREA: saved.REDX_DEFAULT_AREA || process.env.REDX_DEFAULT_AREA || "Dhaka",
+    REDX_DEFAULT_AREA_ID: saved.REDX_DEFAULT_AREA_ID || process.env.REDX_DEFAULT_AREA_ID || "1",
+    ECOURIER_IS_LIVE: saved.ECOURIER_IS_LIVE ?? process.env.ECOURIER_IS_LIVE ?? "true",
+    ECOURIER_API_KEY: saved.ECOURIER_API_KEY || process.env.ECOURIER_API_KEY || "",
+    ECOURIER_API_SECRET: saved.ECOURIER_API_SECRET || process.env.ECOURIER_API_SECRET || "",
+    ECOURIER_USER_ID: saved.ECOURIER_USER_ID || process.env.ECOURIER_USER_ID || "",
+    ECOURIER_PACKAGE_CODE: saved.ECOURIER_PACKAGE_CODE || process.env.ECOURIER_PACKAGE_CODE || ""
+  };
+}
+
+function getSslUrls(settings) {
+  const isLive = String(settings.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
+  return {
+    isLive,
+    initUrl: isLive
+      ? "https://securepay.sslcommerz.com/gwprocess/v4/api.php"
+      : "https://sandbox.sslcommerz.com/gwprocess/v4/api.php",
+    validateUrl: isLive
+      ? "https://securepay.sslcommerz.com/validator/api/validationserverAPI.php"
+      : "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php"
+  };
+}
+
 async function autoBookOrder(orderRef, preferredProvider) {
-  const orders = readJson(ORDERS_FILE);
+  const orders = readJson(ORDERS_FILE, []);
   const idx = orders.findIndex(o => o.orderRef === orderRef);
   if (idx === -1) return { booked: false, reason: "Order not found" };
 
-  const result = await bookParcel(orders[idx], preferredProvider);
+  const settings = getSettings();
+  const result = await bookParcel(orders[idx], preferredProvider, settings);
   if (result.booked && result.courier) {
     orders[idx].courier = result.courier;
     writeJson(ORDERS_FILE, orders);
@@ -60,13 +91,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
+// Clean Control Panel route: /admin
+app.get("/admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
+});
+
 // Health check
 app.get("/api/health", (req, res) => {
+  const s = getSettings();
+  const isLive = String(s.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
   res.json({
     ok: true,
-    gatewayConfigured: Boolean(STORE_ID && STORE_PASSWD && STORE_ID !== "your_store_id"),
-    couriersConfigured: getConfiguredCouriers(),
-    mode: IS_LIVE ? "LIVE" : "SANDBOX"
+    gatewayConfigured: Boolean(s.SSLCOMMERZ_STORE_ID && s.SSLCOMMERZ_STORE_PASSWD && s.SSLCOMMERZ_STORE_ID !== "your_store_id"),
+    couriersConfigured: getConfiguredCouriers(s),
+    mode: isLive ? "LIVE" : "SANDBOX"
   });
 });
 
@@ -77,7 +115,7 @@ app.post("/api/orders/cod", async (req, res) => {
     return res.status(400).json({ status: "error", message: "Missing required order fields." });
   }
 
-  const orders = readJson(ORDERS_FILE);
+  const orders = readJson(ORDERS_FILE, []);
   const record = {
     orderRef: orderRef || "ORD-" + Math.floor(1000 + Math.random() * 9000),
     paymentMethod: "COD",
@@ -93,8 +131,9 @@ app.post("/api/orders/cod", async (req, res) => {
   orders.unshift(record);
   writeJson(ORDERS_FILE, orders);
 
+  const s = getSettings();
   let courierResult = null;
-  if (COURIER_AUTO_BOOK) {
+  if (String(s.COURIER_AUTO_BOOK).toLowerCase() === "true") {
     courierResult = await autoBookOrder(record.orderRef);
   }
 
@@ -110,10 +149,12 @@ app.post("/api/orders/cod", async (req, res) => {
 // Initiate SSLCommerz Online Payment (Cards, bKash, Nagad, Rocket, Upay)
 app.post("/api/pay/sslcommerz", async (req, res) => {
   try {
-    if (!STORE_ID || !STORE_PASSWD || STORE_ID === "your_store_id") {
+    const s = getSettings();
+    const { initUrl } = getSslUrls(s);
+    if (!s.SSLCOMMERZ_STORE_ID || !s.SSLCOMMERZ_STORE_PASSWD || s.SSLCOMMERZ_STORE_ID === "your_store_id") {
       return res.status(500).json({
         status: "error",
-        message: "SSLCommerz Store ID and Password are not configured in .env yet."
+        message: "SSLCommerz Store ID and Password are not configured in Control Panel yet."
       });
     }
 
@@ -127,8 +168,8 @@ app.post("/api/pay/sslcommerz", async (req, res) => {
     const safeOrderRef = orderRef || "ORD-" + Math.floor(1000 + Math.random() * 9000);
 
     const payload = new URLSearchParams({
-      store_id: STORE_ID,
-      store_passwd: STORE_PASSWD,
+      store_id: s.SSLCOMMERZ_STORE_ID,
+      store_passwd: s.SSLCOMMERZ_STORE_PASSWD,
       total_amount: numericTotal.toFixed(2),
       currency: "BDT",
       tran_id: tranId,
@@ -153,7 +194,7 @@ app.post("/api/pay/sslcommerz", async (req, res) => {
       value_a: safeOrderRef
     });
 
-    const sslRes = await fetch(SSLCOMMERZ_INIT_URL, {
+    const sslRes = await fetch(initUrl, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: payload.toString()
@@ -167,7 +208,7 @@ app.post("/api/pay/sslcommerz", async (req, res) => {
       });
     }
 
-    const orders = readJson(ORDERS_FILE);
+    const orders = readJson(ORDERS_FILE, []);
     orders.unshift({
       orderRef: safeOrderRef,
       tranId,
@@ -200,7 +241,7 @@ app.post("/api/pay/sslcommerz", async (req, res) => {
 async function validateAndCompleteOrder(valId, tranId) {
   if (!valId || !tranId) return { valid: false, reason: "Missing val_id or tran_id" };
 
-  const orders = readJson(ORDERS_FILE);
+  const orders = readJson(ORDERS_FILE, []);
   const idx = orders.findIndex(o => o.tranId === tranId);
   if (idx === -1) return { valid: false, reason: "Order not found" };
 
@@ -212,7 +253,9 @@ async function validateAndCompleteOrder(valId, tranId) {
     };
   }
 
-  const url = `${SSLCOMMERZ_VALIDATE_URL}?val_id=${encodeURIComponent(valId)}&store_id=${encodeURIComponent(STORE_ID)}&store_passwd=${encodeURIComponent(STORE_PASSWD)}&format=json`;
+  const s = getSettings();
+  const { validateUrl } = getSslUrls(s);
+  const url = `${validateUrl}?val_id=${encodeURIComponent(valId)}&store_id=${encodeURIComponent(s.SSLCOMMERZ_STORE_ID)}&store_passwd=${encodeURIComponent(s.SSLCOMMERZ_STORE_PASSWD)}&format=json`;
   const valRes = await fetch(url);
   const valData = await valRes.json();
 
@@ -229,7 +272,7 @@ async function validateAndCompleteOrder(valId, tranId) {
     writeJson(ORDERS_FILE, orders);
 
     let trackingCode = "";
-    if (COURIER_AUTO_BOOK) {
+    if (String(s.COURIER_AUTO_BOOK).toLowerCase() === "true") {
       const courierRes = await autoBookOrder(orders[idx].orderRef);
       trackingCode = courierRes?.courier?.trackingCode || "";
     }
@@ -261,7 +304,7 @@ app.post("/api/sslcommerz/success", async (req, res) => {
 app.post("/api/sslcommerz/fail", (req, res) => {
   const { tran_id } = req.body || {};
   if (tran_id) {
-    const orders = readJson(ORDERS_FILE);
+    const orders = readJson(ORDERS_FILE, []);
     const idx = orders.findIndex(o => o.tranId === tran_id);
     if (idx !== -1 && orders[idx].paymentStatus !== "PAID") {
       orders[idx].paymentStatus = "FAILED";
@@ -274,7 +317,7 @@ app.post("/api/sslcommerz/fail", (req, res) => {
 app.post("/api/sslcommerz/cancel", (req, res) => {
   const { tran_id } = req.body || {};
   if (tran_id) {
-    const orders = readJson(ORDERS_FILE);
+    const orders = readJson(ORDERS_FILE, []);
     const idx = orders.findIndex(o => o.tranId === tran_id);
     if (idx !== -1 && orders[idx].paymentStatus !== "PAID") {
       orders[idx].paymentStatus = "CANCELLED";
@@ -297,14 +340,14 @@ app.post("/api/sslcommerz/ipn", async (req, res) => {
   }
 });
 
-// Track Courier Delivery Status by Order Ref (works across Steadfast, Pathao, RedX, eCourier)
+// Track Courier Delivery Status by Order Ref
 app.get("/api/courier/track/:orderRef", async (req, res) => {
   const { orderRef } = req.params;
-  const orders = readJson(ORDERS_FILE);
+  const orders = readJson(ORDERS_FILE, []);
   const order = orders.find(o => o.orderRef === orderRef);
   if (!order) return res.status(404).json({ error: "Order not found" });
 
-  const liveDeliveryStatus = await trackParcel(order);
+  const liveDeliveryStatus = await trackParcel(order, getSettings());
   res.json({
     orderRef: order.orderRef,
     paymentStatus: order.paymentStatus,
@@ -314,7 +357,6 @@ app.get("/api/courier/track/:orderRef", async (req, res) => {
 });
 
 // Manual Courier Booking / Provider Override (Admin Protected)
-// Example: POST /api/courier/book/ORD-1234?provider=pathao&key=aureva-admin-2026
 app.post("/api/courier/book/:orderRef", async (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
@@ -330,7 +372,7 @@ app.post("/api/consultations", (req, res) => {
   if (!name || !phone || !notes) {
     return res.status(400).json({ status: "error", message: "Missing consultation fields." });
   }
-  const list = readJson(CONSULTATIONS_FILE);
+  const list = readJson(CONSULTATIONS_FILE, []);
   list.unshift({
     name,
     phone,
@@ -341,19 +383,35 @@ app.post("/api/consultations", (req, res) => {
   res.json({ status: "success" });
 });
 
-// Protected Admin Endpoints to view orders & consultations
+// Protected Control Panel Endpoints
 app.get("/api/orders", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
-  res.json(readJson(ORDERS_FILE));
+  res.json(readJson(ORDERS_FILE, []));
 });
 
 app.get("/api/consultations", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
-  res.json(readJson(CONSULTATIONS_FILE));
+  res.json(readJson(CONSULTATIONS_FILE, []));
+});
+
+app.get("/api/settings", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  res.json(getSettings());
+});
+
+app.post("/api/settings", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  const current = readJson(SETTINGS_FILE, {});
+  const updated = { ...current, ...(req.body || {}) };
+  writeJson(SETTINGS_FILE, updated);
+  res.json({ status: "success", settings: getSettings() });
 });
 
 app.listen(PORT, () => {
-  console.log(`Aureva Store running on ${BASE_URL} (SSLCommerz ${IS_LIVE ? "LIVE" : "SANDBOX"} | Couriers:`, getConfiguredCouriers(), ")");
+  const s = getSettings();
+  console.log(`Aureva Store running on ${BASE_URL} | Control Panel: ${BASE_URL}/admin | Couriers:`, getConfiguredCouriers(s));
 });

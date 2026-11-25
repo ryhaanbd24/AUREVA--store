@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aureva — Backend Admin Dashboard (Orders, Payments & Couriers)</title>
+  <title>Aureva — Website Control Panel</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -11,91 +11,218 @@
   </style>
 </head>
 <body class="min-h-screen">
-  <header class="bg-[#1F1D1A] text-[#FAF7F2] px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-    <div>
-      <h1 class="text-lg font-bold tracking-wide">AUREVA ADMIN</h1>
-      <p class="text-xs text-[#C7BFAF]">Orders, SSLCommerz Payments &amp; BD Courier Dispatch</p>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl border border-[#E6DEC8] p-7 space-y-5 shadow-sm">
+      <div class="text-center space-y-1">
+        <h1 class="text-2xl font-bold tracking-wide">AUREVA</h1>
+        <p class="text-xs text-[#645E56]">Website Control Panel Login</p>
+      </div>
+      <form id="loginForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-[#645E56] mb-1">Admin Password / Key</label>
+          <input id="loginKeyInput" type="password" required value="aureva-admin-2026" class="w-full px-3.5 py-2.5 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
+          <p class="text-[11px] text-[#645E56] mt-1">Default: <code class="bg-[#F2ECE1] px-1 rounded">aureva-admin-2026</code></p>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-full bg-[#1F1D1A] text-white text-sm font-semibold hover:bg-[#36322D]">Access Control Panel</button>
+      </form>
     </div>
-    <div class="flex items-center gap-2">
-      <input id="adminKeyInput" type="password" value="aureva-admin-2026" placeholder="Admin Key" class="px-3 py-1.5 rounded-lg bg-[#2E2A25] border border-[#4A443C] text-xs text-white focus:outline-none" />
-      <button id="loadDataBtn" class="px-4 py-1.5 rounded-lg bg-[#8C7355] hover:bg-[#7A6347] text-xs font-semibold text-white transition">Load Dashboard</button>
-      <a href="/" class="px-3 py-1.5 rounded-lg border border-[#4A443C] text-xs hover:bg-[#2E2A25]">View Storefront</a>
-    </div>
-  </header>
+  </div>
 
-  <main class="max-w-7xl mx-auto p-6 space-y-6">
-    <!-- Status Strip -->
-    <div id="healthStrip" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-      <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
-        <p class="text-xs text-[#645E56]">Total Orders</p>
-        <p id="statOrders" class="text-2xl font-bold mt-1">0</p>
+  <!-- Control Panel App -->
+  <div id="panelApp" class="hidden min-h-screen flex flex-col">
+    <header class="bg-[#1F1D1A] text-[#FAF7F2] px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h1 class="text-lg font-bold tracking-wide">AUREVA CONTROL PANEL</h1>
+        <p class="text-xs text-[#C7BFAF]">Orders, Payments, Courier Dispatch &amp; API Settings</p>
       </div>
-      <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
-        <p class="text-xs text-[#645E56]">Paid (SSLCommerz)</p>
-        <p id="statPaid" class="text-2xl font-bold text-emerald-700 mt-1">0</p>
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <button data-tab="ordersTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold">Orders &amp; Couriers</button>
+        <button data-tab="consultsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Consultations</button>
+        <button data-tab="settingsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Payment &amp; Courier Setup</button>
+        <a href="/" class="px-3 py-1.5 rounded-full border border-[#4A443C] hover:bg-[#2E2A25]">View Store</a>
+        <button id="logoutBtn" class="px-3 py-1.5 rounded-full border border-red-400/50 text-red-200 hover:bg-red-900/30">Logout</button>
       </div>
-      <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
-        <p class="text-xs text-[#645E56]">Pending COD</p>
-        <p id="statCod" class="text-2xl font-bold text-amber-700 mt-1">0</p>
-      </div>
-      <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
-        <p class="text-xs text-[#645E56]">Consultations</p>
-        <p id="statConsults" class="text-2xl font-bold mt-1">0</p>
-      </div>
-    </div>
+    </header>
 
-    <!-- Orders Table -->
-    <section class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
-      <div class="px-5 py-4 border-b border-[#E6DEC8] flex items-center justify-between">
-        <h2 class="font-semibold text-sm">Recent Orders &amp; Courier Dispatch</h2>
-        <span id="gatewayStatusBadge" class="text-xs px-2.5 py-1 rounded-full bg-[#F2ECE1] text-[#645E56]">Checking server...</span>
+    <main class="max-w-7xl w-full mx-auto p-6 space-y-6 flex-1">
+      <!-- KPIs -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+          <p class="text-xs text-[#645E56]">Total Orders</p>
+          <p id="statOrders" class="text-2xl font-bold mt-1">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+          <p class="text-xs text-[#645E56]">Paid (SSLCommerz)</p>
+          <p id="statPaid" class="text-2xl font-bold text-emerald-700 mt-1">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+          <p class="text-xs text-[#645E56]">Pending COD</p>
+          <p id="statCod" class="text-2xl font-bold text-amber-700 mt-1">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+          <p class="text-xs text-[#645E56]">Consultations</p>
+          <p id="statConsults" class="text-2xl font-bold mt-1">0</p>
+        </div>
       </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
-            <tr>
-              <th class="px-4 py-3">Order Ref</th>
-              <th class="px-4 py-3">Customer</th>
-              <th class="px-4 py-3">Items</th>
-              <th class="px-4 py-3">Total</th>
-              <th class="px-4 py-3">Payment</th>
-              <th class="px-4 py-3">Courier &amp; Tracking</th>
-              <th class="px-4 py-3">Dispatch Action</th>
-            </tr>
-          </thead>
-          <tbody id="ordersBody" class="divide-y divide-[#EFE8D8]">
-            <tr><td colspan="7" class="px-4 py-8 text-center text-[#645E56]">Click "Load Dashboard" to fetch live orders.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
 
-    <!-- Consultations Table -->
-    <section class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
-      <div class="px-5 py-4 border-b border-[#E6DEC8]">
-        <h2 class="font-semibold text-sm">Skincare Consultation Requests</h2>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
-            <tr>
-              <th class="px-4 py-3">Name</th>
-              <th class="px-4 py-3">WhatsApp / Phone</th>
-              <th class="px-4 py-3">Skin Type &amp; Concern</th>
-              <th class="px-4 py-3">Date</th>
-            </tr>
-          </thead>
-          <tbody id="consultsBody" class="divide-y divide-[#EFE8D8]">
-            <tr><td colspan="4" class="px-4 py-6 text-center text-[#645E56]">No consultations loaded yet.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+      <!-- TAB 1: ORDERS -->
+      <section id="ordersTab" class="tab-panel bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+        <div class="px-5 py-4 border-b border-[#E6DEC8] flex flex-wrap items-center justify-between gap-2">
+          <h2 class="font-semibold text-sm">Recent Orders &amp; Courier Dispatch</h2>
+          <div class="flex items-center gap-2">
+            <span id="gatewayStatusBadge" class="text-xs px-2.5 py-1 rounded-full bg-[#F2ECE1] text-[#645E56]">Loading...</span>
+            <button id="refreshBtn" class="text-xs px-3 py-1 rounded-full bg-[#1F1D1A] text-white">Refresh</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+              <tr>
+                <th class="px-4 py-3">Order Ref</th>
+                <th class="px-4 py-3">Customer</th>
+                <th class="px-4 py-3">Items</th>
+                <th class="px-4 py-3">Total</th>
+                <th class="px-4 py-3">Payment</th>
+                <th class="px-4 py-3">Courier &amp; Tracking</th>
+                <th class="px-4 py-3">Dispatch</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody" class="divide-y divide-[#EFE8D8]"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 2: CONSULTATIONS -->
+      <section id="consultsTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+        <div class="px-5 py-4 border-b border-[#E6DEC8]">
+          <h2 class="font-semibold text-sm">Skincare Consultation Requests</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+              <tr>
+                <th class="px-4 py-3">Name</th>
+                <th class="px-4 py-3">WhatsApp / Phone</th>
+                <th class="px-4 py-3">Skin Type &amp; Concern</th>
+                <th class="px-4 py-3">Date</th>
+              </tr>
+            </thead>
+            <tbody id="consultsBody" class="divide-y divide-[#EFE8D8]"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 3: SETTINGS (NO-CODE SETUP) -->
+      <section id="settingsTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-6">
+        <div>
+          <h2 class="font-semibold text-base">Payment Gateway &amp; Courier Setup</h2>
+          <p class="text-xs text-[#645E56] mt-0.5">এখানে সরাসরি আপনার SSLCommerz এবং কুরিয়ার API Key বসিয়ে Save করলেই সাথে সাথে কাজ শুরু হবে।</p>
+        </div>
+
+        <form id="settingsForm" class="space-y-6 text-xs">
+          <!-- SSLCommerz -->
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
+            <h3 class="font-semibold text-sm">1. SSLCommerz (Card, bKash, Nagad, Rocket)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[#645E56] mb-1">Store ID</label>
+                <input name="SSLCOMMERZ_STORE_ID" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Store Password</label>
+                <input name="SSLCOMMERZ_STORE_PASSWD" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Mode</label>
+                <select name="SSLCOMMERZ_IS_LIVE" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]">
+                  <option value="false">Sandbox (Test)</option>
+                  <option value="true">Live (Real Payment)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Courier General -->
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
+            <h3 class="font-semibold text-sm">2. Default Courier Preference</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[#645E56] mb-1">Active Courier</label>
+                <select name="COURIER_PROVIDER" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]">
+                  <option value="auto">Auto (First Configured)</option>
+                  <option value="steadfast">Steadfast</option>
+                  <option value="pathao">Pathao</option>
+                  <option value="redx">RedX</option>
+                  <option value="ecourier">eCourier</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Auto-Book on Order</label>
+                <select name="COURIER_AUTO_BOOK" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]">
+                  <option value="true">Enabled (Automatic)</option>
+                  <option value="false">Disabled (Manual from Panel)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Steadfast -->
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
+            <h3 class="font-semibold text-sm">3. Steadfast Courier</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[#645E56] mb-1">API Key</label>
+                <input name="STEADFAST_API_KEY" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Secret Key</label>
+                <input name="STEADFAST_SECRET_KEY" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Pathao -->
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
+            <h3 class="font-semibold text-sm">4. Pathao Courier</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div><label class="block text-[#645E56] mb-1">Client ID</label><input name="PATHAO_CLIENT_ID" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+              <div><label class="block text-[#645E56] mb-1">Client Secret</label><input name="PATHAO_CLIENT_SECRET" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+              <div><label class="block text-[#645E56] mb-1">Store ID</label><input name="PATHAO_STORE_ID" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+              <div><label class="block text-[#645E56] mb-1">Merchant Email</label><input name="PATHAO_USERNAME" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+              <div><label class="block text-[#645E56] mb-1">Merchant Password</label><input name="PATHAO_PASSWORD" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+            </div>
+          </div>
+
+          <!-- RedX & eCourier -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
+              <h3 class="font-semibold text-sm">5. RedX Courier</h3>
+              <div><label class="block text-[#645E56] mb-1">API Access Token</label><input name="REDX_API_TOKEN" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+            </div>
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
+              <h3 class="font-semibold text-sm">6. eCourier</h3>
+              <div class="grid grid-cols-2 gap-2">
+                <input name="ECOURIER_API_KEY" placeholder="API Key" class="px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+                <input name="ECOURIER_API_SECRET" type="password" placeholder="API Secret" class="px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+                <input name="ECOURIER_USER_ID" placeholder="User ID" class="px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+                <input name="ECOURIER_PACKAGE_CODE" placeholder="Package Code" class="px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">Save Settings</button>
+        </form>
+      </section>
+    </main>
+  </div>
 
   <div id="adminToast" class="fixed bottom-5 right-5 hidden bg-[#1F1D1A] text-white text-xs px-4 py-3 rounded-xl shadow-lg"></div>
 
   <script>
+    let adminKey = "";
+    try { adminKey = localStorage.getItem("aureva_admin_key") || ""; } catch {}
+
     function showToast(msg) {
       const el = document.getElementById("adminToast");
       el.textContent = msg;
@@ -104,22 +231,28 @@
     }
 
     async function loadDashboard() {
-      const key = document.getElementById("adminKeyInput").value.trim();
       try {
-        const [healthRes, ordersRes, consultsRes] = await Promise.all([
+        const [healthRes, ordersRes, consultsRes, settingsRes] = await Promise.all([
           fetch("/api/health"),
-          fetch(`/api/orders?key=${encodeURIComponent(key)}`),
-          fetch(`/api/consultations?key=${encodeURIComponent(key)}`)
+          fetch(`/api/orders?key=${encodeURIComponent(adminKey)}`),
+          fetch(`/api/consultations?key=${encodeURIComponent(adminKey)}`),
+          fetch(`/api/settings?key=${encodeURIComponent(adminKey)}`)
         ]);
 
         if (!ordersRes.ok) {
-          showToast("Invalid Admin Key or server error.");
-          return;
+          showToast("Invalid Admin Password.");
+          document.getElementById("loginScreen").classList.remove("hidden");
+          document.getElementById("panelApp").classList.add("hidden");
+          return false;
         }
+
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("panelApp").classList.remove("hidden");
 
         const health = await healthRes.json();
         const orders = await ordersRes.json();
         const consults = await consultsRes.json();
+        const settings = await settingsRes.json();
 
         const activeCouriers = Object.entries(health.couriersConfigured || {})
           .filter(([, ok]) => ok)
@@ -134,10 +267,9 @@
         document.getElementById("statConsults").textContent = consults.length;
 
         const ordersBody = document.getElementById("ordersBody");
-        if (orders.length === 0) {
-          ordersBody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-[#645E56]">No orders yet.</td></tr>';
-        } else {
-          ordersBody.innerHTML = orders.map(o => `
+        ordersBody.innerHTML = orders.length === 0
+          ? '<tr><td colspan="7" class="px-4 py-8 text-center text-[#645E56]">No orders yet.</td></tr>'
+          : orders.map(o => `
             <tr class="hover:bg-[#FAF7F2]">
               <td class="px-4 py-3 font-semibold">${o.orderRef}</td>
               <td class="px-4 py-3">
@@ -169,21 +301,20 @@
             </tr>
           `).join("");
 
-          document.querySelectorAll(".book-btn").forEach(btn => {
-            btn.addEventListener("click", async () => {
-              const ref = btn.getAttribute("data-book");
-              const prov = document.getElementById(`prov-${ref}`).value;
-              const res = await fetch(`/api/courier/book/${encodeURIComponent(ref)}?provider=${encodeURIComponent(prov)}&key=${encodeURIComponent(key)}`, { method: "POST" });
-              const data = await res.json();
-              if (data.booked) {
-                showToast(`Booked ${ref} via ${data.courier.provider} (${data.courier.trackingCode})`);
-                loadDashboard();
-              } else {
-                showToast(data.reason || "Booking failed. Check .env credentials.");
-              }
-            });
+        document.querySelectorAll(".book-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const ref = btn.getAttribute("data-book");
+            const prov = document.getElementById(`prov-${ref}`).value;
+            const res = await fetch(`/api/courier/book/${encodeURIComponent(ref)}?provider=${encodeURIComponent(prov)}&key=${encodeURIComponent(adminKey)}`, { method: "POST" });
+            const data = await res.json();
+            if (data.booked) {
+              showToast(`Booked ${ref} via ${data.courier.provider} (${data.courier.trackingCode})`);
+              loadDashboard();
+            } else {
+              showToast(data.reason || "Booking failed. Check Settings tab.");
+            }
           });
-        }
+        });
 
         const consultsBody = document.getElementById("consultsBody");
         consultsBody.innerHTML = consults.length === 0
@@ -196,13 +327,68 @@
               <td class="px-4 py-3 text-[#645E56]">${new Date(c.createdAt).toLocaleString()}</td>
             </tr>
           `).join("");
-      } catch (err) {
-        showToast("Could not connect to backend server.");
+
+        // Populate settings form
+        const form = document.getElementById("settingsForm");
+        Object.entries(settings).forEach(([k, v]) => {
+          const input = form.elements.namedItem(k);
+          if (input) input.value = String(v || "");
+        });
+        return true;
+      } catch {
+        showToast("Could not connect to server.");
+        return false;
       }
     }
 
-    document.getElementById("loadDataBtn").addEventListener("click", loadDashboard);
-    window.addEventListener("DOMContentLoaded", loadDashboard);
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      adminKey = document.getElementById("loginKeyInput").value.trim();
+      const ok = await loadDashboard();
+      if (ok) {
+        try { localStorage.setItem("aureva_admin_key", adminKey); } catch {}
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      adminKey = "";
+      try { localStorage.removeItem("aureva_admin_key"); } catch {}
+      document.getElementById("panelApp").classList.add("hidden");
+      document.getElementById("loginScreen").classList.remove("hidden");
+    });
+
+    document.getElementById("refreshBtn").addEventListener("click", loadDashboard);
+
+    document.querySelectorAll(".nav-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-tab");
+        document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+        document.getElementById(target).classList.remove("hidden");
+        document.querySelectorAll(".nav-tab").forEach(b => {
+          b.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]";
+        });
+        btn.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold";
+      });
+    });
+
+    document.getElementById("settingsForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {};
+      new FormData(e.target).forEach((val, key) => { payload[key] = val; });
+      const res = await fetch(`/api/settings?key=${encodeURIComponent(adminKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        showToast("Settings saved! Payment & Courier credentials updated.");
+        loadDashboard();
+      } else {
+        showToast("Failed to save settings.");
+      }
+    });
+
+    if (adminKey) loadDashboard();
   </script>
 </body>
 </html>
