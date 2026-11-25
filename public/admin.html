@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureva — Backend Admin Dashboard (Orders, Payments & Couriers)</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #FAF7F2; color: #1F1D1A; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="bg-[#1F1D1A] text-[#FAF7F2] px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-lg font-bold tracking-wide">AUREVA ADMIN</h1>
+      <p class="text-xs text-[#C7BFAF]">Orders, SSLCommerz Payments &amp; BD Courier Dispatch</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <input id="adminKeyInput" type="password" value="aureva-admin-2026" placeholder="Admin Key" class="px-3 py-1.5 rounded-lg bg-[#2E2A25] border border-[#4A443C] text-xs text-white focus:outline-none" />
+      <button id="loadDataBtn" class="px-4 py-1.5 rounded-lg bg-[#8C7355] hover:bg-[#7A6347] text-xs font-semibold text-white transition">Load Dashboard</button>
+      <a href="/" class="px-3 py-1.5 rounded-lg border border-[#4A443C] text-xs hover:bg-[#2E2A25]">View Storefront</a>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 space-y-6">
+    <!-- Status Strip -->
+    <div id="healthStrip" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+        <p class="text-xs text-[#645E56]">Total Orders</p>
+        <p id="statOrders" class="text-2xl font-bold mt-1">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+        <p class="text-xs text-[#645E56]">Paid (SSLCommerz)</p>
+        <p id="statPaid" class="text-2xl font-bold text-emerald-700 mt-1">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+        <p class="text-xs text-[#645E56]">Pending COD</p>
+        <p id="statCod" class="text-2xl font-bold text-amber-700 mt-1">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+        <p class="text-xs text-[#645E56]">Consultations</p>
+        <p id="statConsults" class="text-2xl font-bold mt-1">0</p>
+      </div>
+    </div>
+
+    <!-- Orders Table -->
+    <section class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+      <div class="px-5 py-4 border-b border-[#E6DEC8] flex items-center justify-between">
+        <h2 class="font-semibold text-sm">Recent Orders &amp; Courier Dispatch</h2>
+        <span id="gatewayStatusBadge" class="text-xs px-2.5 py-1 rounded-full bg-[#F2ECE1] text-[#645E56]">Checking server...</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+            <tr>
+              <th class="px-4 py-3">Order Ref</th>
+              <th class="px-4 py-3">Customer</th>
+              <th class="px-4 py-3">Items</th>
+              <th class="px-4 py-3">Total</th>
+              <th class="px-4 py-3">Payment</th>
+              <th class="px-4 py-3">Courier &amp; Tracking</th>
+              <th class="px-4 py-3">Dispatch Action</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody" class="divide-y divide-[#EFE8D8]">
+            <tr><td colspan="7" class="px-4 py-8 text-center text-[#645E56]">Click "Load Dashboard" to fetch live orders.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Consultations Table -->
+    <section class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+      <div class="px-5 py-4 border-b border-[#E6DEC8]">
+        <h2 class="font-semibold text-sm">Skincare Consultation Requests</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+            <tr>
+              <th class="px-4 py-3">Name</th>
+              <th class="px-4 py-3">WhatsApp / Phone</th>
+              <th class="px-4 py-3">Skin Type &amp; Concern</th>
+              <th class="px-4 py-3">Date</th>
+            </tr>
+          </thead>
+          <tbody id="consultsBody" class="divide-y divide-[#EFE8D8]">
+            <tr><td colspan="4" class="px-4 py-6 text-center text-[#645E56]">No consultations loaded yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="adminToast" class="fixed bottom-5 right-5 hidden bg-[#1F1D1A] text-white text-xs px-4 py-3 rounded-xl shadow-lg"></div>
+
+  <script>
+    function showToast(msg) {
+      const el = document.getElementById("adminToast");
+      el.textContent = msg;
+      el.classList.remove("hidden");
+      setTimeout(() => el.classList.add("hidden"), 3500);
+    }
+
+    async function loadDashboard() {
+      const key = document.getElementById("adminKeyInput").value.trim();
+      try {
+        const [healthRes, ordersRes, consultsRes] = await Promise.all([
+          fetch("/api/health"),
+          fetch(`/api/orders?key=${encodeURIComponent(key)}`),
+          fetch(`/api/consultations?key=${encodeURIComponent(key)}`)
+        ]);
+
+        if (!ordersRes.ok) {
+          showToast("Invalid Admin Key or server error.");
+          return;
+        }
+
+        const health = await healthRes.json();
+        const orders = await ordersRes.json();
+        const consults = await consultsRes.json();
+
+        const activeCouriers = Object.entries(health.couriersConfigured || {})
+          .filter(([, ok]) => ok)
+          .map(([name]) => name.toUpperCase())
+          .join(", ") || "None configured";
+        document.getElementById("gatewayStatusBadge").textContent =
+          `SSLCommerz: ${health.mode} | Couriers: ${activeCouriers}`;
+
+        document.getElementById("statOrders").textContent = orders.length;
+        document.getElementById("statPaid").textContent = orders.filter(o => o.paymentStatus === "PAID").length;
+        document.getElementById("statCod").textContent = orders.filter(o => o.paymentStatus === "PENDING_COD").length;
+        document.getElementById("statConsults").textContent = consults.length;
+
+        const ordersBody = document.getElementById("ordersBody");
+        if (orders.length === 0) {
+          ordersBody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-[#645E56]">No orders yet.</td></tr>';
+        } else {
+          ordersBody.innerHTML = orders.map(o => `
+            <tr class="hover:bg-[#FAF7F2]">
+              <td class="px-4 py-3 font-semibold">${o.orderRef}</td>
+              <td class="px-4 py-3">
+                <p class="font-medium">${o.name}</p>
+                <p class="text-[#645E56]">${o.phone}</p>
+                <p class="text-[#645E56] truncate max-w-[180px]">${o.address}</p>
+              </td>
+              <td class="px-4 py-3 max-w-[200px]">${o.itemsSummary || "-"}</td>
+              <td class="px-4 py-3 font-bold">৳${Number(o.total || 0).toLocaleString()}</td>
+              <td class="px-4 py-3">
+                <span class="px-2 py-0.5 rounded-full text-[11px] font-medium ${o.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                  ${o.paymentMethod} • ${o.paymentStatus}
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                ${o.courier ? `<span class="font-semibold">${o.courier.provider}</span><br><span class="text-[#645E56]">${o.courier.trackingCode}</span>` : '<span class="text-[#645E56]">Not booked</span>'}
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-1.5">
+                  <select id="prov-${o.orderRef}" class="border border-[#DFD5C3] rounded-lg px-2 py-1 bg-white">
+                    <option value="steadfast">Steadfast</option>
+                    <option value="pathao">Pathao</option>
+                    <option value="redx">RedX</option>
+                    <option value="ecourier">eCourier</option>
+                  </select>
+                  <button data-book="${o.orderRef}" class="book-btn px-2.5 py-1 rounded-lg bg-[#1F1D1A] text-white hover:bg-[#36322D]">Send</button>
+                </div>
+              </td>
+            </tr>
+          `).join("");
+
+          document.querySelectorAll(".book-btn").forEach(btn => {
+            btn.addEventListener("click", async () => {
+              const ref = btn.getAttribute("data-book");
+              const prov = document.getElementById(`prov-${ref}`).value;
+              const res = await fetch(`/api/courier/book/${encodeURIComponent(ref)}?provider=${encodeURIComponent(prov)}&key=${encodeURIComponent(key)}`, { method: "POST" });
+              const data = await res.json();
+              if (data.booked) {
+                showToast(`Booked ${ref} via ${data.courier.provider} (${data.courier.trackingCode})`);
+                loadDashboard();
+              } else {
+                showToast(data.reason || "Booking failed. Check .env credentials.");
+              }
+            });
+          });
+        }
+
+        const consultsBody = document.getElementById("consultsBody");
+        consultsBody.innerHTML = consults.length === 0
+          ? '<tr><td colspan="4" class="px-4 py-6 text-center text-[#645E56]">No consultations yet.</td></tr>'
+          : consults.map(c => `
+            <tr>
+              <td class="px-4 py-3 font-medium">${c.name}</td>
+              <td class="px-4 py-3">${c.phone}</td>
+              <td class="px-4 py-3">${c.notes}</td>
+              <td class="px-4 py-3 text-[#645E56]">${new Date(c.createdAt).toLocaleString()}</td>
+            </tr>
+          `).join("");
+      } catch (err) {
+        showToast("Could not connect to backend server.");
+      }
+    }
+
+    document.getElementById("loadDataBtn").addEventListener("click", loadDashboard);
+    window.addEventListener("DOMContentLoaded", loadDashboard);
+  </script>
+</body>
+</html>
