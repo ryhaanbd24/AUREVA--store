@@ -13,6 +13,8 @@ const DATA_DIR = path.join(__dirname, "data");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const CONSULTATIONS_FILE = path.join(DATA_DIR, "consultations.json");
 const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
+const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
+const DEFAULT_PRODUCTS_FILE = path.join(DATA_DIR, "default-products.json");
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -30,6 +32,17 @@ function readJson(filePath, fallback = []) {
 
 function writeJson(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+}
+
+function getProducts() {
+  if (fs.existsSync(PRODUCTS_FILE)) {
+    return readJson(PRODUCTS_FILE, []);
+  }
+  const defaults = readJson(DEFAULT_PRODUCTS_FILE, []);
+  if (defaults.length > 0) {
+    writeJson(PRODUCTS_FILE, defaults);
+  }
+  return defaults;
 }
 
 function getSettings() {
@@ -106,6 +119,47 @@ app.get("/api/health", (req, res) => {
     couriersConfigured: getConfiguredCouriers(s),
     mode: isLive ? "LIVE" : "SANDBOX"
   });
+});
+
+// Public Products API
+app.get("/api/products", (req, res) => {
+  res.json(getProducts());
+});
+
+// Admin Product Management (Add & Delete)
+app.post("/api/products", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+
+  const { name, brand, category, size, price, stock, desc, imageUrl } = req.body || {};
+  if (!name || !brand || !category || !price) {
+    return res.status(400).json({ error: "Name, brand, category, and price are required." });
+  }
+
+  const products = getProducts();
+  const newProduct = {
+    id: "AUR-SK-" + Date.now().toString().slice(-5),
+    name: String(name).trim(),
+    brand: String(brand).trim(),
+    category: String(category).trim(),
+    size: String(size || "").trim(),
+    price: Number(price) || 0,
+    stock: Number(stock ?? 5),
+    desc: String(desc || "").trim(),
+    imageUrl: String(imageUrl || "").trim()
+  };
+  products.unshift(newProduct);
+  writeJson(PRODUCTS_FILE, products);
+  res.json({ status: "success", product: newProduct });
+});
+
+app.delete("/api/products/:id", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+
+  const products = getProducts().filter(p => p.id !== req.params.id);
+  writeJson(PRODUCTS_FILE, products);
+  res.json({ status: "success" });
 });
 
 // Cash on Delivery Order + Auto Courier Booking

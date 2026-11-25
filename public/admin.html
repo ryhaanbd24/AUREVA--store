@@ -34,10 +34,11 @@
     <header class="bg-[#1F1D1A] text-[#FAF7F2] px-6 py-4 flex flex-wrap items-center justify-between gap-4">
       <div>
         <h1 class="text-lg font-bold tracking-wide">AUREVA CONTROL PANEL</h1>
-        <p class="text-xs text-[#C7BFAF]">Orders, Payments, Courier Dispatch &amp; API Settings</p>
+        <p class="text-xs text-[#C7BFAF]">Orders, Products, Courier Dispatch &amp; API Settings</p>
       </div>
       <div class="flex flex-wrap items-center gap-2 text-xs">
         <button data-tab="ordersTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold">Orders &amp; Couriers</button>
+        <button data-tab="productsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Products</button>
         <button data-tab="consultsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Consultations</button>
         <button data-tab="settingsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Payment &amp; Courier Setup</button>
         <a href="/" class="px-3 py-1.5 rounded-full border border-[#4A443C] hover:bg-[#2E2A25]">View Store</a>
@@ -57,8 +58,8 @@
           <p id="statPaid" class="text-2xl font-bold text-emerald-700 mt-1">0</p>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
-          <p class="text-xs text-[#645E56]">Pending COD</p>
-          <p id="statCod" class="text-2xl font-bold text-amber-700 mt-1">0</p>
+          <p class="text-xs text-[#645E56]">Total Products</p>
+          <p id="statProducts" class="text-2xl font-bold mt-1">0</p>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
           <p class="text-xs text-[#645E56]">Consultations</p>
@@ -93,7 +94,58 @@
         </div>
       </section>
 
-      <!-- TAB 2: CONSULTATIONS -->
+      <!-- TAB 2: PRODUCTS (ADD / DELETE) -->
+      <section id="productsTab" class="tab-panel hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-4">
+          <h2 class="font-semibold text-base">Add New Product</h2>
+          <form id="addProductForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <input name="name" type="text" required placeholder="Product Name (e.g. COSRX Toner 150ml)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <input name="brand" type="text" required placeholder="Brand (e.g. COSRX)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <select name="category" required class="px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white">
+              <option value="Cleanser">Cleanser</option>
+              <option value="Toner">Toner</option>
+              <option value="Serum">Serum</option>
+              <option value="Cream">Cream</option>
+              <option value="Sunscreen">Sunscreen</option>
+              <option value="Eye Cream">Eye Cream</option>
+              <option value="Body Care">Body Care</option>
+              <option value="Treatment">Treatment</option>
+              <option value="Supplement">Supplement</option>
+            </select>
+            <input name="size" type="text" placeholder="Size (e.g. 50ml)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <input name="price" type="number" required min="1" placeholder="Price in BDT (e.g. 1250)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <input name="stock" type="number" min="0" value="5" placeholder="Stock Qty" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <input name="imageUrl" type="url" placeholder="Image URL (Optional)" class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <textarea name="desc" rows="2" placeholder="Short description..." class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
+            <div class="sm:col-span-3">
+              <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">+ Add Product to Store</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+          <div class="px-5 py-4 border-b border-[#E6DEC8]">
+            <h2 class="font-semibold text-sm">All Store Products</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+                <tr>
+                  <th class="px-4 py-3">ID</th>
+                  <th class="px-4 py-3">Product</th>
+                  <th class="px-4 py-3">Category</th>
+                  <th class="px-4 py-3">Price</th>
+                  <th class="px-4 py-3">Stock</th>
+                  <th class="px-4 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody id="productsBody" class="divide-y divide-[#EFE8D8]"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: CONSULTATIONS -->
       <section id="consultsTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
         <div class="px-5 py-4 border-b border-[#E6DEC8]">
           <h2 class="font-semibold text-sm">Skincare Consultation Requests</h2>
@@ -113,7 +165,7 @@
         </div>
       </section>
 
-      <!-- TAB 3: SETTINGS (NO-CODE SETUP) -->
+      <!-- TAB 4: SETTINGS -->
       <section id="settingsTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-6">
         <div>
           <h2 class="font-semibold text-base">Payment Gateway &amp; Courier Setup</h2>
@@ -121,68 +173,31 @@
         </div>
 
         <form id="settingsForm" class="space-y-6 text-xs">
-          <!-- SSLCommerz -->
           <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
             <h3 class="font-semibold text-sm">1. SSLCommerz (Card, bKash, Nagad, Rocket)</h3>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label class="block text-[#645E56] mb-1">Store ID</label>
-                <input name="SSLCOMMERZ_STORE_ID" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
-              </div>
-              <div>
-                <label class="block text-[#645E56] mb-1">Store Password</label>
-                <input name="SSLCOMMERZ_STORE_PASSWD" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
-              </div>
-              <div>
-                <label class="block text-[#645E56] mb-1">Mode</label>
-                <select name="SSLCOMMERZ_IS_LIVE" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]">
-                  <option value="false">Sandbox (Test)</option>
-                  <option value="true">Live (Real Payment)</option>
-                </select>
-              </div>
+              <div><label class="block text-[#645E56] mb-1">Store ID</label><input name="SSLCOMMERZ_STORE_ID" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+              <div><label class="block text-[#645E56] mb-1">Store Password</label><input name="SSLCOMMERZ_STORE_PASSWD" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+              <div><label class="block text-[#645E56] mb-1">Mode</label><select name="SSLCOMMERZ_IS_LIVE" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]"><option value="false">Sandbox (Test)</option><option value="true">Live (Real Payment)</option></select></div>
             </div>
           </div>
 
-          <!-- Courier General -->
           <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
             <h3 class="font-semibold text-sm">2. Default Courier Preference</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[#645E56] mb-1">Active Courier</label>
-                <select name="COURIER_PROVIDER" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]">
-                  <option value="auto">Auto (First Configured)</option>
-                  <option value="steadfast">Steadfast</option>
-                  <option value="pathao">Pathao</option>
-                  <option value="redx">RedX</option>
-                  <option value="ecourier">eCourier</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[#645E56] mb-1">Auto-Book on Order</label>
-                <select name="COURIER_AUTO_BOOK" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]">
-                  <option value="true">Enabled (Automatic)</option>
-                  <option value="false">Disabled (Manual from Panel)</option>
-                </select>
-              </div>
+              <div><label class="block text-[#645E56] mb-1">Active Courier</label><select name="COURIER_PROVIDER" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]"><option value="auto">Auto (First Configured)</option><option value="steadfast">Steadfast</option><option value="pathao">Pathao</option><option value="redx">RedX</option><option value="ecourier">eCourier</option></select></div>
+              <div><label class="block text-[#645E56] mb-1">Auto-Book on Order</label><select name="COURIER_AUTO_BOOK" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]"><option value="true">Enabled (Automatic)</option><option value="false">Disabled (Manual from Panel)</option></select></div>
             </div>
           </div>
 
-          <!-- Steadfast -->
           <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
             <h3 class="font-semibold text-sm">3. Steadfast Courier</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[#645E56] mb-1">API Key</label>
-                <input name="STEADFAST_API_KEY" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
-              </div>
-              <div>
-                <label class="block text-[#645E56] mb-1">Secret Key</label>
-                <input name="STEADFAST_SECRET_KEY" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
-              </div>
+              <div><label class="block text-[#645E56] mb-1">API Key</label><input name="STEADFAST_API_KEY" type="text" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+              <div><label class="block text-[#645E56] mb-1">Secret Key</label><input name="STEADFAST_SECRET_KEY" type="password" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
             </div>
           </div>
 
-          <!-- Pathao -->
           <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
             <h3 class="font-semibold text-sm">4. Pathao Courier</h3>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -194,7 +209,6 @@
             </div>
           </div>
 
-          <!-- RedX & eCourier -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
               <h3 class="font-semibold text-sm">5. RedX Courier</h3>
@@ -232,11 +246,12 @@
 
     async function loadDashboard() {
       try {
-        const [healthRes, ordersRes, consultsRes, settingsRes] = await Promise.all([
+        const [healthRes, ordersRes, consultsRes, settingsRes, productsRes] = await Promise.all([
           fetch("/api/health"),
           fetch(`/api/orders?key=${encodeURIComponent(adminKey)}`),
           fetch(`/api/consultations?key=${encodeURIComponent(adminKey)}`),
-          fetch(`/api/settings?key=${encodeURIComponent(adminKey)}`)
+          fetch(`/api/settings?key=${encodeURIComponent(adminKey)}`),
+          fetch("/api/products")
         ]);
 
         if (!ordersRes.ok) {
@@ -253,6 +268,7 @@
         const orders = await ordersRes.json();
         const consults = await consultsRes.json();
         const settings = await settingsRes.json();
+        const products = await productsRes.json();
 
         const activeCouriers = Object.entries(health.couriersConfigured || {})
           .filter(([, ok]) => ok)
@@ -263,7 +279,7 @@
 
         document.getElementById("statOrders").textContent = orders.length;
         document.getElementById("statPaid").textContent = orders.filter(o => o.paymentStatus === "PAID").length;
-        document.getElementById("statCod").textContent = orders.filter(o => o.paymentStatus === "PENDING_COD").length;
+        document.getElementById("statProducts").textContent = products.length;
         document.getElementById("statConsults").textContent = consults.length;
 
         const ordersBody = document.getElementById("ordersBody");
@@ -272,30 +288,17 @@
           : orders.map(o => `
             <tr class="hover:bg-[#FAF7F2]">
               <td class="px-4 py-3 font-semibold">${o.orderRef}</td>
-              <td class="px-4 py-3">
-                <p class="font-medium">${o.name}</p>
-                <p class="text-[#645E56]">${o.phone}</p>
-                <p class="text-[#645E56] truncate max-w-[180px]">${o.address}</p>
-              </td>
+              <td class="px-4 py-3"><p class="font-medium">${o.name}</p><p class="text-[#645E56]">${o.phone}</p><p class="text-[#645E56] truncate max-w-[180px]">${o.address}</p></td>
               <td class="px-4 py-3 max-w-[200px]">${o.itemsSummary || "-"}</td>
               <td class="px-4 py-3 font-bold">৳${Number(o.total || 0).toLocaleString()}</td>
-              <td class="px-4 py-3">
-                <span class="px-2 py-0.5 rounded-full text-[11px] font-medium ${o.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                  ${o.paymentMethod} • ${o.paymentStatus}
-                </span>
-              </td>
-              <td class="px-4 py-3">
-                ${o.courier ? `<span class="font-semibold">${o.courier.provider}</span><br><span class="text-[#645E56]">${o.courier.trackingCode}</span>` : '<span class="text-[#645E56]">Not booked</span>'}
-              </td>
+              <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full font-medium ${o.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.paymentMethod} • ${o.paymentStatus}</span></td>
+              <td class="px-4 py-3">${o.courier ? `<span class="font-semibold">${o.courier.provider}</span><br><span class="text-[#645E56]">${o.courier.trackingCode}</span>` : '<span class="text-[#645E56]">Not booked</span>'}</td>
               <td class="px-4 py-3">
                 <div class="flex items-center gap-1.5">
                   <select id="prov-${o.orderRef}" class="border border-[#DFD5C3] rounded-lg px-2 py-1 bg-white">
-                    <option value="steadfast">Steadfast</option>
-                    <option value="pathao">Pathao</option>
-                    <option value="redx">RedX</option>
-                    <option value="ecourier">eCourier</option>
+                    <option value="steadfast">Steadfast</option><option value="pathao">Pathao</option><option value="redx">RedX</option><option value="ecourier">eCourier</option>
                   </select>
-                  <button data-book="${o.orderRef}" class="book-btn px-2.5 py-1 rounded-lg bg-[#1F1D1A] text-white hover:bg-[#36322D]">Send</button>
+                  <button data-book="${o.orderRef}" class="book-btn px-2.5 py-1 rounded-lg bg-[#1F1D1A] text-white">Send</button>
                 </div>
               </td>
             </tr>
@@ -307,28 +310,36 @@
             const prov = document.getElementById(`prov-${ref}`).value;
             const res = await fetch(`/api/courier/book/${encodeURIComponent(ref)}?provider=${encodeURIComponent(prov)}&key=${encodeURIComponent(adminKey)}`, { method: "POST" });
             const data = await res.json();
-            if (data.booked) {
-              showToast(`Booked ${ref} via ${data.courier.provider} (${data.courier.trackingCode})`);
-              loadDashboard();
-            } else {
-              showToast(data.reason || "Booking failed. Check Settings tab.");
-            }
+            if (data.booked) { showToast(`Booked ${ref} via ${data.courier.provider}`); loadDashboard(); }
+            else { showToast(data.reason || "Booking failed."); }
+          });
+        });
+
+        const productsBody = document.getElementById("productsBody");
+        productsBody.innerHTML = products.map(p => `
+          <tr class="hover:bg-[#FAF7F2]">
+            <td class="px-4 py-3 font-mono text-[11px]">${p.id}</td>
+            <td class="px-4 py-3"><p class="font-semibold">${p.name}</p><p class="text-[#645E56]">${p.brand} ${p.size ? '• ' + p.size : ''}</p></td>
+            <td class="px-4 py-3">${p.category}</td>
+            <td class="px-4 py-3 font-bold">৳${Number(p.price || 0).toLocaleString()}</td>
+            <td class="px-4 py-3">${p.stock}</td>
+            <td class="px-4 py-3"><button data-del-prod="${p.id}" class="del-prod-btn px-2.5 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700">Delete</button></td>
+          </tr>
+        `).join("");
+
+        document.querySelectorAll(".del-prod-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const id = btn.getAttribute("data-del-prod");
+            const res = await fetch(`/api/products/${encodeURIComponent(id)}?key=${encodeURIComponent(adminKey)}`, { method: "DELETE" });
+            if (res.ok) { showToast("Product deleted!"); loadDashboard(); }
           });
         });
 
         const consultsBody = document.getElementById("consultsBody");
         consultsBody.innerHTML = consults.length === 0
           ? '<tr><td colspan="4" class="px-4 py-6 text-center text-[#645E56]">No consultations yet.</td></tr>'
-          : consults.map(c => `
-            <tr>
-              <td class="px-4 py-3 font-medium">${c.name}</td>
-              <td class="px-4 py-3">${c.phone}</td>
-              <td class="px-4 py-3">${c.notes}</td>
-              <td class="px-4 py-3 text-[#645E56]">${new Date(c.createdAt).toLocaleString()}</td>
-            </tr>
-          `).join("");
+          : consults.map(c => `<tr><td class="px-4 py-3 font-medium">${c.name}</td><td class="px-4 py-3">${c.phone}</td><td class="px-4 py-3">${c.notes}</td><td class="px-4 py-3 text-[#645E56]">${new Date(c.createdAt).toLocaleString()}</td></tr>`).join("");
 
-        // Populate settings form
         const form = document.getElementById("settingsForm");
         Object.entries(settings).forEach(([k, v]) => {
           const input = form.elements.namedItem(k);
@@ -345,9 +356,7 @@
       e.preventDefault();
       adminKey = document.getElementById("loginKeyInput").value.trim();
       const ok = await loadDashboard();
-      if (ok) {
-        try { localStorage.setItem("aureva_admin_key", adminKey); } catch {}
-      }
+      if (ok) { try { localStorage.setItem("aureva_admin_key", adminKey); } catch {} }
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
@@ -364,11 +373,27 @@
         const target = btn.getAttribute("data-tab");
         document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
         document.getElementById(target).classList.remove("hidden");
-        document.querySelectorAll(".nav-tab").forEach(b => {
-          b.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]";
-        });
+        document.querySelectorAll(".nav-tab").forEach(b => b.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]");
         btn.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold";
       });
+    });
+
+    document.getElementById("addProductForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {};
+      new FormData(e.target).forEach((v, k) => { payload[k] = v; });
+      const res = await fetch(`/api/products?key=${encodeURIComponent(adminKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        e.target.reset();
+        showToast("New product added to store!");
+        loadDashboard();
+      } else {
+        showToast("Failed to add product.");
+      }
     });
 
     document.getElementById("settingsForm").addEventListener("submit", async (e) => {
@@ -380,12 +405,8 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      if (res.ok) {
-        showToast("Settings saved! Payment & Courier credentials updated.");
-        loadDashboard();
-      } else {
-        showToast("Failed to save settings.");
-      }
+      if (res.ok) { showToast("Settings saved!"); loadDashboard(); }
+      else { showToast("Failed to save settings."); }
     });
 
     if (adminKey) loadDashboard();

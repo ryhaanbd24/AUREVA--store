@@ -1,0 +1,292 @@
+[
+  {
+    "id": "AUR-SK-001",
+    "name": "COSRX Low pH Good Morning Gel Cleanser",
+    "brand": "COSRX",
+    "category": "Cleanser",
+    "size": "150ml",
+    "price": 1050,
+    "stock": 2,
+    "desc": "Gentle tea-tree and BHA gel cleanser that respects your natural skin pH without stripping moisture."
+  },
+  {
+    "id": "AUR-SK-002",
+    "name": "COSRX Salicylic Acid Daily Gentle Cleanser",
+    "brand": "COSRX",
+    "category": "Cleanser",
+    "size": "150ml",
+    "price": 1050,
+    "stock": 3,
+    "desc": "Targeted 0.5% salicylic acid foam cleanser to unclog pores, control excess sebum, and calm breakouts."
+  },
+  {
+    "id": "AUR-SK-003",
+    "name": "The Face Shop Rice Water Bright Cleansing Foam",
+    "brand": "The Face Shop",
+    "category": "Cleanser",
+    "size": "150ml",
+    "price": 990,
+    "stock": 3,
+    "desc": "Whipped brightening foam enriched with rice water extract for soft, radiant, thoroughly cleansed skin."
+  },
+  {
+    "id": "AUR-SK-004",
+    "name": "The Face Shop Rice Ceramide Moisture Cream",
+    "brand": "The Face Shop",
+    "category": "Cream",
+    "size": "50ml",
+    "price": 1050,
+    "stock": 3,
+    "desc": "Nourishing rice and ceramide barrier cream that locks in 24-hour hydration for dry and normal skin."
+  },
+  {
+    "id": "AUR-SK-005",
+    "name": "ANUA Rice Milky Toner",
+    "brand": "ANUA",
+    "category": "Toner",
+    "size": "40ml",
+    "price": 800,
+    "stock": 2,
+    "desc": "Milky, lightweight rice and ceramide toner that deeply hydrates and preps skin for glass-skin glow."
+  },
+  {
+    "id": "AUR-SK-006",
+    "name": "I'M FROM Rice Toner",
+    "brand": "I'm From",
+    "category": "Toner",
+    "size": "30ml",
+    "price": 650,
+    "stock": 2,
+    "desc": "Travel-friendly 77.78% Goami rice extract toner to brighten dull tone and balance oil-moisture levels."
+  },
+  {
+    "id": "AUR-SK-007",
+    "name": "COSRX Advanced Snail 92 All In One Cream (Mini)",
+    "brand": "COSRX",
+    "category": "Cream",
+    "size": "50g",
+    "price": 900,
+    "stock": 2,
+    "desc": "92% snail mucin repair cream in a compact 50g jar to soothe redness and fade post-acne marks."
+  },
+  {
+    "id": "AUR-SK-008",
+    "name": "COSRX Advanced Snail 92 All In One Cream",
+    "brand": "COSRX",
+    "category": "Cream",
+    "size": "100g",
+    "price": 1550,
+    "stock": 2,
+    "desc": "Full-size 100g cult-favorite snail mucin moisturizer for plump, resilient, deeply hydrated skin."
+  },
+  {
+    "id": "AUR-SK-009",
+    "name": "Beauty of Joseon Dynasty Cream",
+    "brand": "Beauty of Joseon",
+    "category": "Cream",
+    "size": "50ml",
+    "price": 1900,
+    "stock": 2,
+    "desc": "Luxurious Hanbang moisturizer with rice bran water, ginseng, squalane, and niacinamide."
+  },
+  {
+    "id": "AUR-SK-010",
+    "name": "Beauty of Joseon Relief Sun Aqua-fresh",
+    "brand": "Beauty of Joseon",
+    "category": "Sunscreen",
+    "size": "50ml",
+    "price": 1420,
+    "stock": 2,
+    "desc": "Featherlight, zero white-cast rice seed water SPF50+ PA++++ designed for humid weather."
+  },
+  {
+    "id": "AUR-SK-011",
+    "name": "SKIN1004 Centella Hyalu-Cica Water-Fit Sun Serum",
+    "brand": "SKIN1004",
+    "category": "Sunscreen",
+    "size": "50ml",
+    "price": 1350,
+    "stock": 2,
+    "desc": "Serum-like calming sunscreen with Madagascar Centella and Hyaluronic Acid; zero sticky finish."
+  },
+  {
+    "id": "AUR-SK-012",
+    "name": "SKIN1004 Centella Hyalu-Cica Water-Fit Sun Serum (Mini)",
+    "brand": "SKIN1004",
+    "category": "Sunscreen",
+    "size": "15ml",
+    "price": 650,
+    "stock": 2,
+    "desc": "Pocket-sized 15ml sun serum ideal for trial or effortless SPF reapplication on the go."
+  },
+  {
+    "id": "AUR-SK-013",
+    "name": "APLB Glutathione Niacinamide Body Lotion",
+    "brand": "APLB",
+    "category": "Body Care",
+    "size": "300ml",
+    "price": 1350,
+    "stock": 4,
+    "desc": "Brightening and firming body lotion powered by Glutathione, Niacinamide, and Centella Asiatica."
+  },
+  {
+    "id": "AUR-SK-014",
+    "name": "APLB Glutathione Niacinamide Facial Cream",
+    "brand": "APLB",
+    "category": "Cream",
+    "size": "55ml",
+    "price": 900,
+    "stock": 1,
+    "desc": "Daily brightening cream targeting uneven skin tone and dullness with gentle Centella care."
+  },
+  {
+    "id": "AUR-SK-015",
+    "name": "COSRX Acne Pimple Master Patch (24pcs)",
+    "brand": "COSRX",
+    "category": "Treatment",
+    "size": "24 patches",
+    "price": 320,
+    "stock": 1,
+    "desc": "Hydrocolloid spot patches that absorb impurities overnight and protect healing blemishes."
+  },
+  {
+    "id": "AUR-SK-016",
+    "name": "Dr. Althea 345 Relief Cream",
+    "brand": "Dr. Althea",
+    "category": "Cream",
+    "size": "15ml",
+    "price": 900,
+    "stock": 2,
+    "desc": "Post-blemish soothing gel-cream with niacinamide, panthenol, and resveratrol for sensitive skin."
+  },
+  {
+    "id": "AUR-SK-017",
+    "name": "SKIN1004 Centella Light Cleansing Oil (Mini)",
+    "brand": "SKIN1004",
+    "category": "Cleanser",
+    "size": "30ml",
+    "price": 650,
+    "stock": 2,
+    "desc": "Water-light botanical cleansing oil that melts sunscreen and sebum without clogging pores."
+  },
+  {
+    "id": "AUR-SK-018",
+    "name": "SKIN1004 Centella Light Cleansing Oil",
+    "brand": "SKIN1004",
+    "category": "Cleanser",
+    "size": "200ml",
+    "price": 1750,
+    "stock": 1,
+    "desc": "Full-size gentle Centella cleansing oil for effortless first-step double cleansing."
+  },
+  {
+    "id": "AUR-SK-019",
+    "name": "SKIN1004 Centella Tone Brightening Capsule Ampoule",
+    "brand": "SKIN1004",
+    "category": "Serum",
+    "size": "30ml",
+    "price": 850,
+    "stock": 1,
+    "desc": "Madecassoside white capsules and niacinamide ampoule for luminous, even-toned skin."
+  },
+  {
+    "id": "AUR-SK-020",
+    "name": "APLB Glutathione Niacinamide Facial Cleanser",
+    "brand": "APLB",
+    "category": "Cleanser",
+    "size": "100ml",
+    "price": 850,
+    "stock": 2,
+    "desc": "Refreshing brightening gel-foam cleanser that gently purifies while supporting skin clarity."
+  },
+  {
+    "id": "AUR-SK-021",
+    "name": "APLB Glutathione Niacinamide Body Wash",
+    "brand": "APLB",
+    "category": "Body Care",
+    "size": "300ml",
+    "price": 1400,
+    "stock": 3,
+    "desc": "Mildly acidic body wash infused with Glutathione and Niacinamide for smooth, radiant skin."
+  },
+  {
+    "id": "AUR-SK-022",
+    "name": "APLB Collagen Peptide Beauty Tablet",
+    "brand": "APLB",
+    "category": "Supplement",
+    "size": "30 tablets",
+    "price": 850,
+    "stock": 1,
+    "desc": "Inner-beauty collagen peptide and hyaluronic supplement for skin elasticity and glow."
+  },
+  {
+    "id": "AUR-SK-023",
+    "name": "ANUA Niacinamide 10% + TXA 4% Serum",
+    "brand": "ANUA",
+    "category": "Serum",
+    "size": "10ml",
+    "price": 900,
+    "stock": 2,
+    "desc": "High-potency dark spot and hyperpigmentation serum with Niacinamide, Tranexamic Acid & Arbutin."
+  },
+  {
+    "id": "AUR-SK-024",
+    "name": "ANUA Azelaic Acid 10 Hyaluron Redness Serum",
+    "brand": "ANUA",
+    "category": "Serum",
+    "size": "10ml",
+    "price": 900,
+    "stock": 2,
+    "desc": "Calming 10% Azelaic Acid serum to reduce visible redness, bumps, and post-acne erythema."
+  },
+  {
+    "id": "AUR-SK-025",
+    "name": "KSecret Seoul 1988 Eye Cream Fermented Bean",
+    "brand": "KSecret",
+    "category": "Eye Care",
+    "size": "30ml",
+    "price": 1350,
+    "stock": 2,
+    "desc": "Retinal Liposome 4% + Fermented Bean eye cream to smooth fine lines and brighten under-eyes."
+  },
+  {
+    "id": "AUR-SK-026",
+    "name": "ARENCIA Vitamin C Booster Shot",
+    "brand": "Arencia",
+    "category": "Serum",
+    "size": "10ml",
+    "price": 700,
+    "stock": 2,
+    "desc": "Concentrated antioxidant Vitamin C booster for morning radiance and dark-spot defense."
+  },
+  {
+    "id": "AUR-SK-027",
+    "name": "COSRX Advanced Snail 96 Mucin Power Essence",
+    "brand": "COSRX",
+    "category": "Serum",
+    "size": "100ml",
+    "price": 1480,
+    "stock": 1,
+    "desc": "96.3% snail secretion filtrate essence that repairs damaged skin barrier and boosts bounce."
+  },
+  {
+    "id": "AUR-SK-030",
+    "name": "SKIN1004 Centella Probio-Cica Enrich Cream",
+    "brand": "SKIN1004",
+    "category": "Cream",
+    "size": "50ml",
+    "price": 1750,
+    "stock": 1,
+    "desc": "Fermented Centella and ceramide rich cream for compromised, dry, or irritated skin barriers."
+  },
+  {
+    "id": "AUR-SK-031",
+    "name": "Nella White Snow Fermented Underarm Whitening Cream",
+    "brand": "Nella",
+    "category": "Body Care",
+    "size": "50ml",
+    "price": 850,
+    "stock": 2,
+    "desc": "Gentle fermented brightening cream formulated for sensitive underarm and body areas."
+  }
+]
