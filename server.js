@@ -31,8 +31,55 @@ function readJson(filePath, fallback = []) {
   }
 }
 
+const UPSTASH_URL = (process.env.UPSTASH_REDIS_REST_URL || "").replace(/\/$/, "");
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || "";
+const REDIS_MAP = {
+  [ORDERS_FILE]: "aureva:orders",
+  [CONSULTATIONS_FILE]: "aureva:consultations",
+  [SETTINGS_FILE]: "aureva:settings",
+  [PRODUCTS_FILE]: "aureva:products",
+  [SITE_CONFIG_FILE]: "aureva:site_config"
+};
+
+function hasUpstash() {
+  return Boolean(UPSTASH_URL && UPSTASH_TOKEN);
+}
+
+async function upstashCmd(cmdArray) {
+  if (!hasUpstash()) return null;
+  const res = await fetch(UPSTASH_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${UPSTASH_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(cmdArray)
+  });
+  return res.json();
+}
+
 function writeJson(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+  const jsonStr = JSON.stringify(data, null, 2);
+  fs.writeFileSync(filePath, jsonStr, "utf-8");
+  const rKey = REDIS_MAP[filePath];
+  if (rKey && hasUpstash()) {
+    upstashCmd(["SET", rKey, jsonStr]).catch(err => console.error("Upstash sync error:", err));
+  }
+}
+
+async function initUpstashSync() {
+  if (!hasUpstash()) return;
+  for (const [filePath, rKey] of Object.entries(REDIS_MAP)) {
+    try {
+      const data = await upstashCmd(["GET", rKey]);
+      if (data && typeof data.result === "string" && data.result.length > 0) {
+        fs.writeFileSync(filePath, data.result, "utf-8");
+      }
+    } catch (err) {
+      console.error("Upstash restore error for", rKey, err);
+    }
+  }
+  console.log("Upstash permanent database synced!");
 }
 
 function getProducts() {
@@ -118,7 +165,8 @@ app.get("/api/health", (req, res) => {
     ok: true,
     gatewayConfigured: Boolean(s.SSLCOMMERZ_STORE_ID && s.SSLCOMMERZ_STORE_PASSWD && s.SSLCOMMERZ_STORE_ID !== "your_store_id"),
     couriersConfigured: getConfiguredCouriers(s),
-    mode: isLive ? "LIVE" : "SANDBOX"
+    mode: isLive ? "LIVE" : "SANDBOX",
+    permanentDb: hasUpstash()
   });
 });
 
@@ -491,7 +539,9 @@ app.post("/api/settings", (req, res) => {
   res.json({ status: "success", settings: getSettings() });
 });
 
-app.listen(PORT, () => {
-  const s = getSettings();
-  console.log(`Aureva Store running on ${BASE_URL} | Control Panel: ${BASE_URL}/admin | Couriers:`, getConfiguredCouriers(s));
+initUpstashSync().finally(() => {
+  app.listen(PORT, () => {
+    const s = getSettings();
+    console.log(`Aureva Store running on ${BASE_URL} | Control Panel: ${BASE_URL}/admin | PermanentDB: ${hasUpstash() ? "ON" : "OFF"} | Couriers:`, getConfiguredCouriers(s));
+  });
 });
