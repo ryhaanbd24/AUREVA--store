@@ -15,6 +15,7 @@ const CONSULTATIONS_FILE = path.join(DATA_DIR, "consultations.json");
 const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
 const DEFAULT_PRODUCTS_FILE = path.join(DATA_DIR, "default-products.json");
+const SITE_CONFIG_FILE = path.join(DATA_DIR, "site-config.json");
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -121,6 +122,20 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Public Frontend Design Config
+app.get("/api/site-config", (req, res) => {
+  res.json(readJson(SITE_CONFIG_FILE, {}));
+});
+
+app.post("/api/site-config", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  const current = readJson(SITE_CONFIG_FILE, {});
+  const updated = { ...current, ...(req.body || {}) };
+  writeJson(SITE_CONFIG_FILE, updated);
+  res.json({ status: "success", config: updated });
+});
+
 // Public Products API
 app.get("/api/products", (req, res) => {
   res.json(getProducts());
@@ -131,12 +146,13 @@ app.post("/api/products", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
 
-  const { name, brand, category, size, price, stock, desc, imageUrl } = req.body || {};
+  const { name, brand, category, size, price, offerPrice, isCombo, comboTag, stock, desc, imageUrl } = req.body || {};
   if (!name || !brand || !category || !price) {
     return res.status(400).json({ error: "Name, brand, category, and price are required." });
   }
 
   const products = getProducts();
+  const parsedOffer = Number(offerPrice);
   const newProduct = {
     id: "AUR-SK-" + Date.now().toString().slice(-5),
     name: String(name).trim(),
@@ -144,6 +160,9 @@ app.post("/api/products", (req, res) => {
     category: String(category).trim(),
     size: String(size || "").trim(),
     price: Number(price) || 0,
+    offerPrice: parsedOffer > 0 ? parsedOffer : null,
+    isCombo: Boolean(isCombo === true || isCombo === "true" || isCombo === "on"),
+    comboTag: String(comboTag || "").trim(),
     stock: Number(stock ?? 5),
     desc: String(desc || "").trim(),
     imageUrl: String(imageUrl || "").trim()

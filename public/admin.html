@@ -40,6 +40,7 @@
         <button data-tab="ordersTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold">Orders &amp; Couriers</button>
         <button data-tab="productsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Products</button>
         <button data-tab="consultsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Consultations</button>
+        <button data-tab="designTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Frontend Design</button>
         <button data-tab="settingsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Payment &amp; Courier Setup</button>
         <a href="/" class="px-3 py-1.5 rounded-full border border-[#4A443C] hover:bg-[#2E2A25]">View Store</a>
         <button id="logoutBtn" class="px-3 py-1.5 rounded-full border border-red-400/50 text-red-200 hover:bg-red-900/30">Logout</button>
@@ -113,8 +114,14 @@
               <option value="Supplement">Supplement</option>
             </select>
             <input name="size" type="text" placeholder="Size (e.g. 50ml)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
-            <input name="price" type="number" required min="1" placeholder="Price in BDT (e.g. 1250)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <input name="price" type="number" required min="1" placeholder="Regular Price in BDT (e.g. 1250)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <input name="offerPrice" type="number" min="0" placeholder="Offer Price (Optional, e.g. 990)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <input name="stock" type="number" min="0" value="5" placeholder="Stock Qty" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <label class="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#DFD5C3] bg-[#FAF7F2] cursor-pointer">
+              <input name="isCombo" type="checkbox" class="accent-[#1F1D1A]" />
+              <span>Combo Offer?</span>
+            </label>
+            <input name="comboTag" type="text" placeholder="Combo Label (e.g. Combo Save 15%)" class="sm:col-span-2 px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <input name="imageUrl" type="url" placeholder="Image URL (Optional)" class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <textarea name="desc" rows="2" placeholder="Short description..." class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
             <div class="sm:col-span-3">
@@ -163,6 +170,45 @@
             <tbody id="consultsBody" class="divide-y divide-[#EFE8D8]"></tbody>
           </table>
         </div>
+      </section>
+
+            <!-- TAB: FRONTEND DESIGN -->
+      <section id="designTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-5">
+        <div>
+          <h2 class="font-semibold text-base">Frontend Text &amp; Color Customization</h2>
+          <p class="text-xs text-[#645E56] mt-0.5">কোনো কোড না ছুঁয়েই ওয়েবসাইটের ব্যানার, হেডলাইন ও রঙ এখান থেকে পরিবর্তন করুন।</p>
+        </div>
+        <form id="designForm" class="space-y-4 text-xs">
+          <div>
+            <label class="block text-[#645E56] mb-1">Top Announcement Bar Text</label>
+            <input name="announcement" type="text" placeholder="100% Authentic K-Beauty • Cash on Delivery Across Bangladesh" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[#645E56] mb-1">Hero Badge</label>
+              <input name="heroBadge" type="text" placeholder="Batch-Verified Authentic Korean Skincare" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            </div>
+            <div>
+              <label class="block text-[#645E56] mb-1">Main Hero Headline</label>
+              <input name="heroTitle" type="text" placeholder="Know Your Skin. Choose Your Routine." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-[#645E56] mb-1">Hero Description</label>
+            <textarea name="heroDesc" rows="2" placeholder="Curated Korean skincare essentials..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-[#645E56] mb-1">Background Color</label>
+              <input name="bgColor" type="color" value="#FAF7F2" class="w-full h-10 rounded-xl border border-[#DFD5C3] cursor-pointer" />
+            </div>
+            <div>
+              <label class="block text-[#645E56] mb-1">Primary / Button Color</label>
+              <input name="primaryColor" type="color" value="#1F1D1A" class="w-full h-10 rounded-xl border border-[#DFD5C3] cursor-pointer" />
+            </div>
+          </div>
+          <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">Save Frontend Changes</button>
+        </form>
       </section>
 
       <!-- TAB 4: SETTINGS -->
@@ -246,12 +292,13 @@
 
     async function loadDashboard() {
       try {
-        const [healthRes, ordersRes, consultsRes, settingsRes, productsRes] = await Promise.all([
+        const [healthRes, ordersRes, consultsRes, settingsRes, productsRes, siteCfgRes] = await Promise.all([
           fetch("/api/health"),
           fetch(`/api/orders?key=${encodeURIComponent(adminKey)}`),
           fetch(`/api/consultations?key=${encodeURIComponent(adminKey)}`),
           fetch(`/api/settings?key=${encodeURIComponent(adminKey)}`),
-          fetch("/api/products")
+          fetch("/api/products"),
+          fetch("/api/site-config")
         ]);
 
         if (!ordersRes.ok) {
@@ -269,6 +316,7 @@
         const consults = await consultsRes.json();
         const settings = await settingsRes.json();
         const products = await productsRes.json();
+        const siteCfg = await siteCfgRes.json();
 
         const activeCouriers = Object.entries(health.couriersConfigured || {})
           .filter(([, ok]) => ok)
@@ -321,7 +369,7 @@
             <td class="px-4 py-3 font-mono text-[11px]">${p.id}</td>
             <td class="px-4 py-3"><p class="font-semibold">${p.name}</p><p class="text-[#645E56]">${p.brand} ${p.size ? '• ' + p.size : ''}</p></td>
             <td class="px-4 py-3">${p.category}</td>
-            <td class="px-4 py-3 font-bold">৳${Number(p.price || 0).toLocaleString()}</td>
+            <td class="px-4 py-3 font-bold">${p.offerPrice && p.offerPrice < p.price ? `<span class="text-emerald-700">৳${Number(p.offerPrice).toLocaleString()}</span> <span class="line-through text-[#645E56] font-normal">৳${Number(p.price).toLocaleString()}</span>` : `৳${Number(p.price || 0).toLocaleString()}`}${p.isCombo ? ` <span class="ml-1 px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px]">${p.comboTag || "Combo"}</span>` : ""}</td>
             <td class="px-4 py-3">${p.stock}</td>
             <td class="px-4 py-3"><button data-del-prod="${p.id}" class="del-prod-btn px-2.5 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700">Delete</button></td>
           </tr>
@@ -339,6 +387,14 @@
         consultsBody.innerHTML = consults.length === 0
           ? '<tr><td colspan="4" class="px-4 py-6 text-center text-[#645E56]">No consultations yet.</td></tr>'
           : consults.map(c => `<tr><td class="px-4 py-3 font-medium">${c.name}</td><td class="px-4 py-3">${c.phone}</td><td class="px-4 py-3">${c.notes}</td><td class="px-4 py-3 text-[#645E56]">${new Date(c.createdAt).toLocaleString()}</td></tr>`).join("");
+
+        const dForm = document.getElementById("designForm");
+        if (dForm && siteCfg) {
+          Object.entries(siteCfg).forEach(([k, v]) => {
+            const input = dForm.elements.namedItem(k);
+            if (input && v) input.value = String(v);
+          });
+        }
 
         const form = document.getElementById("settingsForm");
         Object.entries(settings).forEach(([k, v]) => {
@@ -407,6 +463,19 @@
       });
       if (res.ok) { showToast("Settings saved!"); loadDashboard(); }
       else { showToast("Failed to save settings."); }
+    });
+
+    document.getElementById("designForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {};
+      new FormData(e.target).forEach((val, key) => { payload[key] = val; });
+      const res = await fetch(`/api/site-config?key=${encodeURIComponent(adminKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) { showToast("Frontend design updated!"); loadDashboard(); }
+      else { showToast("Failed to update design."); }
     });
 
     if (adminKey) loadDashboard();
