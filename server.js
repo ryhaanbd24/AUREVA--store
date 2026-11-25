@@ -101,8 +101,8 @@ async function autoBookOrder(orderRef, preferredProvider) {
   return result;
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "15mb" }));
+app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Clean Control Panel route: /admin
@@ -134,6 +134,13 @@ app.post("/api/site-config", (req, res) => {
   const updated = { ...current, ...(req.body || {}) };
   writeJson(SITE_CONFIG_FILE, updated);
   res.json({ status: "success", config: updated });
+});
+
+app.delete("/api/site-config", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  writeJson(SITE_CONFIG_FILE, {});
+  res.json({ status: "success" });
 });
 
 // Public Products API

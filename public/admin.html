@@ -174,9 +174,15 @@
 
             <!-- TAB: FRONTEND DESIGN -->
       <section id="designTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-5">
-        <div>
-          <h2 class="font-semibold text-base">Frontend Text &amp; Color Customization</h2>
-          <p class="text-xs text-[#645E56] mt-0.5">কোনো কোড না ছুঁয়েই ওয়েবসাইটের ব্যানার, হেডলাইন ও রঙ এখান থেকে পরিবর্তন করুন।</p>
+        <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8]">
+          <div>
+            <h2 class="font-semibold text-base">No-Code Visual Website Editor</h2>
+            <p class="text-xs text-[#645E56] mt-0.5">ওয়েবসাইটের যেকোনো লেখা, লোগো, ছবি, ফন্ট ও রঙ সরাসরি ক্লিক করে এডিট করুন।</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="openVisualEditorBtn" type="button" class="px-5 py-2.5 rounded-full bg-[#1F1D1A] text-white text-xs font-semibold hover:bg-[#36322D]">Open Visual Page Editor</button>
+            <button id="resetDesignBtn" type="button" class="px-4 py-2.5 rounded-full border border-red-300 text-red-700 text-xs font-semibold hover:bg-red-50">Reset Default</button>
+          </div>
         </div>
         <form id="designForm" class="space-y-4 text-xs">
           <div>
@@ -476,6 +482,15 @@
       });
       if (res.ok) { showToast("Frontend design updated!"); loadDashboard(); }
       else { showToast("Failed to update design."); }
+    });
+
+    document.getElementById("openVisualEditorBtn").addEventListener("click", () => {
+      window.open(`/?edit=1&key=${encodeURIComponent(adminKey)}`, "_blank");
+    });
+
+    document.getElementById("resetDesignBtn").addEventListener("click", async () => {
+      const res = await fetch(`/api/site-config?key=${encodeURIComponent(adminKey)}`, { method: "DELETE" });
+      if (res.ok) { showToast("Website design reset to default!"); loadDashboard(); }
     });
 
     if (adminKey) loadDashboard();

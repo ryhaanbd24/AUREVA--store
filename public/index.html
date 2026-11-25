@@ -1242,5 +1242,238 @@
       });
     });
   </script>
+  <script>
+    (function () {
+      function getCssPath(el) {
+        if (!el || el.nodeType !== 1) return "";
+        if (el.id) return "#" + CSS.escape(el.id);
+        const parts = [];
+        let cur = el;
+        while (cur && cur.nodeType === 1 && cur !== document.body) {
+          let sel = cur.tagName.toLowerCase();
+          const parent = cur.parentElement;
+          if (parent) {
+            const siblings = Array.from(parent.children).filter(c => c.tagName === cur.tagName);
+            if (siblings.length > 1) {
+              sel += `:nth-of-type(${siblings.indexOf(cur) + 1})`;
+            }
+          }
+          parts.unshift(sel);
+          cur = parent;
+        }
+        return "body > " + parts.join(" > ");
+      }
+
+      function applySiteConfig(cfg) {
+        if (!cfg || typeof cfg !== "object") return;
+        if (cfg.announcement) {
+          const el = document.querySelector('[data-i18n="announcement"]');
+          if (el) el.textContent = cfg.announcement;
+        }
+        if (cfg.heroBadge) {
+          const el = document.querySelector('[data-i18n="hero_badge"]');
+          if (el) el.textContent = cfg.heroBadge;
+        }
+        if (cfg.heroTitle) {
+          const el = document.querySelector('[data-i18n="hero_title"]');
+          if (el) el.textContent = cfg.heroTitle;
+        }
+        if (cfg.heroDesc) {
+          const el = document.querySelector('[data-i18n="hero_desc"]');
+          if (el) el.textContent = cfg.heroDesc;
+        }
+        if (cfg.logoUrl) {
+          const logoLink = document.querySelector("header a");
+          if (logoLink) {
+            logoLink.innerHTML = `<img src="${cfg.logoUrl}" alt="Logo" class="h-9 w-auto object-contain" />`;
+          }
+        } else if (cfg.logoText) {
+          const logoLink = document.querySelector("header a");
+          if (logoLink) logoLink.textContent = cfg.logoText;
+        }
+
+        let css = "";
+        if (cfg.bgColor) css += `body { background-color: ${cfg.bgColor} !important; }\n`;
+        if (cfg.textColor) css += `body, h1, h2, h3, h4, p, span { color: ${cfg.textColor} !important; }\n`;
+        if (cfg.primaryColor) css += `.bg-\\[\\#1F1D1A\\] { background-color: ${cfg.primaryColor} !important; }\n`;
+        if (cfg.fontFamily) css += `body, h1, h2, h3, h4, p, span, a, button { font-family: ${cfg.fontFamily} !important; }\n`;
+        if (css) {
+          let st = document.getElementById("aureva-custom-theme");
+          if (!st) {
+            st = document.createElement("style");
+            st.id = "aureva-custom-theme";
+            document.head.appendChild(st);
+          }
+          st.textContent = css;
+        }
+
+        if (cfg.customTexts && typeof cfg.customTexts === "object") {
+          Object.entries(cfg.customTexts).forEach(([sel, txt]) => {
+            try {
+              const el = document.querySelector(sel);
+              if (el) el.textContent = txt;
+            } catch {}
+          });
+        }
+        if (cfg.customImages && typeof cfg.customImages === "object") {
+          Object.entries(cfg.customImages).forEach(([sel, src]) => {
+            try {
+              const el = document.querySelector(sel);
+              if (el && el.tagName === "IMG") el.src = src;
+            } catch {}
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        let currentCfg = {};
+        if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+          try {
+            const res = await fetch("/api/site-config");
+            if (res.ok) {
+              currentCfg = await res.json();
+              setTimeout(() => applySiteConfig(currentCfg), 150);
+            }
+          } catch {}
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const isEdit = params.get("edit") === "1";
+        const key = params.get("key") || "";
+        if (!isEdit || !key) return;
+
+        // Verify admin key before enabling visual editor
+        const authCheck = await fetch(`/api/settings?key=${encodeURIComponent(key)}`);
+        if (!authCheck.ok) return;
+
+        currentCfg.customTexts = currentCfg.customTexts || {};
+        currentCfg.customImages = currentCfg.customImages || {};
+
+        // Floating Visual Editor Toolbar
+        const bar = document.createElement("div");
+        bar.id = "visualEditorBar";
+        bar.className = "fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999] bg-[#1F1D1A] text-white px-4 py-3 rounded-2xl shadow-2xl border border-[#4A443C] flex flex-wrap items-center gap-3 text-xs max-w-[95vw]";
+        bar.innerHTML = `
+          <span class="font-bold text-amber-300">Visual Editor ON</span>
+          <span class="opacity-75 hidden sm:inline">যেকোনো লেখা বা ছবিতে ক্লিক করে পরিবর্তন করুন</span>
+          <label class="flex items-center gap-1 cursor-pointer bg-[#2E2A25] px-2.5 py-1.5 rounded-lg">
+            <span>Logo</span>
+            <input id="veLogoUpload" type="file" accept="image/*" class="hidden" />
+          </label>
+          <select id="veFont" class="bg-[#2E2A25] text-white px-2 py-1.5 rounded-lg border border-[#4A443C]">
+            <option value="">Font: Default</option>
+            <option value="'Inter', sans-serif">Modern Sans (Inter)</option>
+            <option value="'Cormorant Garamond', serif">Editorial Serif</option>
+            <option value="Georgia, serif">Classic Serif (Georgia)</option>
+            <option value="'Noto Sans Bengali', sans-serif">Bangla Clean</option>
+          </select>
+          <label class="flex items-center gap-1">Text <input id="veTextColor" type="color" value="${currentCfg.textColor || '#1F1D1A'}" class="w-6 h-6 rounded cursor-pointer" /></label>
+          <label class="flex items-center gap-1">BG <input id="veBgColor" type="color" value="${currentCfg.bgColor || '#FAF7F2'}" class="w-6 h-6 rounded cursor-pointer" /></label>
+          <label class="flex items-center gap-1">Btn <input id="veBtnColor" type="color" value="${currentCfg.primaryColor || '#1F1D1A'}" class="w-6 h-6 rounded cursor-pointer" /></label>
+          <button id="veSaveBtn" class="px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 font-semibold">Save All Changes</button>
+          <a href="/admin" class="px-3 py-1.5 rounded-full bg-[#2E2A25] hover:bg-[#3D3730]">Back to Panel</a>
+        `;
+        document.body.appendChild(bar);
+
+        // Hidden image picker for clicking any <img>
+        const imgPicker = document.createElement("input");
+        imgPicker.type = "file";
+        imgPicker.accept = "image/*";
+        imgPicker.className = "hidden";
+        document.body.appendChild(imgPicker);
+        let activeImgEl = null;
+
+        function compressImage(file, maxW = 900) {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const img = new Image();
+              img.onload = () => {
+                const scale = Math.min(1, maxW / img.width);
+                const canvas = document.createElement("canvas");
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL("image/jpeg", 0.82));
+              };
+              img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+
+        document.getElementById("veLogoUpload").addEventListener("change", async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const dataUrl = await compressImage(file, 400);
+          currentCfg.logoUrl = dataUrl;
+          applySiteConfig(currentCfg);
+        });
+
+        imgPicker.addEventListener("change", async (e) => {
+          const file = e.target.files[0];
+          if (!file || !activeImgEl) return;
+          const dataUrl = await compressImage(file, 900);
+          activeImgEl.src = dataUrl;
+          const sel = getCssPath(activeImgEl);
+          if (sel) currentCfg.customImages[sel] = dataUrl;
+        });
+
+        document.getElementById("veFont").addEventListener("change", (e) => {
+          currentCfg.fontFamily = e.target.value;
+          applySiteConfig(currentCfg);
+        });
+        document.getElementById("veTextColor").addEventListener("input", (e) => {
+          currentCfg.textColor = e.target.value;
+          applySiteConfig(currentCfg);
+        });
+        document.getElementById("veBgColor").addEventListener("input", (e) => {
+          currentCfg.bgColor = e.target.value;
+          applySiteConfig(currentCfg);
+        });
+        document.getElementById("veBtnColor").addEventListener("input", (e) => {
+          currentCfg.primaryColor = e.target.value;
+          applySiteConfig(currentCfg);
+        });
+
+        // Click any text or image on page to edit
+        document.addEventListener("click", (e) => {
+          if (bar.contains(e.target)) return;
+          if (e.target.tagName === "IMG") {
+            e.preventDefault();
+            e.stopPropagation();
+            activeImgEl = e.target;
+            imgPicker.click();
+            return;
+          }
+          const editableTags = ["H1", "H2", "H3", "H4", "P", "SPAN", "A", "BUTTON"];
+          if (editableTags.includes(e.target.tagName) && e.target.children.length === 0) {
+            e.preventDefault();
+            e.target.contentEditable = "true";
+            e.target.style.outline = "2px dashed #D97706";
+            e.target.focus();
+            e.target.onblur = () => {
+              e.target.style.outline = "";
+              const sel = getCssPath(e.target);
+              if (sel) currentCfg.customTexts[sel] = e.target.textContent;
+            };
+          }
+        }, true);
+
+        document.getElementById("veSaveBtn").addEventListener("click", async () => {
+          const btn = document.getElementById("veSaveBtn");
+          btn.textContent = "Saving...";
+          const res = await fetch(`/api/site-config?key=${encodeURIComponent(key)}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(currentCfg)
+          });
+          btn.textContent = res.ok ? "Saved!" : "Error!";
+          setTimeout(() => { btn.textContent = "Save All Changes"; }, 2000);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
