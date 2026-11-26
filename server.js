@@ -150,6 +150,12 @@ async function autoBookOrder(orderRef, preferredProvider) {
 
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true, limit: "15mb" }));
+app.use((req, res, next) => {
+  if (req.path === "/" || req.path === "/index.html" || req.path === "/admin") {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  }
+  next();
+});
 app.use(express.static(path.join(__dirname, "public")));
 
 // Clean Control Panel route: /admin
@@ -201,7 +207,7 @@ app.post("/api/products", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
 
-  const { name, brand, category, size, price, offerPrice, isCombo, comboTag, stock, desc, imageUrl } = req.body || {};
+  const { name, brand, category, size, price, offerPrice, isCombo, comboTag, stock, desc, imageUrl, ingredients, howToUse, skinType } = req.body || {};
   if (!name || !brand || !category || !price) {
     return res.status(400).json({ error: "Name, brand, category, and price are required." });
   }
