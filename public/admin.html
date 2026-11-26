@@ -131,6 +131,9 @@
               <div id="prodMultiImagesPreview" class="flex flex-wrap gap-2"></div>
             </div>
             <textarea name="desc" rows="2" placeholder="Short description..." class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
+            <textarea name="ingredients" rows="2" placeholder="Key Ingredients (e.g. Niacinamide 10%, TXA 4%, Centella...)" class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
+            <textarea name="howToUse" rows="2" placeholder="Use Case / How to Use (ব্যবহারের নিয়ম...)" class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
+            <input name="skinType" type="text" placeholder="Suitable Skin Type (e.g. Oily, Acne-prone, Sensitive)" class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <div class="sm:col-span-3">
               <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">+ Add Product to Store</button>
             </div>
@@ -375,6 +378,79 @@
     </main>
   </div>
 
+  <!-- Edit Product Modal -->
+  <div id="editProductModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 border border-[#E6DEC8] shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-base text-[#1F1D1A]">Edit Product Details</h3>
+          <p id="epProductIdLabel" class="text-xs text-[#645E56] mt-0.5"></p>
+        </div>
+        <button id="closeEpBtn" type="button" class="px-2.5 py-1 rounded-full hover:bg-[#F2ECE1] text-sm font-bold">×</button>
+      </div>
+      <form id="editProductForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="sm:col-span-2">
+          <label class="block text-[#645E56] mb-1">Product Name</label>
+          <input name="name" type="text" required class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div>
+          <label class="block text-[#645E56] mb-1">Brand</label>
+          <input name="brand" type="text" required class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div>
+          <label class="block text-[#645E56] mb-1">Category</label>
+          <select name="category" required class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white">
+            <option value="Cleanser">Cleanser</option>
+            <option value="Toner">Toner</option>
+            <option value="Serum">Serum</option>
+            <option value="Cream">Cream</option>
+            <option value="Sunscreen">Sunscreen</option>
+            <option value="Eye Care">Eye Care</option>
+            <option value="Body Care">Body Care</option>
+            <option value="Treatment">Treatment</option>
+            <option value="Supplement">Supplement</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[#645E56] mb-1">Size</label>
+          <input name="size" type="text" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div>
+          <label class="block text-[#645E56] mb-1">Stock</label>
+          <input name="stock" type="number" min="0" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div>
+          <label class="block text-[#645E56] mb-1">Regular Price (BDT)</label>
+          <input name="price" type="number" min="1" required class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div>
+          <label class="block text-[#645E56] mb-1">Offer Price (Optional)</label>
+          <input name="offerPrice" type="number" min="0" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-[#645E56] mb-1">Short Description</label>
+          <textarea name="desc" rows="2" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block font-semibold text-[#1F1D1A] mb-1">Key Ingredients (মূল উপাদান)</label>
+          <textarea name="ingredients" rows="2" placeholder="Enter key ingredients..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block font-semibold text-[#1F1D1A] mb-1">Use Case / How to Use (ব্যবহারের নিয়ম)</label>
+          <textarea name="howToUse" rows="2" placeholder="Enter usage instructions..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block font-semibold text-[#1F1D1A] mb-1">Suitable Skin Type (কোন ত্বকের জন্য)</label>
+          <input name="skinType" type="text" placeholder="e.g. Oily, Combination, Sensitive..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div class="sm:col-span-2 flex items-center justify-end gap-2 pt-2">
+          <button id="epCancelBtn" type="button" class="px-4 py-2 rounded-full border border-[#DFD5C3] font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">Save Product Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Manage Product Images Modal -->
   <div id="prodImagesModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 border border-[#E6DEC8] shadow-2xl space-y-4">
@@ -497,6 +573,7 @@
             <td class="px-4 py-3">${p.stock}</td>
             <td class="px-4 py-3">
               <div class="flex items-center gap-1.5">
+                <button data-edit-prod="${p.id}" class="edit-prod-btn px-2.5 py-1 rounded-lg bg-[#8C7355] text-white hover:bg-[#735D43]">Edit</button>
                 <button data-edit-imgs="${p.id}" class="edit-imgs-btn px-2.5 py-1 rounded-lg bg-[#1F1D1A] text-white hover:bg-[#36322D]">Images (${Array.isArray(p.images) && p.images.length ? p.images.length : (p.imageUrl ? 1 : 0)})</button>
                 <button data-del-prod="${p.id}" class="del-prod-btn px-2.5 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700">Delete</button>
               </div>
@@ -513,6 +590,13 @@
         });
 
         window.__adminProducts = products;
+        document.querySelectorAll(".edit-prod-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-edit-prod");
+            const prod = (window.__adminProducts || []).find(item => item.id === id);
+            if (prod) openEditProductModal(prod);
+          });
+        });
         document.querySelectorAll(".edit-imgs-btn").forEach(btn => {
           btn.addEventListener("click", () => {
             const id = btn.getAttribute("data-edit-imgs");
@@ -533,9 +617,15 @@
             if (input && v && typeof v !== "object") input.value = String(v);
           });
           if (Array.isArray(siteCfg.heroImages)) {
-            heroImagesList = siteCfg.heroImages.slice();
-            renderHeroPreview();
+            heroImagesList = siteCfg.heroImages.map(item =>
+              typeof item === "string"
+                ? { src: item, name: "", productId: "", caption: "" }
+                : { src: item.src || "", name: item.name || "", productId: item.productId || "", caption: item.caption || "" }
+            ).filter(item => item.src);
+          } else {
+            heroImagesList = [];
           }
+          renderHeroPreview();
         }
 
         const form = document.getElementById("settingsForm");
@@ -620,9 +710,48 @@
       });
     }
     function renderHeroPreview() {
-      renderImgPreviewList("heroMultiImagesPreview", heroImagesList, (idx) => {
-        heroImagesList.splice(idx, 1);
-        renderHeroPreview();
+      const box = document.getElementById("heroMultiImagesPreview");
+      if (!box) return;
+      const prods = window.__adminProducts || [];
+      const prodOptions = ['<option value="">-- Select Product Page (Optional) --</option>']
+        .concat(prods.map(p => `<option value="${p.id}">${p.name} (${p.id})</option>`)).join("");
+
+      box.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2";
+      box.innerHTML = heroImagesList.map((item, i) => `
+        <div class="p-3 rounded-xl border border-[#DFD5C3] bg-[#FAF7F2] flex gap-3 items-start relative">
+          <div class="relative w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-[#DFD5C3] bg-white">
+            <img src="${item.src}" class="w-full h-full object-cover" />
+            <button type="button" data-hero-del="${i}" class="absolute top-1 right-1 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full leading-none">×</button>
+          </div>
+          <div class="flex-1 space-y-1.5 text-xs min-w-0">
+            <input type="text" data-hero-field="name" data-hero-idx="${i}" value="${(item.name || "").replace(/"/g, '&quot;')}" placeholder="Slide Name (clickable)..." class="hero-slide-input w-full px-2.5 py-1.5 rounded-lg border border-[#DFD5C3] bg-white" />
+            <select data-hero-field="productId" data-hero-idx="${i}" class="hero-slide-input w-full px-2.5 py-1.5 rounded-lg border border-[#DFD5C3] bg-white">${prodOptions}</select>
+            <input type="text" data-hero-field="caption" data-hero-idx="${i}" value="${(item.caption || "").replace(/"/g, '&quot;')}" placeholder="Short subtitle (optional)..." class="hero-slide-input w-full px-2.5 py-1.5 rounded-lg border border-[#DFD5C3] bg-white" />
+          </div>
+        </div>
+      `).join("");
+
+      box.querySelectorAll("select[data-hero-field='productId']").forEach(sel => {
+        const idx = Number(sel.dataset.heroIdx);
+        if (heroImagesList[idx]) sel.value = heroImagesList[idx].productId || "";
+      });
+      box.querySelectorAll(".hero-slide-input").forEach(el => {
+        el.addEventListener("input", () => {
+          const idx = Number(el.dataset.heroIdx);
+          const field = el.dataset.heroField;
+          if (heroImagesList[idx]) heroImagesList[idx][field] = el.value;
+        });
+        el.addEventListener("change", () => {
+          const idx = Number(el.dataset.heroIdx);
+          const field = el.dataset.heroField;
+          if (heroImagesList[idx]) heroImagesList[idx][field] = el.value;
+        });
+      });
+      box.querySelectorAll("[data-hero-del]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          heroImagesList.splice(Number(btn.dataset.heroDel), 1);
+          renderHeroPreview();
+        });
       });
     }
 
@@ -637,7 +766,7 @@
     document.getElementById("heroMultiImagesFile")?.addEventListener("change", async (e) => {
       for (const f of Array.from(e.target.files || [])) {
         const url = await compressImageFile(f, 1200);
-        heroImagesList.push(url);
+        heroImagesList.push({ src: url, name: "", productId: "", caption: "" });
       }
       renderHeroPreview();
     });
@@ -646,9 +775,53 @@
       const inp = document.getElementById("heroUrlInput");
       const val = (inp?.value || "").trim();
       if (!val) return;
-      heroImagesList.push(val);
+      heroImagesList.push({ src: val, name: "", productId: "", caption: "" });
       inp.value = "";
       renderHeroPreview();
+    });
+
+    let editingFullProdId = null;
+    function openEditProductModal(prod) {
+      editingFullProdId = prod.id;
+      document.getElementById("epProductIdLabel").textContent = `SKU: ${prod.id}`;
+      const f = document.getElementById("editProductForm");
+      f.elements.namedItem("name").value = prod.name || "";
+      f.elements.namedItem("brand").value = prod.brand || "";
+      f.elements.namedItem("category").value = prod.category || "Serum";
+      f.elements.namedItem("size").value = prod.size || "";
+      f.elements.namedItem("stock").value = prod.stock ?? 0;
+      f.elements.namedItem("price").value = prod.price || "";
+      f.elements.namedItem("offerPrice").value = prod.offerPrice || "";
+      f.elements.namedItem("desc").value = prod.desc || "";
+      f.elements.namedItem("ingredients").value = prod.ingredients || "";
+      f.elements.namedItem("howToUse").value = prod.howToUse || "";
+      f.elements.namedItem("skinType").value = prod.skinType || "";
+      document.getElementById("editProductModal").classList.remove("hidden");
+    }
+
+    document.getElementById("closeEpBtn")?.addEventListener("click", () => {
+      document.getElementById("editProductModal").classList.add("hidden");
+    });
+    document.getElementById("epCancelBtn")?.addEventListener("click", () => {
+      document.getElementById("editProductModal").classList.add("hidden");
+    });
+    document.getElementById("editProductForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!editingFullProdId) return;
+      const fd = new FormData(e.target);
+      const payload = Object.fromEntries(fd.entries());
+      const res = await fetch(`/api/products/${encodeURIComponent(editingFullProdId)}?key=${encodeURIComponent(adminKey)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        document.getElementById("editProductModal").classList.add("hidden");
+        showToast("Product details updated!");
+        loadDashboard();
+      } else {
+        showToast("Failed to update product.");
+      }
     });
 
     let editingProdId = null;

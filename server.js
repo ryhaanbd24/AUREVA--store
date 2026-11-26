@@ -237,6 +237,36 @@ app.post("/api/products", (req, res) => {
   res.json({ status: "success", product: newProduct });
 });
 
+app.put("/api/products/:id", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  const products = getProducts();
+  const idx = products.findIndex(p => p.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ status: "error", message: "Product not found." });
+
+  const b = req.body || {};
+  const cur = products[idx];
+  const parsedOffer = b.offerPrice !== undefined ? Number(b.offerPrice) : cur.offerPrice;
+  products[idx] = {
+    ...cur,
+    name: b.name !== undefined ? String(b.name).trim() : cur.name,
+    brand: b.brand !== undefined ? String(b.brand).trim() : cur.brand,
+    category: b.category !== undefined ? String(b.category).trim() : cur.category,
+    size: b.size !== undefined ? String(b.size).trim() : cur.size,
+    price: b.price !== undefined ? Number(b.price) || 0 : cur.price,
+    offerPrice: parsedOffer && parsedOffer > 0 ? parsedOffer : null,
+    isCombo: b.isCombo !== undefined ? Boolean(b.isCombo === true || b.isCombo === "true" || b.isCombo === "on") : cur.isCombo,
+    comboTag: b.comboTag !== undefined ? String(b.comboTag).trim() : cur.comboTag,
+    stock: b.stock !== undefined ? Number(b.stock) : cur.stock,
+    desc: b.desc !== undefined ? String(b.desc).trim() : cur.desc,
+    ingredients: b.ingredients !== undefined ? String(b.ingredients).trim() : cur.ingredients,
+    howToUse: b.howToUse !== undefined ? String(b.howToUse).trim() : cur.howToUse,
+    skinType: b.skinType !== undefined ? String(b.skinType).trim() : cur.skinType
+  };
+  writeJson(PRODUCTS_FILE, products);
+  res.json({ status: "success", product: products[idx] });
+});
+
 app.patch("/api/products/:id/images", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
