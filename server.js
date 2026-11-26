@@ -226,14 +226,20 @@ app.post("/api/products", (req, res) => {
     comboTag: String(comboTag || "").trim(),
     stock: Number(stock ?? 5),
     desc: String(desc || "").trim(),
-    imageUrl: String(imageUrl || "").trim()
+    imageUrl: String(imageUrl || (Array.isArray(images) && images[0]) || "").trim(),
+    images: Array.isArray(images) ? images.filter(Boolean) : (imageUrl ? [String(imageUrl).trim()] : []),
+    ingredients: String(ingredients || "").trim(),
+    howToUse: String(howToUse || "").trim(),
+    skinType: String(skinType || "").trim()
   };
   products.unshift(newProduct);
   writeJson(PRODUCTS_FILE, products);
   res.json({ status: "success", product: newProduct });
 });
 
-app.patch("/api/products/:id/images", requireAdmin, (req, res) => {
+app.patch("/api/products/:id/images", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
   const products = getProducts();
   const idx = products.findIndex(p => p.id === req.params.id);
   if (idx === -1) return res.status(404).json({ status: "error", message: "Product not found." });
