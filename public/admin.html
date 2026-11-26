@@ -122,14 +122,7 @@
               <span>Combo Offer?</span>
             </label>
             <input name="comboTag" type="text" placeholder="Combo Label (e.g. Combo Save 15%)" class="sm:col-span-2 px-3 py-2 rounded-xl border border-[#DFD5C3]" />
-            <div class="sm:col-span-3 space-y-2 p-3 rounded-xl border border-[#DFD5C3] bg-[#FAF7F2]">
-              <label class="block font-semibold text-[#1F1D1A]">Product Images (Multiple allowed)</label>
-              <div class="flex flex-col sm:flex-row gap-2">
-                <input id="prodMultiImagesFile" type="file" accept="image/*" multiple class="text-xs" />
-                <input name="imageUrl" type="url" placeholder="Or paste primary Image URL (Optional)" class="flex-1 px-3 py-1.5 rounded-xl border border-[#DFD5C3] bg-white" />
-              </div>
-              <div id="prodMultiImagesPreview" class="flex flex-wrap gap-2"></div>
-            </div>
+            <input name="imageUrl" type="url" placeholder="Image URL (Optional)" class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <textarea name="desc" rows="2" placeholder="Short description..." class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
             <div class="sm:col-span-3">
               <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">+ Add Product to Store</button>
@@ -209,12 +202,6 @@
           <div>
             <label class="block text-[#645E56] mb-1">Hero Description</label>
             <textarea name="heroDesc" rows="2" placeholder="Curated Korean skincare essentials..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
-          </div>
-          <div class="p-4 rounded-xl border border-[#DFD5C3] bg-[#FAF7F2] space-y-2">
-            <label class="block font-semibold text-[#1F1D1A]">Hero Banner Slides (Multiple Images)</label>
-            <p class="text-[11px] text-[#645E56]">Upload 1 or more banner photos to show as a sliding carousel in your Hero section.</p>
-            <input id="heroMultiImagesFile" type="file" accept="image/*" multiple class="text-xs" />
-            <div id="heroMultiImagesPreview" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
@@ -453,73 +440,10 @@
       });
     });
 
-    
-    let prodImagesList = [];
-    let heroImagesList = [];
-
-    function compressImageFile(file, maxW = 1000) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const img = new Image();
-          img.onload = () => {
-            const scale = Math.min(1, maxW / img.width);
-            const canvas = document.createElement("canvas");
-            canvas.width = Math.round(img.width * scale);
-            canvas.height = Math.round(img.height * scale);
-            canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-            resolve(canvas.toDataURL("image/jpeg", 0.82));
-          };
-          img.src = reader.result;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function renderImgPreviewList(containerId, arr, onRemove) {
-      const el = document.getElementById(containerId);
-      if (!el) return;
-      el.innerHTML = arr.map((src, i) => `
-        <div class="relative w-16 h-16 rounded-xl overflow-hidden border border-[#DFD5C3] bg-white">
-          <img src="${src}" class="w-full h-full object-cover" />
-          <button type="button" data-rm-idx="${i}" class="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/70 text-white text-[10px] flex items-center justify-center">×</button>
-        </div>
-      `).join("");
-      el.querySelectorAll("[data-rm-idx]").forEach(btn => {
-        btn.addEventListener("click", () => onRemove(Number(btn.dataset.rmIdx)));
-      });
-    }
-
-    document.getElementById("prodMultiImagesFile")?.addEventListener("change", async (e) => {
-      for (const f of Array.from(e.target.files || [])) {
-        const url = await compressImageFile(f, 900);
-        prodImagesList.push(url);
-      }
-      renderImgPreviewList("prodMultiImagesPreview", prodImagesList, (idx) => {
-        prodImagesList.splice(idx, 1);
-        renderImgPreviewList("prodMultiImagesPreview", prodImagesList, arguments.callee);
-      });
-    });
-
-    document.getElementById("heroMultiImagesFile")?.addEventListener("change", async (e) => {
-      for (const f of Array.from(e.target.files || [])) {
-        const url = await compressImageFile(f, 1200);
-        heroImagesList.push(url);
-      }
-      renderImgPreviewList("heroMultiImagesPreview", heroImagesList, (idx) => {
-        heroImagesList.splice(idx, 1);
-        renderImgPreviewList("heroMultiImagesPreview", heroImagesList, arguments.callee);
-      });
-    });
-
     document.getElementById("addProductForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const payload = {};
       new FormData(e.target).forEach((v, k) => { payload[k] = v; });
-      if (prodImagesList.length > 0) {
-        payload.images = prodImagesList.slice();
-        if (!payload.imageUrl) payload.imageUrl = prodImagesList[0];
-      }
       const res = await fetch(`/api/products?key=${encodeURIComponent(adminKey)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -527,8 +451,6 @@
       });
       if (res.ok) {
         e.target.reset();
-        prodImagesList = [];
-        renderImgPreviewList("prodMultiImagesPreview", [], () => {});
         showToast("New product added to store!");
         loadDashboard();
       } else {
@@ -553,7 +475,6 @@
       e.preventDefault();
       const payload = {};
       new FormData(e.target).forEach((val, key) => { payload[key] = val; });
-      if (heroImagesList.length > 0) payload.heroImages = heroImagesList.slice();
       const res = await fetch(`/api/site-config?key=${encodeURIComponent(adminKey)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
