@@ -11,12 +11,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-ivory: #FAF7F2;
-      --bg-stone: #F2ECE1;
-      --ink-dark: #1F1D1A;
-      --ink-muted: #645E56;
-      --accent-sage: #5E6B52;
-      --accent-gold: #8C7355;
+      --bg-ivory: #FCF9F5;
+      --bg-stone: #F5ECE3;
+      --ink-dark: #171311;
+      --ink-muted: #463E38;
+      --accent-sage: #2F5241;
+      --accent-gold: #B8533E;
     }
     body {
       font-family: 'Inter', 'Hind Siliguri', sans-serif;
@@ -34,7 +34,7 @@
 <body class="antialiased selection:bg-[#8C7355]/20 selection:text-[#1F1D1A]">
 
   <!-- Top Announcement Bar -->
-  <div class="bg-[#1F1D1A] text-[#FAF7F2] text-xs py-2 px-4 text-center tracking-wide">
+  <div class="bg-gradient-to-r from-[#171311] via-[#3E241D] to-[#171311] text-[#FCF9F5] text-xs font-medium py-2.5 px-4 text-center tracking-wide">
     <span data-i18n="announcement">100% Authentic K-Beauty • Free Skin Routine Counseling • Cash on Delivery Across Bangladesh</span>
   </div>
 
@@ -89,7 +89,9 @@
 
   <main id="top">
     <!-- Hero Section -->
-    <section class="relative overflow-hidden bg-[#F2ECE1]">
+    <section class="relative overflow-hidden bg-gradient-to-br from-[#FBF5EE] via-[#F6E8DC] to-[#EFE5D8] border-b border-[#EAD9C9]">
+      <div class="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#D97757]/15 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#2F5241]/10 blur-3xl"></div>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-20">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-6 space-y-6">
@@ -100,7 +102,7 @@
             <h1 class="font-serif-editorial text-4xl sm:text-5xl lg:text-6xl font-semibold text-[#1F1D1A] leading-[1.1]">
               <span data-i18n="hero_title">Know Your Skin. Choose Your Routine.</span>
             </h1>
-            <p class="text-sm sm:text-base text-[#5B554D] leading-relaxed max-w-xl" data-i18n="hero_desc">
+            <p class="text-sm sm:text-base text-[#362F2A] leading-relaxed max-w-xl" data-i18n="hero_desc">
               Curated Korean skincare essentials from COSRX, SKIN1004, Beauty of Joseon, ANUA, and APLB. Every bottle is batch-verified with invoice transparency and paired with free personalized skincare counseling.
             </p>
             <div class="flex flex-wrap items-center gap-3 pt-1">
@@ -116,15 +118,15 @@
             <div class="grid grid-cols-3 gap-4 pt-4 border-t border-[#DFD5C3] max-w-lg">
               <div>
                 <p class="font-serif-editorial text-2xl font-semibold text-[#1F1D1A]">100%</p>
-                <p class="text-xs text-[#645E56]" data-i18n="stat_auth">Authentic &amp; Sealed</p>
+                <p class="text-xs text-[#463E38]" data-i18n="stat_auth">Authentic &amp; Sealed</p>
               </div>
               <div>
                 <p class="font-serif-editorial text-2xl font-semibold text-[#1F1D1A]">11+</p>
-                <p class="text-xs text-[#645E56]" data-i18n="stat_brands">Top K-Beauty Brands</p>
+                <p class="text-xs text-[#463E38]" data-i18n="stat_brands">Top K-Beauty Brands</p>
               </div>
               <div>
                 <p class="font-serif-editorial text-2xl font-semibold text-[#1F1D1A]">24-72h</p>
-                <p class="text-xs text-[#645E56]" data-i18n="stat_delivery">Bangladesh COD</p>
+                <p class="text-xs text-[#463E38]" data-i18n="stat_delivery">Bangladesh COD</p>
               </div>
             </div>
           </div>
@@ -154,7 +156,7 @@
           </div>
           <div class="p-3.5">
             <h3 class="font-serif-editorial text-lg font-semibold text-[#1F1D1A]" data-i18n="cat_cleanse">Cleansers &amp; Toners</h3>
-            <p class="text-xs text-[#645E56] mt-0.5" data-i18n="cat_cleanse_sub">Low pH &amp; Rice Balancing</p>
+            <p class="text-xs text-[#463E38] mt-0.5" data-i18n="cat_cleanse_sub">Low pH &amp; Rice Balancing</p>
           </div>
         </button>
 
@@ -164,7 +166,7 @@
           </div>
           <div class="p-3.5">
             <h3 class="font-serif-editorial text-lg font-semibold text-[#1F1D1A]" data-i18n="cat_serum">Serums &amp; Treatments</h3>
-            <p class="text-xs text-[#645E56] mt-0.5" data-i18n="cat_serum_sub">Niacinamide, TXA &amp; Snail</p>
+            <p class="text-xs text-[#463E38] mt-0.5" data-i18n="cat_serum_sub">Niacinamide, TXA &amp; Snail</p>
           </div>
         </button>
 
@@ -174,7 +176,7 @@
           </div>
           <div class="p-3.5">
             <h3 class="font-serif-editorial text-lg font-semibold text-[#1F1D1A]" data-i18n="cat_cream">Creams &amp; Barrier Care</h3>
-            <p class="text-xs text-[#645E56] mt-0.5" data-i18n="cat_cream_sub">Ceramide, Cica &amp; Dynasty</p>
+            <p class="text-xs text-[#463E38] mt-0.5" data-i18n="cat_cream_sub">Ceramide, Cica &amp; Dynasty</p>
           </div>
         </button>
 
@@ -184,7 +186,7 @@
           </div>
           <div class="p-3.5">
             <h3 class="font-serif-editorial text-lg font-semibold text-[#1F1D1A]" data-i18n="cat_sun">Sunscreens &amp; Body</h3>
-            <p class="text-xs text-[#645E56] mt-0.5" data-i18n="cat_sun_sub">No White Cast &amp; Glow</p>
+            <p class="text-xs text-[#463E38] mt-0.5" data-i18n="cat_sun_sub">No White Cast &amp; Glow</p>
           </div>
         </button>
       </div>
@@ -219,7 +221,7 @@
       <div id="categoryPills" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-4 mb-6"></div>
 
       <!-- Results Count -->
-      <div class="flex items-center justify-between text-xs text-[#645E56] mb-4">
+      <div class="flex items-center justify-between text-xs text-[#463E38] mb-4">
         <span id="resultsCount">Showing 29 products</span>
         <button id="resetFiltersBtn" type="button" class="hidden text-[#8C7355] underline hover:text-[#1F1D1A]">Reset filters</button>
       </div>
@@ -234,14 +236,14 @@
         <div class="max-w-2xl mb-8">
           <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5E6B52]" data-i18n="routine_kicker">Personalized Counseling</span>
           <h2 class="font-serif-editorial text-3xl sm:text-4xl font-semibold text-[#1F1D1A] mt-1" data-i18n="routine_title">Build Your 3-Step K-Beauty Routine</h2>
-          <p class="text-sm text-[#5B554D] mt-2" data-i18n="routine_desc">Select your skin type and main goal to see a tailored routine from our ready-to-ship stock.</p>
+          <p class="text-sm text-[#362F2A] mt-2" data-i18n="routine_desc">Select your skin type and main goal to see a tailored routine from our ready-to-ship stock.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <!-- Controls -->
           <div class="lg:col-span-5 bg-[#FAF7F2] rounded-3xl p-6 border border-[#E6DEC8] space-y-6">
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-[#645E56] mb-3" data-i18n="label_skin_type">1. Your Skin Type</label>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-[#463E38] mb-3" data-i18n="label_skin_type">1. Your Skin Type</label>
               <div id="skinTypeBtns" class="grid grid-cols-2 gap-2.5">
                 <button type="button" data-skin="oily" class="skin-btn px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium text-left transition-all bg-[#1F1D1A] text-[#FAF7F2] border-[#1F1D1A]">Oily / Acne-Prone</button>
                 <button type="button" data-skin="dry" class="skin-btn px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium text-left transition-all bg-white text-[#1F1D1A] border-[#DFD5C3]">Dry / Dehydrated</button>
@@ -251,7 +253,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-[#645E56] mb-3" data-i18n="label_concern">2. Primary Skin Goal</label>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-[#463E38] mb-3" data-i18n="label_concern">2. Primary Skin Goal</label>
               <div id="concernBtns" class="grid grid-cols-2 gap-2.5">
                 <button type="button" data-concern="acne" class="concern-btn px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium text-left transition-all bg-[#5E6B52] text-white border-[#5E6B52]">Acne &amp; Pores</button>
                 <button type="button" data-concern="glow" class="concern-btn px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium text-left transition-all bg-white text-[#1F1D1A] border-[#DFD5C3]">Brightening &amp; Spots</button>
@@ -271,7 +273,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
               <div>
                 <h3 class="font-serif-editorial text-2xl font-semibold text-[#1F1D1A]" data-i18n="routine_rec_title">Your Recommended 3-Step Kit</h3>
-                <p id="routineBundleTotal" class="text-xs text-[#645E56] mt-0.5">Bundle Total: ৳0</p>
+                <p id="routineBundleTotal" class="text-xs text-[#463E38] mt-0.5">Bundle Total: ৳0</p>
               </div>
               <button id="addRoutineBundleBtn" type="button" class="inline-flex items-center gap-2 bg-[#1F1D1A] text-[#FAF7F2] px-5 py-2.5 rounded-full text-xs sm:text-sm font-medium hover:bg-[#36322D] transition-colors">
                 <i data-lucide="shopping-bag" class="w-4 h-4"></i>
@@ -296,28 +298,28 @@
             <i data-lucide="scan-barcode" class="w-5 h-5"></i>
           </div>
           <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_1_t">Batch &amp; Barcode Verified</h3>
-          <p class="text-xs text-[#645E56] mt-2 leading-relaxed" data-i18n="edge_1_d">Every product carries verifiable batch codes, official barcodes, and original sourcing invoice transparency.</p>
+          <p class="text-xs text-[#463E38] mt-2 leading-relaxed" data-i18n="edge_1_d">Every product carries verifiable batch codes, official barcodes, and original sourcing invoice transparency.</p>
         </div>
         <div class="bg-white rounded-2xl p-6 border border-[#E6DEC8]">
           <div class="w-10 h-10 rounded-full bg-[#F2ECE1] flex items-center justify-center text-[#8C7355] mb-4">
             <i data-lucide="message-circle-heart" class="w-5 h-5"></i>
           </div>
           <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_2_t">Free Skin Counseling</h3>
-          <p class="text-xs text-[#645E56] mt-2 leading-relaxed" data-i18n="edge_2_d">Get 1-on-1 routine guidance tailored to your skin type and budget before you order.</p>
+          <p class="text-xs text-[#463E38] mt-2 leading-relaxed" data-i18n="edge_2_d">Get 1-on-1 routine guidance tailored to your skin type and budget before you order.</p>
         </div>
         <div class="bg-white rounded-2xl p-6 border border-[#E6DEC8]">
           <div class="w-10 h-10 rounded-full bg-[#F2ECE1] flex items-center justify-center text-[#5E6B52] mb-4">
             <i data-lucide="gift" class="w-5 h-5"></i>
           </div>
           <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_3_t">Aesthetic Unboxing</h3>
-          <p class="text-xs text-[#645E56] mt-2 leading-relaxed" data-i18n="edge_3_d">Protective bubble-wrapped boxes with a personalized Thank You card, usage guide, and surprise sample.</p>
+          <p class="text-xs text-[#463E38] mt-2 leading-relaxed" data-i18n="edge_3_d">Protective bubble-wrapped boxes with a personalized Thank You card, usage guide, and surprise sample.</p>
         </div>
         <div class="bg-white rounded-2xl p-6 border border-[#E6DEC8]">
           <div class="w-10 h-10 rounded-full bg-[#F2ECE1] flex items-center justify-center text-[#8C7355] mb-4">
             <i data-lucide="truck" class="w-5 h-5"></i>
           </div>
           <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_4_t">Fast Nationwide COD</h3>
-          <p class="text-xs text-[#645E56] mt-2 leading-relaxed" data-i18n="edge_4_d">Inside Dhaka ৳70 (24–48h) and Outside Dhaka ৳130 (3–5 days) via trusted courier partners.</p>
+          <p class="text-xs text-[#463E38] mt-2 leading-relaxed" data-i18n="edge_4_d">Inside Dhaka ৳70 (24–48h) and Outside Dhaka ৳130 (3–5 days) via trusted courier partners.</p>
         </div>
       </div>
     </section>
@@ -340,16 +342,16 @@
         <form id="consultForm" class="lg:col-span-6 bg-[#FAF7F2] text-[#1F1D1A] rounded-2xl p-5 sm:p-6 space-y-3.5">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-medium text-[#645E56] mb-1">Your Name</label>
+              <label class="block text-xs font-medium text-[#463E38] mb-1">Your Name</label>
               <input id="consultName" type="text" required placeholder="e.g. Tanzina Akter" class="w-full px-3.5 py-2 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-[#645E56] mb-1">WhatsApp / Phone</label>
+              <label class="block text-xs font-medium text-[#463E38] mb-1">WhatsApp / Phone</label>
               <input id="consultPhone" type="tel" required placeholder="01XXXXXXXXX" class="w-full px-3.5 py-2 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
             </div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-[#645E56] mb-1">Skin Type &amp; Concern</label>
+            <label class="block text-xs font-medium text-[#463E38] mb-1">Skin Type &amp; Concern</label>
             <textarea id="consultNotes" rows="2" required placeholder="e.g. Oily T-zone, acne marks, looking for a gentle cleanser & sunscreen..." class="w-full px-3.5 py-2 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]"></textarea>
           </div>
           <button type="submit" class="w-full bg-[#1F1D1A] text-[#FAF7F2] py-2.5 rounded-full text-sm font-medium hover:bg-[#36322D] transition-colors" data-i18n="consult_submit">
@@ -362,7 +364,7 @@
 
   <!-- Footer -->
   <footer class="border-t border-[#E6DEC8] bg-[#FAF7F2] py-8 mt-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#645E56]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#463E38]">
       <div class="flex items-center gap-2">
         <span class="font-serif-editorial text-lg font-semibold tracking-widest text-[#1F1D1A]">AUREVA</span>
         <span>• Authentic K-Beauty Bangladesh</span>
@@ -377,80 +379,93 @@
   </footer>
 
   <!-- Dedicated Product Details Page -->
-  <section id="productDetailPage" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+  <section id="productDetailPage" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-14">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-2 text-xs text-[#645E56]">
-        <button id="pdBackBtn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#E6DEC8] text-[#1F1D1A] font-medium hover:bg-[#F2ECE1] transition-colors">
+      <div class="flex items-center gap-2 text-xs text-[#463E38]">
+        <button id="pdBackBtn" type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-[#DFD2C3] text-[#171311] font-semibold hover:bg-[#F5ECE3] shadow-sm transition-all">
           <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
           Back to Shop
         </button>
-        <span>/</span>
-        <span id="pdBreadcrumbCat" class="text-[#8C7355] font-medium"></span>
-        <span>/</span>
-        <span id="pdBreadcrumbName" class="text-[#1F1D1A] font-medium truncate max-w-[200px] sm:max-w-xs"></span>
+        <span class="text-[#9E8F82]">/</span>
+        <span id="pdBreadcrumbCat" class="text-[#B8533E] font-semibold"></span>
+        <span class="text-[#9E8F82]">/</span>
+        <span id="pdBreadcrumbName" class="text-[#171311] font-semibold truncate max-w-[200px] sm:max-w-sm"></span>
       </div>
     </div>
 
-    <div class="bg-white rounded-3xl border border-[#E6DEC8] overflow-hidden shadow-sm">
+    <div class="bg-white rounded-3xl border border-[#EADFD2] overflow-hidden shadow-lg">
       <div class="grid grid-cols-1 lg:grid-cols-12">
-        <div class="lg:col-span-5 bg-[#F2ECE1] relative aspect-square lg:aspect-auto min-h-[320px]">
+        <!-- Left: Product Gallery -->
+        <div class="lg:col-span-5 bg-gradient-to-br from-[#F9F2EA] to-[#EFE2D5] relative aspect-square lg:aspect-auto min-h-[340px] flex items-center justify-center">
           <img id="pdImage" src="" alt="Product" class="w-full h-full object-cover" />
-          <span id="pdBrandBadge" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-[#FAF7F2]/95 text-[#1F1D1A] border border-[#E6DEC8]"></span>
-          <span id="pdStockBadge" class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold"></span>
+          <span id="pdBrandBadge" class="absolute top-4 left-4 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/95 text-[#171311] shadow-sm border border-[#EADFD2]"></span>
+          <span id="pdStockBadge" class="absolute top-4 right-4 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm"></span>
         </div>
 
+        <!-- Right: High-Contrast Details + Interactive Tabs -->
         <div class="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between space-y-6">
-          <div class="space-y-4">
-            <div class="flex flex-wrap items-center gap-2 text-xs text-[#8C7355] font-semibold uppercase tracking-wider">
-              <span id="pdCategory"></span>
-              <span>•</span>
-              <span id="pdSize"></span>
-              <span>•</span>
-              <span id="pdSku"></span>
-              <span id="pdComboBadge" class="hidden px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 normal-case"></span>
+          <div class="space-y-5">
+            <div class="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wider">
+              <span id="pdCategory" class="px-2.5 py-1 rounded-full bg-[#FDF2EE] text-[#B8533E]"></span>
+              <span id="pdSize" class="px-2.5 py-1 rounded-full bg-[#F5ECE3] text-[#362F2A]"></span>
+              <span id="pdSku" class="text-[#5C524B] font-medium"></span>
+              <span id="pdComboBadge" class="hidden px-3 py-1 rounded-full bg-amber-100 text-amber-900 normal-case font-bold"></span>
             </div>
 
-            <h1 id="pdTitle" class="font-serif-editorial text-3xl sm:text-4xl font-semibold text-[#1F1D1A] leading-tight"></h1>
+            <h1 id="pdTitle" class="font-serif-editorial text-3xl sm:text-4xl font-bold text-[#171311] leading-tight"></h1>
 
-            <div class="flex flex-wrap items-baseline gap-3 pt-1">
-              <span id="pdPrice" class="text-2xl sm:text-3xl font-bold text-[#1F1D1A]"></span>
-              <span id="pdOldPrice" class="hidden text-base line-through text-[#8C7355]"></span>
-              <span id="pdDiscountBadge" class="hidden text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700"></span>
+            <!-- Price Spotlight Box -->
+            <div class="flex flex-wrap items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-[#FDF5F0] to-[#F7ECE4] border border-[#EAD4C6]">
+              <span id="pdPrice" class="text-3xl font-extrabold text-[#171311]"></span>
+              <span id="pdOldPrice" class="hidden text-lg line-through text-[#6E6259]"></span>
+              <span id="pdDiscountBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-[#B8533E] text-white shadow-sm"></span>
             </div>
 
-            <div class="pt-3 border-t border-[#F2ECE1] space-y-2">
-              <h2 class="text-xs font-semibold uppercase tracking-wider text-[#8C7355]">Product Details</h2>
-              <p id="pdDesc" class="text-sm sm:text-base text-[#4A453E] leading-relaxed"></p>
-            </div>
+            <!-- Crisp Readable Overview -->
+            <p id="pdDesc" class="text-sm sm:text-base text-[#231E1B] leading-relaxed font-normal"></p>
 
-            <div class="space-y-3 pt-2">
-              <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8]">
-                <p class="text-xs font-semibold uppercase tracking-wider text-[#8C7355]">Key Ingredients • মূল উপাদান</p>
-                <p id="pdIngredients" class="text-xs sm:text-sm text-[#1F1D1A] mt-1 leading-relaxed"></p>
+            <!-- Interactive 3-Tab Product Guide (No Boring Serial Stack) -->
+            <div class="pt-2 space-y-3">
+              <div class="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-[#F5ECE3] border border-[#EADFD2]" role="tablist">
+                <button type="button" data-pd-tab="ingredients" class="pd-tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all bg-[#171311] text-white shadow-sm">
+                  ✨ Key Ingredients
+                </button>
+                <button type="button" data-pd-tab="howto" class="pd-tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all text-[#362F2A] hover:bg-white/70">
+                  💧 How to Use
+                </button>
+                <button type="button" data-pd-tab="skintype" class="pd-tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all text-[#362F2A] hover:bg-white/70">
+                  🌿 Skin Type
+                </button>
               </div>
-              <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8]">
-                <p class="text-xs font-semibold uppercase tracking-wider text-[#8C7355]">How to Use • ব্যবহারের নিয়ম</p>
-                <p id="pdHowToUse" class="text-xs sm:text-sm text-[#1F1D1A] mt-1 leading-relaxed"></p>
+
+              <div id="pdTabPanelIngredients" class="pd-tab-panel p-5 rounded-2xl bg-[#FCF9F5] border-l-4 border-[#B8533E] border-y border-r border-[#EADFD2]">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#B8533E] mb-1.5">Key Ingredients • মূল উপাদান</p>
+                <p id="pdIngredients" class="text-sm sm:text-base text-[#171311] font-medium leading-relaxed"></p>
               </div>
-              <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8]">
-                <p class="text-xs font-semibold uppercase tracking-wider text-[#8C7355]">Suitable Skin Type • কোন ত্বকের জন্য</p>
-                <p id="pdSkinType" class="text-xs sm:text-sm text-[#1F1D1A] mt-1 leading-relaxed"></p>
+
+              <div id="pdTabPanelHowto" class="pd-tab-panel hidden p-5 rounded-2xl bg-[#FCF9F5] border-l-4 border-[#2F5241] border-y border-r border-[#EADFD2]">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#2F5241] mb-1.5">How to Use • ব্যবহারের নিয়ম</p>
+                <p id="pdHowToUse" class="text-sm sm:text-base text-[#171311] font-medium leading-relaxed"></p>
+              </div>
+
+              <div id="pdTabPanelSkintype" class="pd-tab-panel hidden p-5 rounded-2xl bg-[#FCF9F5] border-l-4 border-[#8C6D46] border-y border-r border-[#EADFD2]">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#8C6D46] mb-1.5">Suitable Skin Type • কোন ত্বকের জন্য</p>
+                <p id="pdSkinType" class="text-sm sm:text-base text-[#171311] font-medium leading-relaxed"></p>
               </div>
             </div>
-
-
           </div>
 
-          <div class="pt-5 border-t border-[#E6DEC8] flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div class="inline-flex items-center justify-between sm:justify-center gap-4 px-4 py-2.5 rounded-full border border-[#DFD5C3] bg-[#FAF7F2]">
-              <button id="pdQtyMinus" type="button" class="w-7 h-7 rounded-full hover:bg-[#E6DEC8] text-base font-semibold flex items-center justify-center">-</button>
-              <span id="pdQtyVal" class="text-sm font-bold text-[#1F1D1A] min-w-[1.5rem] text-center">1</span>
-              <button id="pdQtyPlus" type="button" class="w-7 h-7 rounded-full hover:bg-[#E6DEC8] text-base font-semibold flex items-center justify-center">+</button>
+          <!-- Action Buttons -->
+          <div class="pt-5 border-t border-[#EADFD2] flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div class="inline-flex items-center justify-between sm:justify-center gap-4 px-4 py-2.5 rounded-full border border-[#D8C9B8] bg-[#FCF9F5]">
+              <button id="pdQtyMinus" type="button" class="w-8 h-8 rounded-full hover:bg-[#EFE2D5] text-base font-bold text-[#171311] flex items-center justify-center">-</button>
+              <span id="pdQtyVal" class="text-base font-bold text-[#171311] min-w-[1.5rem] text-center">1</span>
+              <button id="pdQtyPlus" type="button" class="w-8 h-8 rounded-full hover:bg-[#EFE2D5] text-base font-bold text-[#171311] flex items-center justify-center">+</button>
             </div>
-            <button id="pdAddBtn" type="button" class="flex-1 bg-[#1F1D1A] text-[#FAF7F2] py-3 px-6 rounded-full text-sm font-medium hover:bg-[#36322D] transition-colors">
+            <button id="pdAddBtn" type="button" class="flex-1 bg-[#171311] text-white py-3.5 px-6 rounded-full text-sm font-bold hover:bg-[#2E2723] shadow-md transition-all">
               Add to Bag
             </button>
-            <button id="pdBuyNowBtn" type="button" class="flex-1 bg-[#5E6B52] text-white py-3 px-6 rounded-full text-sm font-medium hover:bg-[#4B5641] transition-colors">
+            <button id="pdBuyNowBtn" type="button" class="flex-1 bg-gradient-to-r from-[#B8533E] to-[#9B3F2C] text-white py-3.5 px-6 rounded-full text-sm font-bold hover:opacity-95 shadow-md transition-all">
               Order Now
             </button>
           </div>
@@ -460,12 +475,12 @@
 
     <!-- Related Products -->
     <div class="space-y-6 pt-4">
-      <div class="flex items-end justify-between border-b border-[#E6DEC8] pb-3">
+      <div class="flex items-end justify-between border-b border-[#EADFD2] pb-3">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-widest text-[#8C7355]">Complete Your Routine</p>
-          <h2 class="font-serif-editorial text-2xl sm:text-3xl font-semibold text-[#1F1D1A] mt-1">Related Products</h2>
+          <p class="text-xs font-bold uppercase tracking-widest text-[#B8533E]">Complete Your Routine</p>
+          <h2 class="font-serif-editorial text-2xl sm:text-3xl font-bold text-[#171311] mt-1">Related Products</h2>
         </div>
-        <button id="pdBrowseAllBtn" type="button" class="text-xs font-medium text-[#1F1D1A] underline hover:text-[#8C7355]">View All Products</button>
+        <button id="pdBrowseAllBtn" type="button" class="text-xs font-bold text-[#171311] underline hover:text-[#B8533E]">View All Products</button>
       </div>
       <div id="relatedProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
     </div>
@@ -488,7 +503,7 @@
 
       <div id="cartFooter" class="p-5 border-t border-[#E6DEC8] bg-[#F2ECE1] space-y-4">
         <div class="space-y-2 text-xs">
-          <p class="font-semibold uppercase tracking-wider text-[#645E56]">Delivery Zone (Cash on Delivery)</p>
+          <p class="font-semibold uppercase tracking-wider text-[#463E38]">Delivery Zone (Cash on Delivery)</p>
           <div class="grid grid-cols-2 gap-2">
             <label class="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF7F2] border border-[#DFD5C3] cursor-pointer">
               <input type="radio" name="deliveryZone" value="70" checked class="accent-[#1F1D1A]" />
@@ -502,11 +517,11 @@
         </div>
 
         <div class="space-y-1.5 text-sm">
-          <div class="flex justify-between text-[#645E56]">
+          <div class="flex justify-between text-[#463E38]">
             <span>Subtotal</span>
             <span id="cartSubtotal">৳0</span>
           </div>
-          <div class="flex justify-between text-[#645E56]">
+          <div class="flex justify-between text-[#463E38]">
             <span>Delivery Charge</span>
             <span id="cartDelivery">৳70</span>
           </div>
@@ -535,37 +550,37 @@
 
       <form id="orderForm" class="space-y-3">
         <div>
-          <label class="block text-xs font-medium text-[#645E56] mb-1">Full Name</label>
+          <label class="block text-xs font-medium text-[#463E38] mb-1">Full Name</label>
           <input id="orderName" type="text" required placeholder="e.g. Nusrat Jahan" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-xs font-medium text-[#645E56] mb-1">Phone Number</label>
+            <label class="block text-xs font-medium text-[#463E38] mb-1">Phone Number</label>
             <input id="orderPhone" type="tel" required placeholder="01XXXXXXXXX" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-[#645E56] mb-1">Email (Optional)</label>
+            <label class="block text-xs font-medium text-[#463E38] mb-1">Email (Optional)</label>
             <input id="orderEmail" type="email" placeholder="you@example.com" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
           </div>
         </div>
         <div>
-          <label class="block text-xs font-medium text-[#645E56] mb-1">Full Delivery Address</label>
+          <label class="block text-xs font-medium text-[#463E38] mb-1">Full Delivery Address</label>
           <textarea id="orderAddress" rows="2" required placeholder="House, Road, Area, District" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]"></textarea>
         </div>
         <div class="space-y-2">
-          <label class="block text-xs font-medium text-[#645E56]">Payment Method</label>
+          <label class="block text-xs font-medium text-[#463E38]">Payment Method</label>
           <label class="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-[#DFD5C3] cursor-pointer hover:border-[#8C7355]">
             <input type="radio" name="paymentMethod" value="sslcommerz" checked class="mt-0.5 accent-[#1F1D1A]" />
             <div class="text-xs">
               <p class="font-semibold text-[#1F1D1A]">Online Payment (SSLCommerz)</p>
-              <p class="text-[#645E56]">Visa, Mastercard, bKash, Nagad, Rocket, Upay</p>
+              <p class="text-[#463E38]">Visa, Mastercard, bKash, Nagad, Rocket, Upay</p>
             </div>
           </label>
           <label class="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-[#DFD5C3] cursor-pointer hover:border-[#8C7355]">
             <input type="radio" name="paymentMethod" value="cod" class="mt-0.5 accent-[#1F1D1A]" />
             <div class="text-xs">
               <p class="font-semibold text-[#1F1D1A]">Cash on Delivery (COD)</p>
-              <p class="text-[#645E56]">Pay in cash when you receive your parcel</p>
+              <p class="text-[#463E38]">Pay in cash when you receive your parcel</p>
             </div>
           </label>
         </div>
@@ -816,7 +831,7 @@
         grid.innerHTML = `
           <div class="col-span-full text-center py-14 bg-white rounded-3xl border border-[#E6DEC8]">
             <p class="font-serif-editorial text-2xl text-[#1F1D1A]">No products matched your filter</p>
-            <p class="text-xs text-[#645E56] mt-1">Try clearing your search or choosing another category.</p>
+            <p class="text-xs text-[#463E38] mt-1">Try clearing your search or choosing another category.</p>
           </div>`;
         return;
       }
@@ -825,21 +840,22 @@
         const img = p.imageUrl || IMG_MAP[p.category] || IMG_MAP.Serum;
         const inStock = Number(p.stock) > 0;
         return `
-          <article class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden flex flex-col justify-between hover:shadow-md transition-all group">
+          <article class="bg-white rounded-3xl border border-[#EADFD2] overflow-hidden flex flex-col justify-between hover:-translate-y-1 hover:shadow-xl hover:border-[#D9B8A6] transition-all duration-300 group">
             <div>
-              <div class="relative aspect-[4/3] bg-[#F2ECE1] overflow-hidden cursor-pointer qv-trigger" data-id="${p.id}">
+              <div class="relative aspect-[4/3] bg-[#F5ECE3] overflow-hidden cursor-pointer qv-trigger" data-id="${p.id}">
                 <img src="${img}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-[#FAF7F2]/90 text-[#1F1D1A] border border-[#E6DEC8]">${p.brand}</span>
-                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-semibold ${inStock ? "bg-[#E8EFE4] text-[#45543A]" : "bg-rose-100 text-rose-700"}">
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/95 text-[#171311] shadow-sm">${p.brand}</span>
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm ${inStock ? "bg-[#E6F4EA] text-[#1E5631]" : "bg-rose-100 text-rose-800"}">
                   ${inStock ? "In Stock" : "Out of Stock"}
                 </span>
+                <span class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity px-3 py-1 rounded-full text-[11px] font-semibold bg-[#171311]/85 text-white backdrop-blur-sm">View Details →</span>
               </div>
               <div class="p-4">
-                <div class="flex items-center justify-between text-[11px] text-[#8C7355] font-medium">
+                <div class="flex items-center justify-between text-[11px] text-[#B8533E] font-semibold uppercase tracking-wide">
                   <span>${p.category}</span>
-                  <span>${p.size}</span>
+                  <span class="text-[#5C524B]">${p.size}</span>
                 </div>
-                <h3 class="font-medium text-sm text-[#1F1D1A] mt-1.5 line-clamp-2 min-h-[2.5rem] cursor-pointer qv-trigger" data-id="${p.id}">${p.name}</h3>
+                <h3 class="font-semibold text-sm text-[#171311] mt-1.5 line-clamp-2 min-h-[2.5rem] cursor-pointer group-hover:text-[#B8533E] transition-colors qv-trigger" data-id="${p.id}">${p.name}</h3>
               </div>
             </div>
             <div class="px-4 pb-4 pt-2 flex items-center justify-between border-t border-[#F2ECE1]">
@@ -856,6 +872,7 @@
           </article>
         `;
       }).join("");
+      if (typeof activatePdTab === "function") activatePdTab("ingredients");
       if (window.lucide) lucide.createIcons();
     }
 
@@ -955,7 +972,7 @@
         container.innerHTML = `
           <div class="text-center py-16 space-y-2">
             <p class="font-serif-editorial text-2xl text-[#1F1D1A]">Your bag is empty</p>
-            <p class="text-xs text-[#645E56]">Add authentic K-Beauty essentials to get started.</p>
+            <p class="text-xs text-[#463E38]">Add authentic K-Beauty essentials to get started.</p>
           </div>`;
         footer.classList.add("hidden");
         return;
@@ -1019,6 +1036,17 @@
         skinType: "All Skin Types — কোনো white cast ছাড়াই ব্যবহারযোগ্য।"
       }
     };
+
+
+    function activatePdTab(tabName) {
+      document.querySelectorAll(".pd-tab-btn").forEach(btn => {
+        const active = btn.dataset.pdTab === tabName;
+        btn.className = `pd-tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm transition-all ${active ? "bg-[#171311] text-white font-bold shadow-sm" : "text-[#362F2A] font-semibold hover:bg-white/70"}`;
+      });
+      document.getElementById("pdTabPanelIngredients").classList.toggle("hidden", tabName !== "ingredients");
+      document.getElementById("pdTabPanelHowto").classList.toggle("hidden", tabName !== "howto");
+      document.getElementById("pdTabPanelSkintype").classList.toggle("hidden", tabName !== "skintype");
+    }
 
     let pdSelectedQty = 1;
 
@@ -1308,6 +1336,9 @@
 
       // Product Detail Page & Drawers
       document.getElementById("pdBackBtn").addEventListener("click", () => closeProductPage());
+      document.querySelectorAll(".pd-tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => activatePdTab(btn.dataset.pdTab));
+      });
       document.getElementById("pdBrowseAllBtn").addEventListener("click", () => closeProductPage());
       document.querySelectorAll('header a[href^="#"], footer a[href^="#"]').forEach(a => {
         a.addEventListener("click", () => {
@@ -1532,7 +1563,7 @@
         if (b.type === "hero") {
           el.innerHTML = `<div class="rounded-3xl bg-[#F2ECE1] border border-[#E6DEC8] p-8 sm:p-12 text-center space-y-4">
             <h2 class="font-serif-editorial text-4xl font-bold text-[#1F1D1A]">New Hero Banner</h2>
-            <p class="text-sm text-[#5B554D] max-w-xl mx-auto">Click any text or button to customize it just like WordPress.</p>
+            <p class="text-sm text-[#362F2A] max-w-xl mx-auto">Click any text or button to customize it just like WordPress.</p>
             <a href="#shop" class="inline-block px-6 py-3 rounded-full bg-[#1F1D1A] text-white text-sm font-semibold">Shop Collection</a>
           </div>`;
         } else if (b.type === "two-col") {
@@ -1540,15 +1571,15 @@
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' fill='%23F2ECE1'%3E%3Crect width='600' height='400'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238C7355' font-size='22'%3EClick to Upload Image%3C/text%3E%3C/svg%3E" alt="Custom" class="w-full h-64 object-cover rounded-2xl" />
             <div class="space-y-3">
               <h3 class="font-serif-editorial text-3xl font-bold text-[#1F1D1A]">Feature Spotlight</h3>
-              <p class="text-sm text-[#5B554D]">Click this paragraph to describe your offer, skincare routine, or brand story.</p>
+              <p class="text-sm text-[#362F2A]">Click this paragraph to describe your offer, skincare routine, or brand story.</p>
               <a href="#shop" class="inline-block px-5 py-2.5 rounded-full bg-[#1F1D1A] text-white text-xs font-semibold">Learn More</a>
             </div>
           </div>`;
         } else if (b.type === "cards-3") {
           el.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="p-6 rounded-2xl bg-white border border-[#E6DEC8] space-y-2"><h4 class="font-bold text-base">100% Authentic</h4><p class="text-xs text-[#5B554D]">Direct import with batch verification.</p></div>
-            <div class="p-6 rounded-2xl bg-white border border-[#E6DEC8] space-y-2"><h4 class="font-bold text-base">Fast Delivery</h4><p class="text-xs text-[#5B554D]">Nationwide courier delivery in 24-72 hours.</p></div>
-            <div class="p-6 rounded-2xl bg-white border border-[#E6DEC8] space-y-2"><h4 class="font-bold text-base">Free Advice</h4><p class="text-xs text-[#5B554D]">Personalized skincare routine support.</p></div>
+            <div class="p-6 rounded-2xl bg-white border border-[#E6DEC8] space-y-2"><h4 class="font-bold text-base">100% Authentic</h4><p class="text-xs text-[#362F2A]">Direct import with batch verification.</p></div>
+            <div class="p-6 rounded-2xl bg-white border border-[#E6DEC8] space-y-2"><h4 class="font-bold text-base">Fast Delivery</h4><p class="text-xs text-[#362F2A]">Nationwide courier delivery in 24-72 hours.</p></div>
+            <div class="p-6 rounded-2xl bg-white border border-[#E6DEC8] space-y-2"><h4 class="font-bold text-base">Free Advice</h4><p class="text-xs text-[#362F2A]">Personalized skincare routine support.</p></div>
           </div>`;
         } else if (b.type === "image") {
           el.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='400' fill='%23F2ECE1'%3E%3Crect width='1200' height='400'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238C7355' font-size='26'%3EClick to Upload Banner Image%3C/text%3E%3C/svg%3E" alt="Banner" class="w-full max-h-96 object-cover rounded-3xl border border-[#E6DEC8]" />`;
