@@ -317,7 +317,7 @@
             <i data-lucide="truck" class="w-5 h-5"></i>
           </div>
           <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_4_t">Fast Nationwide COD</h3>
-          <p class="text-xs text-[#645E56] mt-2 leading-relaxed" data-i18n="edge_4_d">Inside Dhaka ৳60 (24–48h) and Outside Dhaka ৳120 (3–5 days) via trusted courier partners.</p>
+          <p class="text-xs text-[#645E56] mt-2 leading-relaxed" data-i18n="edge_4_d">Inside Dhaka ৳70 (24–48h) and Outside Dhaka ৳130 (3–5 days) via trusted courier partners.</p>
         </div>
       </div>
     </section>
@@ -376,38 +376,98 @@
     </div>
   </footer>
 
-  <!-- Quick View Modal -->
-  <div id="quickViewModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[#FAF7F2] rounded-3xl max-w-xl w-full overflow-hidden border border-[#E6DEC8] shadow-2xl">
-      <div class="grid grid-cols-1 sm:grid-cols-2">
-        <div class="bg-[#F2ECE1] aspect-square sm:aspect-auto">
-          <img id="qvImage" src="" alt="Product" class="w-full h-full object-cover" />
+  <!-- Dedicated Product Details Page -->
+  <section id="productDetailPage" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2 text-xs text-[#645E56]">
+        <button id="pdBackBtn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#E6DEC8] text-[#1F1D1A] font-medium hover:bg-[#F2ECE1] transition-colors">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          Back to Shop
+        </button>
+        <span>/</span>
+        <span id="pdBreadcrumbCat" class="text-[#8C7355] font-medium"></span>
+        <span>/</span>
+        <span id="pdBreadcrumbName" class="text-[#1F1D1A] font-medium truncate max-w-[200px] sm:max-w-xs"></span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-[#E6DEC8] overflow-hidden shadow-sm">
+      <div class="grid grid-cols-1 lg:grid-cols-12">
+        <div class="lg:col-span-5 bg-[#F2ECE1] relative aspect-square lg:aspect-auto min-h-[320px]">
+          <img id="pdImage" src="" alt="Product" class="w-full h-full object-cover" />
+          <span id="pdBrandBadge" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-[#FAF7F2]/95 text-[#1F1D1A] border border-[#E6DEC8]"></span>
+          <span id="pdStockBadge" class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold"></span>
         </div>
-        <div class="p-6 flex flex-col justify-between space-y-4">
-          <div>
-            <div class="flex items-start justify-between gap-2">
-              <span id="qvBrand" class="text-[11px] font-semibold uppercase tracking-wider text-[#8C7355]"></span>
-              <button id="closeQvBtn" type="button" class="p-1 rounded-full hover:bg-[#E6DEC8] text-[#645E56]">
-                <i data-lucide="x" class="w-4 h-4"></i>
-              </button>
+
+        <div class="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex flex-wrap items-center gap-2 text-xs text-[#8C7355] font-semibold uppercase tracking-wider">
+              <span id="pdCategory"></span>
+              <span>•</span>
+              <span id="pdSize"></span>
+              <span>•</span>
+              <span id="pdSku"></span>
+              <span id="pdComboBadge" class="hidden px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 normal-case"></span>
             </div>
-            <h3 id="qvTitle" class="font-serif-editorial text-2xl font-semibold text-[#1F1D1A] mt-1 leading-snug"></h3>
-            <p id="qvMeta" class="text-xs text-[#645E56] mt-1"></p>
-            <p id="qvDesc" class="text-xs sm:text-sm text-[#4A453E] mt-3 leading-relaxed"></p>
+
+            <h1 id="pdTitle" class="font-serif-editorial text-3xl sm:text-4xl font-semibold text-[#1F1D1A] leading-tight"></h1>
+
+            <div class="flex flex-wrap items-baseline gap-3 pt-1">
+              <span id="pdPrice" class="text-2xl sm:text-3xl font-bold text-[#1F1D1A]"></span>
+              <span id="pdOldPrice" class="hidden text-base line-through text-[#8C7355]"></span>
+              <span id="pdDiscountBadge" class="hidden text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700"></span>
+            </div>
+
+            <div class="pt-3 border-t border-[#F2ECE1] space-y-2">
+              <h2 class="text-xs font-semibold uppercase tracking-wider text-[#8C7355]">Product Details</h2>
+              <p id="pdDesc" class="text-sm sm:text-base text-[#4A453E] leading-relaxed"></p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              <div class="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8]">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#8C7355]">Authenticity</p>
+                <p class="text-xs text-[#1F1D1A] font-medium mt-1">100% Original K-Beauty • Batch Verified</p>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8]">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#8C7355]">Delivery Charge</p>
+                <p class="text-xs text-[#1F1D1A] font-medium mt-1">Dhaka ৳70 • Outside Dhaka ৳130</p>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8]">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-[#8C7355]">Packaging</p>
+                <p class="text-xs text-[#1F1D1A] font-medium mt-1">Bubble-wrapped + Usage Guide</p>
+              </div>
+            </div>
           </div>
-          <div class="pt-3 border-t border-[#E6DEC8] space-y-3">
-            <div class="flex items-center justify-between">
-              <span id="qvPrice" class="text-xl font-bold text-[#1F1D1A]"></span>
-              <span id="qvStock" class="text-xs font-medium px-2.5 py-0.5 rounded-full"></span>
+
+          <div class="pt-5 border-t border-[#E6DEC8] flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div class="inline-flex items-center justify-between sm:justify-center gap-4 px-4 py-2.5 rounded-full border border-[#DFD5C3] bg-[#FAF7F2]">
+              <button id="pdQtyMinus" type="button" class="w-7 h-7 rounded-full hover:bg-[#E6DEC8] text-base font-semibold flex items-center justify-center">-</button>
+              <span id="pdQtyVal" class="text-sm font-bold text-[#1F1D1A] min-w-[1.5rem] text-center">1</span>
+              <button id="pdQtyPlus" type="button" class="w-7 h-7 rounded-full hover:bg-[#E6DEC8] text-base font-semibold flex items-center justify-center">+</button>
             </div>
-            <button id="qvAddBtn" type="button" class="w-full bg-[#1F1D1A] text-[#FAF7F2] py-2.5 rounded-full text-sm font-medium hover:bg-[#36322D] transition-colors">
+            <button id="pdAddBtn" type="button" class="flex-1 bg-[#1F1D1A] text-[#FAF7F2] py-3 px-6 rounded-full text-sm font-medium hover:bg-[#36322D] transition-colors">
               Add to Bag
+            </button>
+            <button id="pdBuyNowBtn" type="button" class="flex-1 bg-[#5E6B52] text-white py-3 px-6 rounded-full text-sm font-medium hover:bg-[#4B5641] transition-colors">
+              Order Now
             </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- Related Products -->
+    <div class="space-y-6 pt-4">
+      <div class="flex items-end justify-between border-b border-[#E6DEC8] pb-3">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-[#8C7355]">Complete Your Routine</p>
+          <h2 class="font-serif-editorial text-2xl sm:text-3xl font-semibold text-[#1F1D1A] mt-1">Related Products</h2>
+        </div>
+        <button id="pdBrowseAllBtn" type="button" class="text-xs font-medium text-[#1F1D1A] underline hover:text-[#8C7355]">View All Products</button>
+      </div>
+      <div id="relatedProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+    </div>
+  </section>
 
   <!-- Slide-Over Cart Drawer -->
   <div id="cartDrawer" class="hidden fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex justify-end">
@@ -429,12 +489,12 @@
           <p class="font-semibold uppercase tracking-wider text-[#645E56]">Delivery Zone (Cash on Delivery)</p>
           <div class="grid grid-cols-2 gap-2">
             <label class="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF7F2] border border-[#DFD5C3] cursor-pointer">
-              <input type="radio" name="deliveryZone" value="60" checked class="accent-[#1F1D1A]" />
-              <span>Inside Dhaka (৳60)</span>
+              <input type="radio" name="deliveryZone" value="70" checked class="accent-[#1F1D1A]" />
+              <span>Inside Dhaka (৳70)</span>
             </label>
             <label class="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF7F2] border border-[#DFD5C3] cursor-pointer">
-              <input type="radio" name="deliveryZone" value="120" class="accent-[#1F1D1A]" />
-              <span>Outside Dhaka (৳120)</span>
+              <input type="radio" name="deliveryZone" value="130" class="accent-[#1F1D1A]" />
+              <span>Outside Dhaka (৳130)</span>
             </label>
           </div>
         </div>
@@ -446,11 +506,11 @@
           </div>
           <div class="flex justify-between text-[#645E56]">
             <span>Delivery Charge</span>
-            <span id="cartDelivery">৳60</span>
+            <span id="cartDelivery">৳70</span>
           </div>
           <div class="flex justify-between font-bold text-base text-[#1F1D1A] pt-1.5 border-t border-[#DFD5C3]">
             <span>Total</span>
-            <span id="cartTotal">৳60</span>
+            <span id="cartTotal">৳70</span>
           </div>
         </div>
 
@@ -620,7 +680,7 @@
         edge_3_t: "Aesthetic Unboxing",
         edge_3_d: "Protective bubble-wrapped boxes with a personalized Thank You card, usage guide, and surprise sample.",
         edge_4_t: "Fast Nationwide COD",
-        edge_4_d: "Inside Dhaka ৳60 (24–48h) and Outside Dhaka ৳120 (3–5 days) via trusted courier partners.",
+        edge_4_d: "Inside Dhaka ৳70 (24–48h) and Outside Dhaka ৳130 (3–5 days) via trusted courier partners.",
         consult_kicker: "1-on-1 Skincare Help",
         consult_title: "Not Sure Which Cleanser or Serum Suits You?",
         consult_desc: "Send us your skin type and concerns. Our Aureva skincare advisor will recommend the right K-Beauty routine without pushing unnecessary products.",
@@ -672,7 +732,7 @@
         edge_3_t: "প্রিমিয়াম আনবক্সিং",
         edge_3_d: "বাবল-র‍্যাপ সুরক্ষিত বক্সে কাস্টম থ্যাঙ্ক ইউ কার্ড ও ব্যবহার নির্দেশিকা।",
         edge_4_t: "দ্রুত ক্যাশ অন ডেলিভারি",
-        edge_4_d: "ঢাকার ভেতরে ৳৬০ (২৪-৪৮ ঘণ্টা) এবং ঢাকার বাইরে ৳১২০ (৩-৫ দিন)।",
+        edge_4_d: "ঢাকার ভেতরে ৳৭০ (২৪-৪৮ ঘণ্টা) এবং ঢাকার বাইরে ৳১৩০ (৩-৫ দিন)।",
         consult_kicker: "১-টু-১ স্কিনকেয়ার সহায়তা",
         consult_title: "কোন ক্লিনজার বা সিরাম আপনার জন্য সেরা বুঝতে পারছেন না?",
         consult_desc: "আপনার ত্বকের ধরন ও সমস্যার কথা জানান। Aureva অ্যাডভাইজার আপনাকে সঠিক রুটিন সাজিয়ে দেবেন।",
@@ -688,7 +748,7 @@
       search: "",
       sort: "featured",
       cart: {},
-      deliveryCharge: 60,
+      deliveryCharge: 70,
       skinType: "oily",
       concern: "acne",
       quickViewId: null
@@ -761,15 +821,15 @@
 
       grid.innerHTML = list.map(p => {
         const img = p.imageUrl || IMG_MAP[p.category] || IMG_MAP.Serum;
-        const lowStock = p.stock <= 1;
+        const inStock = Number(p.stock) > 0;
         return `
           <article class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden flex flex-col justify-between hover:shadow-md transition-all group">
             <div>
               <div class="relative aspect-[4/3] bg-[#F2ECE1] overflow-hidden cursor-pointer qv-trigger" data-id="${p.id}">
                 <img src="${img}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-[#FAF7F2]/90 text-[#1F1D1A] border border-[#E6DEC8]">${p.brand}</span>
-                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-semibold ${lowStock ? "bg-amber-100 text-amber-800" : "bg-[#E8EFE4] text-[#45543A]"}">
-                  ${lowStock ? "Low Stock: 1 left" : `In Stock (${p.stock})`}
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-semibold ${inStock ? "bg-[#E8EFE4] text-[#45543A]" : "bg-rose-100 text-rose-700"}">
+                  ${inStock ? "In Stock" : "Out of Stock"}
                 </span>
               </div>
               <div class="p-4">
@@ -786,9 +846,9 @@
                 ${getEffectivePrice(p) < p.price ? `<span class="text-xs line-through text-[#8C7355]">৳${p.price.toLocaleString()}</span><span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700">-${Math.round(((p.price - getEffectivePrice(p)) / p.price) * 100)}%</span>` : ""}
                 ${p.isCombo ? `<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">${p.comboTag || "Combo Offer"}</span>` : ""}
               </div>
-              <button type="button" data-add="${p.id}" class="add-cart-btn inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#1F1D1A] text-[#FAF7F2] text-xs font-medium hover:bg-[#36322D] transition-colors">
+              <button type="button" data-add="${p.id}" ${inStock ? "" : "disabled"} class="add-cart-btn inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-colors ${inStock ? "bg-[#1F1D1A] text-[#FAF7F2] hover:bg-[#36322D]" : "bg-[#E6DEC8] text-[#8C7355] cursor-not-allowed"}">
                 <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                Add
+                ${inStock ? "Add" : "Sold Out"}
               </button>
             </div>
           </article>
@@ -840,7 +900,7 @@
           <div>
             <span class="text-[10px] font-semibold uppercase tracking-wider text-[#5E6B52]">${steps[idx] || "Step"}</span>
             <div class="aspect-[4/3] rounded-xl overflow-hidden bg-[#F2ECE1] my-2.5">
-              <img src="${IMG_MAP[p.category]}" alt="${p.name}" class="w-full h-full object-cover" />
+              <img src="${p.imageUrl || IMG_MAP[p.category] || IMG_MAP.Serum}" alt="${p.name}" class="w-full h-full object-cover" />
             </div>
             <p class="text-[11px] text-[#8C7355] font-medium">${p.brand} • ${p.size}</p>
             <h4 class="text-xs sm:text-sm font-medium text-[#1F1D1A] mt-0.5 line-clamp-2">${p.name}</h4>
@@ -858,7 +918,7 @@
       if (!prod) return;
       const current = state.cart[id] || 0;
       if (current >= prod.stock) {
-        showToast(`Only ${prod.stock} unit(s) of ${prod.name} available in stock.`);
+        showToast(Number(prod.stock) <= 0 ? `Sorry, ${prod.name} is currently out of stock.` : `Maximum available quantity reached for ${prod.name}.`);
         return;
       }
       state.cart[id] = current + 1;
@@ -873,7 +933,7 @@
       if (next <= 0) {
         delete state.cart[id];
       } else if (next > prod.stock) {
-        showToast(`Maximum available stock (${prod.stock}) reached.`);
+        showToast(`Maximum available quantity reached.`);
         return;
       } else {
         state.cart[id] = next;
@@ -907,7 +967,7 @@
         subtotal += getEffectivePrice(p) * qty;
         return `
           <div class="flex gap-3 bg-white p-3 rounded-2xl border border-[#E6DEC8]">
-            <img src="${IMG_MAP[p.category]}" alt="${p.name}" class="w-16 h-16 rounded-xl object-cover shrink-0 bg-[#F2ECE1]" />
+            <img src="${p.imageUrl || IMG_MAP[p.category] || IMG_MAP.Serum}" alt="${p.name}" class="w-16 h-16 rounded-xl object-cover shrink-0 bg-[#F2ECE1]" />
             <div class="flex-1 min-w-0">
               <p class="text-[10px] uppercase tracking-wider text-[#8C7355] font-semibold">${p.brand}</p>
               <h4 class="text-xs font-medium text-[#1F1D1A] truncate">${p.name}</h4>
@@ -929,20 +989,134 @@
       document.getElementById("checkoutTotalLabel").textContent = `৳${total.toLocaleString()}`;
     }
 
-    function openQuickView(id) {
+    let pdSelectedQty = 1;
+
+    function closeProductPage(skipHistory) {
+      const mainEl = document.getElementById("top");
+      const pdEl = document.getElementById("productDetailPage");
+      if (pdEl) pdEl.classList.add("hidden");
+      if (mainEl) mainEl.classList.remove("hidden");
+      state.quickViewId = null;
+      if (!skipHistory) {
+        const u = new URL(window.location.href);
+        u.searchParams.delete("product");
+        window.history.pushState({}, "", u.pathname + u.search + u.hash);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openProductPage(id, skipHistory) {
       const p = PRODUCTS.find(item => item.id === id);
       if (!p) return;
       state.quickViewId = id;
-      document.getElementById("qvImage").src = IMG_MAP[p.category];
-      document.getElementById("qvBrand").textContent = p.brand;
-      document.getElementById("qvTitle").textContent = p.name;
-      document.getElementById("qvMeta").textContent = `${p.category} • ${p.size} • SKU: ${p.id}`;
-      document.getElementById("qvDesc").textContent = p.desc;
-      document.getElementById("qvPrice").textContent = getEffectivePrice(p) < p.price ? `৳${getEffectivePrice(p).toLocaleString()} (Was ৳${p.price.toLocaleString()})` : `৳${p.price.toLocaleString()}`;
-      const stockEl = document.getElementById("qvStock");
-      stockEl.textContent = p.stock <= 1 ? "Low Stock: 1 left" : `In Stock (${p.stock})`;
-      stockEl.className = `text-xs font-medium px-2.5 py-0.5 rounded-full ${p.stock <= 1 ? "bg-amber-100 text-amber-800" : "bg-[#E8EFE4] text-[#45543A]"}`;
-      document.getElementById("quickViewModal").classList.remove("hidden");
+      pdSelectedQty = 1;
+      document.getElementById("pdQtyVal").textContent = "1";
+
+      const img = p.imageUrl || IMG_MAP[p.category] || IMG_MAP.Serum;
+      const inStock = Number(p.stock) > 0;
+      const effPrice = getEffectivePrice(p);
+      const hasDiscount = effPrice < Number(p.price);
+
+      document.getElementById("pdImage").src = img;
+      document.getElementById("pdImage").alt = p.name;
+      document.getElementById("pdBrandBadge").textContent = p.brand;
+      document.getElementById("pdBreadcrumbCat").textContent = p.category;
+      document.getElementById("pdBreadcrumbName").textContent = p.name;
+      document.getElementById("pdCategory").textContent = p.category;
+      document.getElementById("pdSize").textContent = p.size || "";
+      document.getElementById("pdSku").textContent = `SKU: ${p.id}`;
+      document.getElementById("pdTitle").textContent = p.name;
+      document.getElementById("pdDesc").textContent = p.desc || "";
+      document.getElementById("pdPrice").textContent = `৳${effPrice.toLocaleString()}`;
+
+      const oldPriceEl = document.getElementById("pdOldPrice");
+      const discEl = document.getElementById("pdDiscountBadge");
+      if (hasDiscount) {
+        oldPriceEl.textContent = `৳${Number(p.price).toLocaleString()}`;
+        oldPriceEl.classList.remove("hidden");
+        const pct = Math.round((1 - effPrice / Number(p.price)) * 100);
+        discEl.textContent = `${pct}% OFF`;
+        discEl.classList.remove("hidden");
+      } else {
+        oldPriceEl.classList.add("hidden");
+        discEl.classList.add("hidden");
+      }
+
+      const comboEl = document.getElementById("pdComboBadge");
+      if (p.isCombo) {
+        comboEl.textContent = p.comboTag || "Combo Offer";
+        comboEl.classList.remove("hidden");
+      } else {
+        comboEl.classList.add("hidden");
+      }
+
+      const stockEl = document.getElementById("pdStockBadge");
+      stockEl.textContent = inStock ? "In Stock" : "Out of Stock";
+      stockEl.className = `absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${inStock ? "bg-[#E8EFE4] text-[#45543A]" : "bg-rose-100 text-rose-700"}`;
+
+      const addBtn = document.getElementById("pdAddBtn");
+      const buyBtn = document.getElementById("pdBuyNowBtn");
+      addBtn.disabled = !inStock;
+      buyBtn.disabled = !inStock;
+      addBtn.textContent = inStock ? "Add to Bag" : "Out of Stock";
+      addBtn.className = `flex-1 py-3 px-6 rounded-full text-sm font-medium transition-colors ${inStock ? "bg-[#1F1D1A] text-[#FAF7F2] hover:bg-[#36322D]" : "bg-[#E6DEC8] text-[#8C7355] cursor-not-allowed"}`;
+      buyBtn.className = `flex-1 py-3 px-6 rounded-full text-sm font-medium transition-colors ${inStock ? "bg-[#5E6B52] text-white hover:bg-[#4B5641]" : "hidden"}`;
+
+      // Render Related Products (same category first, then same brand, up to 4)
+      const sameCat = PRODUCTS.filter(item => item.id !== p.id && item.category === p.category);
+      const sameBrand = PRODUCTS.filter(item => item.id !== p.id && item.category !== p.category && item.brand === p.brand);
+      const others = PRODUCTS.filter(item => item.id !== p.id && item.category !== p.category && item.brand !== p.brand);
+      const related = [...sameCat, ...sameBrand, ...others].slice(0, 4);
+
+      const relGrid = document.getElementById("relatedProductsGrid");
+      relGrid.innerHTML = related.map(r => {
+        const rImg = r.imageUrl || IMG_MAP[r.category] || IMG_MAP.Serum;
+        const rInStock = Number(r.stock) > 0;
+        const rEff = getEffectivePrice(r);
+        return `
+          <article class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden flex flex-col justify-between hover:shadow-md transition-all group">
+            <div>
+              <div class="relative aspect-[4/3] bg-[#F2ECE1] overflow-hidden cursor-pointer pd-rel-trigger" data-id="${r.id}">
+                <img src="${rImg}" alt="${r.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-[#FAF7F2]/90 text-[#1F1D1A] border border-[#E6DEC8]">${r.brand}</span>
+                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-semibold ${rInStock ? "bg-[#E8EFE4] text-[#45543A]" : "bg-rose-100 text-rose-700"}">
+                  ${rInStock ? "In Stock" : "Out of Stock"}
+                </span>
+              </div>
+              <div class="p-4">
+                <div class="flex items-center justify-between text-[11px] text-[#8C7355] font-medium">
+                  <span>${r.category}</span>
+                  <span>${r.size || ""}</span>
+                </div>
+                <h3 class="font-medium text-sm text-[#1F1D1A] mt-1.5 line-clamp-2 min-h-[2.5rem] cursor-pointer pd-rel-trigger" data-id="${r.id}">${r.name}</h3>
+              </div>
+            </div>
+            <div class="px-4 pb-4 pt-2 flex items-center justify-between border-t border-[#F2ECE1]">
+              <div class="flex flex-wrap items-baseline gap-1.5">
+                <span class="text-base font-bold text-[#1F1D1A]">৳${rEff.toLocaleString()}</span>
+                ${rEff < Number(r.price) ? `<span class="text-xs line-through text-[#8C7355]">৳${Number(r.price).toLocaleString()}</span>` : ""}
+              </div>
+              <button type="button" data-add="${r.id}" ${rInStock ? "" : "disabled"} class="add-cart-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${rInStock ? "bg-[#1F1D1A] text-[#FAF7F2] hover:bg-[#36322D]" : "bg-[#E6DEC8] text-[#8C7355] cursor-not-allowed"}">
+                ${rInStock ? "+ Add" : "Sold Out"}
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      document.getElementById("top").classList.add("hidden");
+      document.getElementById("productDetailPage").classList.remove("hidden");
+      if (!skipHistory) {
+        const u = new URL(window.location.href);
+        u.searchParams.set("product", p.id);
+        window.history.pushState({ productId: p.id }, "", u.pathname + u.search);
+      }
+      if (window.lucide) lucide.createIcons();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openQuickView(id) {
+      openProductPage(id);
     }
 
     // Event Listeners
@@ -1097,14 +1271,63 @@
         document.getElementById("cartDrawer").classList.remove("hidden");
       });
 
-      // Modals & Drawers
-      document.getElementById("closeQvBtn").addEventListener("click", () => {
-        document.getElementById("quickViewModal").classList.add("hidden");
+      // Product Detail Page & Drawers
+      document.getElementById("pdBackBtn").addEventListener("click", () => closeProductPage());
+      document.getElementById("pdBrowseAllBtn").addEventListener("click", () => closeProductPage());
+      document.querySelectorAll('header a[href^="#"], footer a[href^="#"]').forEach(a => {
+        a.addEventListener("click", () => {
+          const pdEl = document.getElementById("productDetailPage");
+          if (pdEl && !pdEl.classList.contains("hidden")) {
+            closeProductPage(true);
+            const u = new URL(window.location.href);
+            u.searchParams.delete("product");
+            window.history.replaceState({}, "", u.pathname + u.search + a.getAttribute("href"));
+          }
+        });
       });
-      document.getElementById("qvAddBtn").addEventListener("click", () => {
-        if (state.quickViewId) addToCart(state.quickViewId);
-        document.getElementById("quickViewModal").classList.add("hidden");
+      document.getElementById("pdQtyMinus").addEventListener("click", () => {
+        if (pdSelectedQty > 1) {
+          pdSelectedQty -= 1;
+          document.getElementById("pdQtyVal").textContent = String(pdSelectedQty);
+        }
       });
+      document.getElementById("pdQtyPlus").addEventListener("click", () => {
+        const p = PRODUCTS.find(item => item.id === state.quickViewId);
+        if (!p) return;
+        if (pdSelectedQty < Number(p.stock)) {
+          pdSelectedQty += 1;
+          document.getElementById("pdQtyVal").textContent = String(pdSelectedQty);
+        } else {
+          showToast("Maximum available quantity reached.");
+        }
+      });
+      document.getElementById("pdAddBtn").addEventListener("click", () => {
+        if (!state.quickViewId) return;
+        for (let i = 0; i < pdSelectedQty; i++) addToCart(state.quickViewId);
+      });
+      document.getElementById("pdBuyNowBtn").addEventListener("click", () => {
+        if (!state.quickViewId) return;
+        for (let i = 0; i < pdSelectedQty; i++) addToCart(state.quickViewId);
+        document.getElementById("cartDrawer").classList.remove("hidden");
+      });
+      document.getElementById("relatedProductsGrid").addEventListener("click", (e) => {
+        const addBtn = e.target.closest(".add-cart-btn");
+        if (addBtn) {
+          addToCart(addBtn.dataset.add);
+          return;
+        }
+        const rel = e.target.closest(".pd-rel-trigger");
+        if (rel) openProductPage(rel.dataset.id);
+      });
+      window.addEventListener("popstate", () => {
+        const pid = new URLSearchParams(window.location.search).get("product");
+        if (pid) openProductPage(pid, true);
+        else closeProductPage(true);
+      });
+      const initialProductId = new URLSearchParams(window.location.search).get("product");
+      if (initialProductId) {
+        openProductPage(initialProductId, true);
+      }
 
       document.getElementById("openCartBtn").addEventListener("click", () => {
         document.getElementById("cartDrawer").classList.remove("hidden");
