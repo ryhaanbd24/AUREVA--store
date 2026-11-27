@@ -29,7 +29,15 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    html.aureva-loading body { opacity: 0 !important; visibility: hidden !important; }
+    body { transition: opacity 0.12s ease-out; }
   </style>
+  <script>
+    if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+      document.documentElement.classList.add("aureva-loading");
+      window.__aurevaRevealTimer = setTimeout(function () { clearTimeout(window.__aurevaRevealTimer); document.documentElement.classList.remove("aureva-loading"); }, 10000);
+    }
+  </script>
 </head>
 <body class="antialiased selection:bg-[#8C7355]/20 selection:text-[#1F1D1A]">
 
@@ -1464,7 +1472,120 @@
     }
 
     // Event Listeners
+    function applySiteTextConfig(cfg) {
+      if (!cfg || typeof cfg !== "object") return;
+      if (cfg.announcement) {
+        const el = document.querySelector('[data-i18n="announcement"]');
+        if (el) el.textContent = cfg.announcement;
+      }
+      if (cfg.heroBadge) {
+        const el = document.querySelector('[data-i18n="hero_kicker"]');
+        if (el) el.textContent = cfg.heroBadge;
+      }
+      if (cfg.heroTitle) {
+        const el = document.querySelector('[data-i18n="hero_title"]');
+        if (el) el.textContent = cfg.heroTitle;
+      }
+      if (cfg.heroDesc) {
+        const el = document.querySelector('[data-i18n="hero_desc"]');
+        if (el) el.textContent = cfg.heroDesc;
+      }
+      if (cfg.heroCtaShop) {
+        const el = document.querySelector('[data-i18n="hero_cta_shop"]');
+        if (el) el.textContent = cfg.heroCtaShop;
+      }
+      if (cfg.heroCtaRoutine) {
+        const el = document.querySelector('[data-i18n="hero_cta_routine"]');
+        if (el) el.textContent = cfg.heroCtaRoutine;
+      }
+      if (cfg.shopTitle) {
+        const el = document.querySelector('[data-i18n="shop_title"]');
+        if (el) el.textContent = cfg.shopTitle;
+      }
+      if (cfg.consultTitle) {
+        const el = document.querySelector('[data-i18n="consult_title"]');
+        if (el) el.textContent = cfg.consultTitle;
+      }
+      if (cfg.consultDesc) {
+        const el = document.querySelector('[data-i18n="consult_desc"]');
+        if (el) el.textContent = cfg.consultDesc;
+      }
+      if (cfg.footerTagline) {
+        const el = document.getElementById("footerTagline");
+        if (el) el.textContent = cfg.footerTagline;
+      }
+      if (cfg.contactPhone) {
+        const el = document.getElementById("footerPhoneText");
+        if (el) el.textContent = cfg.contactPhone;
+      }
+      if (cfg.contactEmail) {
+        const el = document.getElementById("footerEmailText");
+        if (el) el.textContent = cfg.contactEmail;
+      }
+      if (cfg.contactHours) {
+        const el = document.getElementById("footerHoursText");
+        if (el) el.textContent = cfg.contactHours;
+      }
+      if (cfg.contactBtnText) {
+        const el = document.getElementById("footerContactBtnText");
+        if (el) el.textContent = cfg.contactBtnText;
+      }
+      if (cfg.contactBtnUrl) {
+        const el = document.getElementById("footerContactBtn");
+        if (el) {
+          el.setAttribute("href", cfg.contactBtnUrl);
+          if (cfg.contactBtnUrl.startsWith("http")) { el.setAttribute("target", "_blank"); el.setAttribute("rel", "noopener"); }
+        }
+      }
+      if (cfg.footerCopyright) {
+        const el = document.getElementById("footerCopyright");
+        if (el) el.textContent = cfg.footerCopyright;
+      }
+      const socialMap = [
+        ["socialLinkFb", cfg.socialFacebook],
+        ["socialLinkIg", cfg.socialInstagram],
+        ["socialLinkTt", cfg.socialTiktok],
+        ["socialLinkYt", cfg.socialYoutube],
+        ["socialLinkWa", cfg.socialWhatsapp]
+      ];
+      socialMap.forEach(([id, url]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (url && String(url).trim()) {
+          el.setAttribute("href", String(url).trim());
+          el.classList.remove("hidden");
+        } else if (id === "socialLinkTt" || id === "socialLinkYt") {
+          el.classList.add("hidden");
+        }
+      });
+      if (cfg.bgColor) {
+        document.body.style.backgroundColor = cfg.bgColor;
+      }
+      if (cfg.primaryColor) {
+        let dynStyle = document.getElementById("aurevaPrimaryOverride");
+        if (!dynStyle) {
+          dynStyle = document.createElement("style");
+          dynStyle.id = "aurevaPrimaryOverride";
+          document.head.appendChild(dynStyle);
+        }
+        dynStyle.textContent = `.bg-\[\#1F1D1A\] { background-color: ${cfg.primaryColor} !important; }`;
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", async () => {
+      if (Array.isArray(window.__INITIAL_PRODUCTS__)) {
+        PRODUCTS = window.__INITIAL_PRODUCTS__;
+      }
+      if (window.__INITIAL_SITE_CONFIG__ && typeof window.__INITIAL_SITE_CONFIG__ === "object") {
+        applySiteTextConfig(window.__INITIAL_SITE_CONFIG__);
+      }
+      renderHeroSlides();
+      startHeroAutoplay();
+      renderFilters();
+      renderProducts();
+      renderRoutine();
+      renderCart();
+
       if (window.location.protocol === "http:" || window.location.protocol === "https:") {
         try {
           const [pRes, cfgRes] = await Promise.all([
@@ -2028,15 +2149,24 @@
       }
 
       document.addEventListener("DOMContentLoaded", async () => {
-        let currentCfg = {};
-        if (window.location.protocol === "http:" || window.location.protocol === "https:") {
-          try {
-            const res = await fetch("/api/site-config");
-            if (res.ok) {
-              currentCfg = await res.json();
-              setTimeout(() => applySiteConfig(currentCfg), 150);
-            }
-          } catch {}
+        let currentCfg = (window.__INITIAL_SITE_CONFIG__ && typeof window.__INITIAL_SITE_CONFIG__ === "object")
+          ? window.__INITIAL_SITE_CONFIG__
+          : null;
+        if (currentCfg && Object.keys(currentCfg).length > 0) {
+          applySiteConfig(currentCfg);
+          clearTimeout(window.__aurevaRevealTimer); document.documentElement.classList.remove("aureva-loading");
+        } else {
+          if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+            try {
+              const res = await fetch("/api/site-config", { cache: "no-store" });
+              if (res.ok) {
+                currentCfg = await res.json();
+                applySiteConfig(currentCfg);
+              }
+            } catch {}
+          }
+          currentCfg = currentCfg || {};
+          clearTimeout(window.__aurevaRevealTimer); document.documentElement.classList.remove("aureva-loading");
         }
 
         const params = new URLSearchParams(window.location.search);
