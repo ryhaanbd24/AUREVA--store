@@ -29,7 +29,7 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    html.aureva-loading body { opacity: 0 !important; }
+    html.aureva-loading body { opacity: 0 !important; visibility: hidden !important; }
     body { transition: opacity 0.12s ease-out; }
   </style>
   <script>
@@ -2152,7 +2152,7 @@
         let currentCfg = (window.__INITIAL_SITE_CONFIG__ && typeof window.__INITIAL_SITE_CONFIG__ === "object")
           ? window.__INITIAL_SITE_CONFIG__
           : null;
-        if (currentCfg) {
+        if (currentCfg && Object.keys(currentCfg).length > 0) {
           applySiteConfig(currentCfg);
           clearTimeout(window.__aurevaRevealTimer); document.documentElement.classList.remove("aureva-loading");
         } else {

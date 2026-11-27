@@ -192,6 +192,7 @@ app.get("/api/health", (req, res) => {
   const isLive = String(s.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
   res.json({
     ok: true,
+    build: "v15",
     gatewayConfigured: Boolean(s.SSLCOMMERZ_STORE_ID && s.SSLCOMMERZ_STORE_PASSWD && s.SSLCOMMERZ_STORE_ID !== "your_store_id"),
     couriersConfigured: getConfiguredCouriers(s),
     mode: isLive ? "LIVE" : "SANDBOX",
