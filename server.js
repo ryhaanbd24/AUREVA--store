@@ -156,6 +156,29 @@ app.use((req, res, next) => {
   }
   next();
 });
+const INDEX_HTML_PATH = path.join(__dirname, "public", "index.html");
+let cachedIndexHtml = null;
+function getIndexHtmlTemplate() {
+  if (!cachedIndexHtml && fs.existsSync(INDEX_HTML_PATH)) {
+    cachedIndexHtml = fs.readFileSync(INDEX_HTML_PATH, "utf8");
+  }
+  return cachedIndexHtml || "";
+}
+function safeJsonForHtml(data) {
+  return JSON.stringify(data).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026");
+}
+
+app.get(["/", "/index.html"], (req, res) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  const tpl = getIndexHtmlTemplate();
+  if (!tpl) return res.status(404).send("Not found");
+  const cfg = readJson(SITE_CONFIG_FILE, {});
+  const products = getProducts();
+  const bootScript = `<script>window.__INITIAL_SITE_CONFIG__=${safeJsonForHtml(cfg)};window.__INITIAL_PRODUCTS__=${safeJsonForHtml(products)};</script>`;
+  const out = tpl.includes("</head>") ? tpl.replace("</head>", bootScript + "\n</head>") : bootScript + tpl;
+  res.type("html").send(out);
+});
+
 app.use(express.static(path.join(__dirname, "public")));
 
 // Clean Control Panel route: /admin
@@ -592,9 +615,26 @@ app.post("/api/settings", (req, res) => {
   res.json({ status: "success", settings: getSettings() });
 });
 
+function startKeepAlive() {
+  const target = (process.env.RENDER_EXTERNAL_URL || process.env.KEEP_ALIVE_URL || (String(BASE_URL || "").startsWith("https://") ? BASE_URL : "")).replace(/\/+$/, "");
+  if (!target) return;
+  const healthUrl = `${target}/api/health`;
+  const client = healthUrl.startsWith("https://") ? require("https") : require("http");
+  const ping = () => {
+    try {
+      const req = client.get(healthUrl, (res) => { res.resume(); });
+      req.on("error", () => {});
+      req.setTimeout(10000, () => req.destroy());
+    } catch {}
+  };
+  setInterval(ping, 10 * 60 * 1000);
+  console.log(`Keep-alive active: pinging ${healthUrl} every 10 minutes`);
+}
+
 initUpstashSync().finally(() => {
   app.listen(PORT, () => {
     const s = getSettings();
     console.log(`Aureva Store running on ${BASE_URL} | Control Panel: ${BASE_URL}/admin | PermanentDB: ${hasUpstash() ? "ON" : "OFF"} | Couriers:`, getConfiguredCouriers(s));
+    startKeepAlive();
   });
 });
