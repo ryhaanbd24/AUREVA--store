@@ -29,7 +29,15 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    html.aureva-loading body { opacity: 0 !important; }
+    body { transition: opacity 0.12s ease-out; }
   </style>
+  <script>
+    if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+      document.documentElement.classList.add("aureva-loading");
+      window.__aurevaRevealTimer = setTimeout(function () { clearTimeout(window.__aurevaRevealTimer); document.documentElement.classList.remove("aureva-loading"); }, 10000);
+    }
+  </script>
 </head>
 <body class="antialiased selection:bg-[#8C7355]/20 selection:text-[#1F1D1A]">
 
@@ -2143,17 +2151,22 @@
       document.addEventListener("DOMContentLoaded", async () => {
         let currentCfg = (window.__INITIAL_SITE_CONFIG__ && typeof window.__INITIAL_SITE_CONFIG__ === "object")
           ? window.__INITIAL_SITE_CONFIG__
-          : {};
-        if (Object.keys(currentCfg).length > 0) {
+          : null;
+        if (currentCfg) {
           applySiteConfig(currentCfg);
-        } else if (window.location.protocol === "http:" || window.location.protocol === "https:") {
-          try {
-            const res = await fetch("/api/site-config");
-            if (res.ok) {
-              currentCfg = await res.json();
-              applySiteConfig(currentCfg);
-            }
-          } catch {}
+          clearTimeout(window.__aurevaRevealTimer); document.documentElement.classList.remove("aureva-loading");
+        } else {
+          if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+            try {
+              const res = await fetch("/api/site-config", { cache: "no-store" });
+              if (res.ok) {
+                currentCfg = await res.json();
+                applySiteConfig(currentCfg);
+              }
+            } catch {}
+          }
+          currentCfg = currentCfg || {};
+          clearTimeout(window.__aurevaRevealTimer); document.documentElement.classList.remove("aureva-loading");
         }
 
         const params = new URLSearchParams(window.location.search);
