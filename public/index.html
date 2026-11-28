@@ -47,7 +47,7 @@
   </div>
 
   <!-- Sticky Header -->
-  <header class="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E6DEC8]">
+  <header id="siteHeader" class="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E6DEC8]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 gap-3">
         <!-- Brand -->
@@ -78,20 +78,16 @@
             <span class="hidden sm:inline" data-i18n="bag">Bag</span>
             <span id="cartBadge" class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#8C7355] text-white text-[11px] font-semibold">0</span>
           </button>
-
-          <button id="mobileMenuBtn" type="button" class="md:hidden p-2 rounded-lg text-[#1F1D1A] hover:bg-[#F2ECE1]" aria-label="Toggle Menu">
-            <i data-lucide="menu" class="w-5 h-5"></i>
-          </button>
         </div>
       </div>
 
-      <!-- Mobile Menu -->
-      <div id="mobileMenu" class="hidden md:hidden pb-4 pt-2 border-t border-[#E6DEC8] space-y-2 text-sm">
-        <a href="#shop" class="mobile-nav-link block py-1.5 px-2 rounded hover:bg-[#F2ECE1]" data-i18n="nav_shop">Shop All</a>
-        <a href="#routine" class="mobile-nav-link block py-1.5 px-2 rounded hover:bg-[#F2ECE1]" data-i18n="nav_routine">Routine Finder</a>
-        <a href="#authenticity" class="mobile-nav-link block py-1.5 px-2 rounded hover:bg-[#F2ECE1]" data-i18n="nav_auth">Authenticity</a>
-        <a href="#contact" class="mobile-nav-link block py-1.5 px-2 rounded hover:bg-[#F2ECE1]" data-i18n="nav_consult">Free Counseling</a>
-      </div>
+      <!-- Mobile Top Nav (Visible directly on mobile, no 3-dot/hamburger menu) -->
+      <nav class="flex md:hidden items-center justify-between gap-2 pb-2.5 pt-1.5 border-t border-[#E6DEC8]/70 text-xs font-medium text-[#4A453E] overflow-x-auto no-scrollbar">
+        <a href="#shop" class="shrink-0 hover:text-[#1F1D1A] transition-colors" data-i18n="nav_shop">Shop All</a>
+        <a href="#routine" class="shrink-0 hover:text-[#1F1D1A] transition-colors" data-i18n="nav_routine">Routine Finder</a>
+        <a href="#authenticity" class="shrink-0 hover:text-[#1F1D1A] transition-colors" data-i18n="nav_auth">Authenticity</a>
+        <a href="#contact" class="shrink-0 hover:text-[#1F1D1A] transition-colors" data-i18n="nav_consult">Free Counseling</a>
+      </nav>
     </div>
   </header>
 
@@ -278,14 +274,14 @@
         </div>
         <button id="pdBrowseAllBtn" type="button" class="text-xs font-bold text-[#171311] underline hover:text-[#B8533E]">View All Products</button>
       </div>
-      <div id="relatedProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+      <div id="relatedProductsGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5"></div>
     </div>
   </section>
 
 
     <div id="homeCatalogSections">
     <!-- Interactive Product Catalog -->
-    <section id="shop" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10 sm:pt-8 sm:pb-12">
+    <section id="shop" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6 sm:pt-6 sm:pb-8">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
           <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[#8C7355]" data-i18n="shop_kicker">Live Inventory</span>
@@ -319,16 +315,35 @@
       </div>
 
       <!-- Product Grid -->
-      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+      <div id="productGrid" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5"></div>
+
+      <!-- Pagination / More Products Bar -->
+      <div id="catalogPaginationBar" class="hidden mt-8 flex flex-col items-center gap-3 text-center">
+        <div class="w-full max-w-xs space-y-1.5">
+          <p id="catalogProgressText" class="text-xs font-medium text-[#463E38]"></p>
+          <div class="w-full h-1.5 rounded-full bg-[#EAE0D5] overflow-hidden">
+            <div id="catalogProgressFill" class="h-full bg-[#1F1D1A] rounded-full transition-all duration-300" style="width: 40%"></div>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-2.5">
+          <button id="loadMoreProductsBtn" type="button" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#1F1D1A] text-[#FAF7F2] text-xs sm:text-sm font-semibold hover:bg-[#36322D] shadow-md transition-all">
+            <span id="loadMoreBtnText">Load More Products</span>
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </button>
+          <button id="viewAllProductsBtn" type="button" class="px-5 py-2.5 rounded-full bg-white border border-[#DFD5C3] text-[#1F1D1A] text-xs sm:text-sm font-semibold hover:bg-[#F2ECE1] transition-all">
+            View All
+          </button>
+        </div>
+      </div>
     </section>
 
     <!-- Category Visual Strip -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <div class="mb-5">
-        <span class="text-xs font-bold uppercase tracking-[0.2em] text-[#B8533E]">Browse by Step</span>
-        <h2 class="font-serif-editorial text-2xl sm:text-3xl font-bold text-[#171311] mt-1">Explore by Category</h2>
+        <span id="exploreCatKicker" class="text-xs font-bold uppercase tracking-[0.2em] text-[#B8533E]">Browse by Step</span>
+        <h2 id="exploreCatTitle" class="font-serif-editorial text-2xl sm:text-3xl font-bold text-[#171311] mt-1">Explore by Category</h2>
       </div>
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div id="exploreCategoryGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <button type="button" data-cat-jump="Cleanser" class="group text-left rounded-2xl overflow-hidden bg-white border border-[#E6DEC8] hover:shadow-md transition-all">
           <div class="aspect-[4/3] overflow-hidden bg-[#F2ECE1]">
             <img src="/assets/cleanser.jpg" alt="Cleansers and Toners" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -372,9 +387,9 @@
     </section>
 
     <!-- Personalized Routine Finder -->
-    <section id="routine" class="bg-[#F2ECE1] border-y border-[#E6DEC8] py-14 sm:py-16 my-8">
+    <section id="routine" class="bg-[#F2ECE1] border-y border-[#E6DEC8] py-7 sm:py-10 my-4 sm:my-5">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-2xl mb-8">
+        <div class="max-w-2xl mb-5">
           <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5E6B52]" data-i18n="routine_kicker">Personalized Counseling</span>
           <h2 class="font-serif-editorial text-3xl sm:text-4xl font-semibold text-[#1F1D1A] mt-1" data-i18n="routine_title">Build Your 3-Step K-Beauty Routine</h2>
           <p class="text-sm text-[#362F2A] mt-2" data-i18n="routine_desc">Select your skin type and main goal to see a tailored routine from our ready-to-ship stock.</p>
@@ -421,41 +436,41 @@
                 <span data-i18n="add_bundle">Add Full Routine to Bag</span>
               </button>
             </div>
-            <div id="routineStepsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+            <div id="routineStepsGrid" class="grid grid-cols-3 gap-2 sm:gap-4"></div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Authenticity & Competitive Edge -->
-    <section id="authenticity" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="text-center max-w-2xl mx-auto mb-10">
+    <section id="authenticity" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div class="text-center max-w-2xl mx-auto mb-6">
         <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[#8C7355]" data-i18n="auth_kicker">Why Shop With Aureva</span>
         <h2 class="font-serif-editorial text-3xl sm:text-4xl font-semibold text-[#1F1D1A] mt-1" data-i18n="auth_title">Built on Trust &amp; Transparency</h2>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="bg-white rounded-2xl p-6 border border-[#E6DEC8]">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+        <div class="bg-white rounded-2xl p-3.5 sm:p-6 border border-[#E6DEC8]">
           <div class="w-10 h-10 rounded-full bg-[#F2ECE1] flex items-center justify-center text-[#5E6B52] mb-4">
             <i data-lucide="scan-barcode" class="w-5 h-5"></i>
           </div>
           <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_1_t">Batch &amp; Barcode Verified</h3>
           <p class="text-xs text-[#463E38] mt-2 leading-relaxed" data-i18n="edge_1_d">Every product carries verifiable batch codes, official barcodes, and original sourcing invoice transparency.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-[#E6DEC8]">
+        <div class="bg-white rounded-2xl p-3.5 sm:p-6 border border-[#E6DEC8]">
           <div class="w-10 h-10 rounded-full bg-[#F2ECE1] flex items-center justify-center text-[#8C7355] mb-4">
             <i data-lucide="message-circle-heart" class="w-5 h-5"></i>
           </div>
           <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_2_t">Free Skin Counseling</h3>
           <p class="text-xs text-[#463E38] mt-2 leading-relaxed" data-i18n="edge_2_d">Get 1-on-1 routine guidance tailored to your skin type and budget before you order.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-[#E6DEC8]">
+        <div class="bg-white rounded-2xl p-3.5 sm:p-6 border border-[#E6DEC8]">
           <div class="w-10 h-10 rounded-full bg-[#F2ECE1] flex items-center justify-center text-[#5E6B52] mb-4">
-            <i data-lucide="gift" class="w-5 h-5"></i>
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
           </div>
-          <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_3_t">Aesthetic Unboxing</h3>
-          <p class="text-xs text-[#463E38] mt-2 leading-relaxed" data-i18n="edge_3_d">Protective bubble-wrapped boxes with a personalized Thank You card, usage guide, and surprise sample.</p>
+          <h3 class="font-semibold text-[#1F1D1A] text-sm" data-i18n="edge_3_t">100% Direct K-Beauty Sourcing</h3>
+          <p class="text-xs text-[#463E38] mt-2 leading-relaxed" data-i18n="edge_3_d">Sourced directly from authorized Korean distributors with zero middlemen—guaranteed authentic, sealed, and fresh.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-[#E6DEC8]">
+        <div class="bg-white rounded-2xl p-3.5 sm:p-6 border border-[#E6DEC8]">
           <div class="w-10 h-10 rounded-full bg-[#F2ECE1] flex items-center justify-center text-[#8C7355] mb-4">
             <i data-lucide="truck" class="w-5 h-5"></i>
           </div>
@@ -466,36 +481,36 @@
     </section>
 
     <!-- Free Consultation & Contact -->
-    <section id="contact" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="bg-[#1F1D1A] text-[#FAF7F2] rounded-3xl p-6 sm:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        <div class="lg:col-span-6 space-y-4">
-          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4B996]" data-i18n="consult_kicker">1-on-1 Skincare Help</span>
-          <h2 class="font-serif-editorial text-3xl sm:text-4xl font-semibold leading-tight" data-i18n="consult_title">Not Sure Which Cleanser or Serum Suits You?</h2>
-          <p class="text-sm text-[#CFC7BA] leading-relaxed" data-i18n="consult_desc">
+    <section id="contact" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
+      <div class="bg-[#1F1D1A] text-[#FAF7F2] rounded-2xl sm:rounded-3xl p-4 sm:p-10 lg:p-12 grid grid-cols-12 gap-3 sm:gap-8 items-center">
+        <div class="col-span-5 lg:col-span-6 space-y-2 sm:space-y-4">
+          <span class="text-[9px] sm:text-xs font-semibold uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#D4B996] block" data-i18n="consult_kicker">1-on-1 Skincare Help</span>
+          <h2 class="font-serif-editorial text-lg sm:text-3xl lg:text-4xl font-semibold leading-snug sm:leading-tight" data-i18n="consult_title">Not Sure Which Cleanser or Serum Suits You?</h2>
+          <p class="text-[11px] sm:text-sm text-[#CFC7BA] leading-snug sm:leading-relaxed" data-i18n="consult_desc">
             Send us your skin type and concerns. Our Aureva skincare advisor will recommend the right K-Beauty routine without pushing unnecessary products.
           </p>
-          <div class="flex flex-wrap gap-4 pt-2 text-xs text-[#D4B996]">
-            <span class="inline-flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4"></i> Dhaka, Bangladesh</span>
-            <span class="inline-flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> 10:00 AM – 10:00 PM Daily</span>
+          <div class="flex flex-wrap gap-2 sm:gap-4 pt-1 sm:pt-2 text-[10px] sm:text-xs text-[#D4B996]">
+            <span class="inline-flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3 sm:w-4 sm:h-4"></i> <span id="consultLocationText">Dhaka, Bangladesh</span></span>
+            <span class="inline-flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3 sm:w-4 sm:h-4"></i> <span id="consultHoursText">10:00 AM – 10:00 PM Daily</span></span>
           </div>
         </div>
 
-        <form id="consultForm" class="lg:col-span-6 bg-[#FAF7F2] text-[#1F1D1A] rounded-2xl p-5 sm:p-6 space-y-3.5">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <form id="consultForm" class="col-span-7 lg:col-span-6 bg-[#FAF7F2] text-[#1F1D1A] rounded-xl sm:rounded-2xl p-3 sm:p-6 space-y-2 sm:space-y-3.5">
+          <div class="grid grid-cols-2 gap-2 sm:gap-3">
             <div>
-              <label class="block text-xs font-medium text-[#463E38] mb-1">Your Name</label>
-              <input id="consultName" type="text" required placeholder="e.g. Tanzina Akter" class="w-full px-3.5 py-2 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
+              <label class="block text-[10px] sm:text-xs font-medium text-[#463E38] mb-0.5 sm:mb-1">Your Name</label>
+              <input id="consultName" type="text" required placeholder="Tanzina Akter" class="w-full px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-[#DFD5C3] text-[11px] sm:text-sm focus:outline-none focus:border-[#8C7355]" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-[#463E38] mb-1">WhatsApp / Phone</label>
-              <input id="consultPhone" type="tel" required placeholder="01XXXXXXXXX" class="w-full px-3.5 py-2 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
+              <label class="block text-[10px] sm:text-xs font-medium text-[#463E38] mb-0.5 sm:mb-1">WhatsApp / Phone</label>
+              <input id="consultPhone" type="tel" required placeholder="01XXXXXXXXX" class="w-full px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-[#DFD5C3] text-[11px] sm:text-sm focus:outline-none focus:border-[#8C7355]" />
             </div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-[#463E38] mb-1">Skin Type &amp; Concern</label>
-            <textarea id="consultNotes" rows="2" required placeholder="e.g. Oily T-zone, acne marks, looking for a gentle cleanser & sunscreen..." class="w-full px-3.5 py-2 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]"></textarea>
+            <label class="block text-[10px] sm:text-xs font-medium text-[#463E38] mb-0.5 sm:mb-1">Skin Type &amp; Concern</label>
+            <textarea id="consultNotes" rows="2" required placeholder="e.g. Oily T-zone, acne marks..." class="w-full px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-[#DFD5C3] text-[11px] sm:text-sm focus:outline-none focus:border-[#8C7355]"></textarea>
           </div>
-          <button type="submit" class="w-full bg-[#1F1D1A] text-[#FAF7F2] py-2.5 rounded-full text-sm font-medium hover:bg-[#36322D] transition-colors" data-i18n="consult_submit">
+          <button type="submit" class="w-full bg-[#1F1D1A] text-[#FAF7F2] py-2 sm:py-2.5 rounded-full text-[11px] sm:text-sm font-medium hover:bg-[#36322D] transition-colors" data-i18n="consult_submit">
             Request Free Routine Advice
           </button>
         </form>
@@ -505,73 +520,73 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-[#E6DEC8] bg-[#FAF7F2] pt-12 pb-8 mt-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+  <footer id="siteFooter" class="bg-[#223026] text-[#F5F1E8] pt-8 pb-6 mt-5 sm:mt-6 border-t border-[#324437]">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 space-y-9">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
         <!-- Brand & Tagline -->
-        <div class="md:col-span-4 space-y-3">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-[#1F1D1A] text-[#FAF7F2] flex items-center justify-center font-serif-editorial text-lg font-semibold">A</div>
-            <div>
-              <span class="font-serif-editorial text-xl font-semibold tracking-[0.14em] text-[#1F1D1A] block leading-none">AUREVA</span>
-              <span class="text-[10px] uppercase tracking-[0.2em] text-[#8C7355] block mt-0.5">K-Beauty Bangladesh</span>
+        <div class="md:col-span-4 space-y-3.5">
+          <span id="footerBrandName" class="font-serif-editorial text-2xl sm:text-3xl font-semibold tracking-[0.16em] text-[#FCF9F5] block">AUREVA</span>
+          <p id="footerTagline" class="text-xs sm:text-sm text-[#D7DDD7] leading-relaxed max-w-sm">
+            Authentic Korean skincare curated for Bangladesh weather—paired with personalized routine counseling and nationwide delivery.
+          </p>
+          <div id="footerSocialLinks" class="flex flex-wrap items-center gap-2.5 pt-1">
+            <a id="socialLinkFb" href="#contact" target="_blank" rel="noopener" aria-label="Facebook" class="w-9 h-9 rounded-full bg-[#1877F2] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
+            </a>
+            <a id="socialLinkIg" href="#contact" target="_blank" rel="noopener" aria-label="Instagram" class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+            </a>
+            <a id="socialLinkWa" href="#contact" target="_blank" rel="noopener" aria-label="WhatsApp" class="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2m5.81 14.08c-.24.68-1.42 1.3-1.95 1.38-.51.08-1.15.11-1.85-.11-.43-.14-.98-.32-1.69-.63-2.97-1.28-4.91-4.29-5.06-4.49-.15-.2-1.21-1.61-1.21-3.07s.76-2.18 1.03-2.48c.27-.3.59-.38.79-.38h.57c.18 0 .43-.07.67.51.24.59.83 2.03.9 2.18.08.15.13.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.39-.45.52-.15.15-.3.31-.13.61.18.3.78 1.29 1.68 2.09 1.15 1.03 2.13 1.35 2.43 1.5.3.15.48.13.66-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.67-.15.27.1 1.73.82 2.03.96.3.15.5.22.57.35.08.13.08.73-.16 1.41z"/></svg>
+            </a>
+            <a id="socialLinkTt" href="#contact" target="_blank" rel="noopener" aria-label="TikTok" class="hidden w-9 h-9 rounded-full bg-black border border-white/25 text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg>
+            </a>
+            <a id="socialLinkYt" href="#contact" target="_blank" rel="noopener" aria-label="YouTube" class="hidden w-9 h-9 rounded-full bg-[#FF0000] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Links & Get In Touch (2 columns side-by-side on mobile like screenshot, 3 columns on desktop) -->
+        <div class="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
+          <div class="space-y-3 text-xs sm:text-sm">
+            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B9C4BA]">Explore</p>
+            <ul class="space-y-2.5 text-[#E8ECE7]">
+              <li><a href="#shop" class="hover:text-white transition-colors" data-i18n="nav_shop">Shop All</a></li>
+              <li><a href="#routine" class="hover:text-white transition-colors" data-i18n="nav_routine">Routine Finder</a></li>
+              <li><a href="#authenticity" class="hover:text-white transition-colors" data-i18n="nav_auth">Authenticity</a></li>
+              <li><a href="#contact" class="hover:text-white transition-colors" data-i18n="nav_consult">Free Counseling</a></li>
+            </ul>
+          </div>
+
+          <div class="space-y-3 text-xs sm:text-sm">
+            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B9C4BA]">Customer Care</p>
+            <ul class="space-y-2.5 text-[#E8ECE7]">
+              <li><a href="#contact" class="hover:text-white transition-colors">Free skin counseling</a></li>
+              <li><a href="#authenticity" class="hover:text-white transition-colors">Delivery information</a></li>
+              <li><a id="footerContactLink" href="#contact" class="hover:text-white transition-colors">Contact us</a></li>
+            </ul>
+          </div>
+
+          <div class="col-span-2 sm:col-span-1 space-y-2.5 text-xs sm:text-sm">
+            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B9C4BA]">Get In Touch</p>
+            <p id="footerPhoneText" class="text-[#E8ECE7]">Dhaka, Bangladesh • WhatsApp Support</p>
+            <p id="footerEmailText" class="text-[#E8ECE7]">support@aureva-bd.com</p>
+            <p id="footerHoursText" class="text-[#C7D1C8] text-xs">10:00 AM – 10:00 PM Daily</p>
+            <div class="pt-1">
+              <a id="footerContactBtn" href="#contact" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FCF9F5] text-[#223026] text-xs font-semibold hover:bg-[#EAE2D3] transition-colors">
+                <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                <span id="footerContactBtnText">Contact Us</span>
+              </a>
             </div>
           </div>
-          <p id="footerTagline" class="text-xs text-[#463E38] leading-relaxed max-w-sm">
-            Authentic Korean skincare curated for Bangladesh weather—paired with personalized routine counseling and nationwide Cash on Delivery.
-          </p>
-          <div id="footerSocialLinks" class="flex flex-wrap items-center gap-2 pt-1">
-            <a id="socialLinkFb" href="#contact" target="_blank" rel="noopener" aria-label="Facebook" class="w-8 h-8 rounded-full bg-white border border-[#DFD5C3] flex items-center justify-center text-[#1F1D1A] hover:bg-[#1F1D1A] hover:text-white transition-colors">
-              <i data-lucide="facebook" class="w-3.5 h-3.5"></i>
-            </a>
-            <a id="socialLinkIg" href="#contact" target="_blank" rel="noopener" aria-label="Instagram" class="w-8 h-8 rounded-full bg-white border border-[#DFD5C3] flex items-center justify-center text-[#1F1D1A] hover:bg-[#1F1D1A] hover:text-white transition-colors">
-              <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
-            </a>
-            <a id="socialLinkTt" href="#contact" target="_blank" rel="noopener" aria-label="TikTok" class="hidden w-8 h-8 rounded-full bg-white border border-[#DFD5C3] flex items-center justify-center text-[#1F1D1A] hover:bg-[#1F1D1A] hover:text-white transition-colors">
-              <i data-lucide="music-2" class="w-3.5 h-3.5"></i>
-            </a>
-            <a id="socialLinkYt" href="#contact" target="_blank" rel="noopener" aria-label="YouTube" class="hidden w-8 h-8 rounded-full bg-white border border-[#DFD5C3] flex items-center justify-center text-[#1F1D1A] hover:bg-[#1F1D1A] hover:text-white transition-colors">
-              <i data-lucide="youtube" class="w-3.5 h-3.5"></i>
-            </a>
-            <a id="socialLinkWa" href="#contact" target="_blank" rel="noopener" aria-label="WhatsApp" class="w-8 h-8 rounded-full bg-white border border-[#DFD5C3] flex items-center justify-center text-[#2F5241] hover:bg-[#2F5241] hover:text-white transition-colors">
-              <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-            </a>
-          </div>
-        </div>
-
-        <!-- Quick Links -->
-        <div class="md:col-span-3 space-y-2.5 text-xs">
-          <p class="font-bold uppercase tracking-wider text-[#1F1D1A]">Quick Links</p>
-          <ul class="space-y-1.5 text-[#463E38]">
-            <li><a href="#shop" class="hover:text-[#B8533E] transition-colors">Shop All Products</a></li>
-            <li><a href="#routine" class="hover:text-[#B8533E] transition-colors">3-Step Routine Finder</a></li>
-            <li><a href="#authenticity" class="hover:text-[#B8533E] transition-colors">Why Aureva</a></li>
-            <li><a href="#contact" class="hover:text-[#B8533E] transition-colors">Free Skin Counseling</a></li>
-          </ul>
-        </div>
-
-        <!-- Contact & Support -->
-        <div class="md:col-span-5 bg-white rounded-2xl p-4 sm:p-5 border border-[#E6DEC8] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-1.5 text-xs text-[#463E38]">
-            <p class="font-bold uppercase tracking-wider text-[#1F1D1A]">Customer Care &amp; Support</p>
-            <p id="footerPhoneRow" class="flex items-center gap-1.5"><i data-lucide="phone" class="w-3.5 h-3.5 text-[#B8533E]"></i> <span id="footerPhoneText">Dhaka, Bangladesh • WhatsApp Support</span></p>
-            <p id="footerEmailRow" class="flex items-center gap-1.5"><i data-lucide="mail" class="w-3.5 h-3.5 text-[#B8533E]"></i> <span id="footerEmailText">support@aureva-bd.com</span></p>
-            <p id="footerHoursRow" class="flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-[#2F5241]"></i> <span id="footerHoursText">10:00 AM – 10:00 PM Daily</span></p>
-          </div>
-          <a id="footerContactBtn" href="#contact" class="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#1F1D1A] text-[#FAF7F2] text-xs font-semibold hover:bg-[#36322D] transition-colors shadow-sm">
-            <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-            <span id="footerContactBtnText">Contact Us</span>
-          </a>
         </div>
       </div>
 
-      <div class="pt-5 border-t border-[#E6DEC8] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[#5C524B]">
-        <p id="footerCopyright">© 2026 AUREVA • Authentic K-Beauty Bangladesh</p>
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="px-2.5 py-1 rounded-full bg-white border border-[#E6DEC8] font-medium">Cash on Delivery</span>
-          <span class="px-2.5 py-1 rounded-full bg-white border border-[#E6DEC8] font-medium">bKash / Nagad</span>
-          <span class="px-2.5 py-1 rounded-full bg-white border border-[#E6DEC8] font-medium">Visa / Mastercard</span>
-        </div>
+      <div class="pt-5 border-t border-[#384A3D] flex flex-row items-center justify-between gap-3 text-[11px] text-[#B9C4BA]">
+        <p id="footerCopyright">© 2026 AUREVA. All rights reserved.</p>
+        <p id="footerRightTag">Authentic K-Beauty Bangladesh</p>
       </div>
     </div>
   </footer>
@@ -884,8 +899,8 @@
         edge_1_d: "Every product carries verifiable batch codes, official barcodes, and original sourcing invoice transparency.",
         edge_2_t: "Free Skin Counseling",
         edge_2_d: "Get 1-on-1 routine guidance tailored to your skin type and budget before you order.",
-        edge_3_t: "Aesthetic Unboxing",
-        edge_3_d: "Protective bubble-wrapped boxes with a personalized Thank You card, usage guide, and surprise sample.",
+        edge_3_t: "100% Direct K-Beauty Sourcing",
+        edge_3_d: "Sourced directly from authorized Korean distributors with zero middlemen—guaranteed authentic, sealed, and fresh.",
         edge_4_t: "Fast Nationwide COD",
         edge_4_d: "Inside Dhaka ৳70 (24–48h) and Outside Dhaka ৳130 (3–5 days) via trusted courier partners.",
         consult_kicker: "1-on-1 Skincare Help",
@@ -934,8 +949,8 @@
         edge_1_d: "প্রতিটি পণ্যের সাথে অফিশিয়াল বারকোড, ব্যাচ কোড এবং আমদানি ইনভয়েস স্বচ্ছতা।",
         edge_2_t: "ফ্রি স্কিন কাউন্সেলিং",
         edge_2_d: "অর্ডারের আগেই আপনার ত্বকের ধরন অনুযায়ী ১-টু-১ রুটিন গাইডলাইন।",
-        edge_3_t: "প্রিমিয়াম আনবক্সিং",
-        edge_3_d: "বাবল-র‍্যাপ সুরক্ষিত বক্সে কাস্টম থ্যাঙ্ক ইউ কার্ড ও ব্যবহার নির্দেশিকা।",
+        edge_3_t: "১০০% সরাসরি কোরিয়ান সোর্সিং",
+        edge_3_d: "অথরাইজড কোরিয়ান ডিস্ট্রিবিউটর থেকে সরাসরি সংগৃহীত—নকল বা থার্ড-পার্টি পণ্যের কোনো ঝুঁকি নেই।",
         edge_4_t: "দ্রুত ক্যাশ অন ডেলিভারি",
         edge_4_d: "ঢাকার ভেতরে ৳৭০ (২৪-৪৮ ঘণ্টা) এবং ঢাকার বাইরে ৳১৩০ (৩-৫ দিন)।",
         consult_kicker: "১-টু-১ স্কিনকেয়ার সহায়তা",
@@ -956,7 +971,8 @@
       deliveryCharge: 70,
       skinType: "oily",
       concern: "acne",
-      quickViewId: null
+      quickViewId: null,
+      visibleCount: 12
     };
 
     const categories = ["All", "Cleanser", "Toner", "Serum", "Cream", "Sunscreen", "Body Care", "Eye Care", "Treatment", "Supplement"];
@@ -1027,7 +1043,28 @@
         return;
       }
 
-      grid.innerHTML = list.map(p => {
+      const visibleList = list.slice(0, state.visibleCount);
+      const pagBar = document.getElementById("catalogPaginationBar");
+      const progText = document.getElementById("catalogProgressText");
+      const progFill = document.getElementById("catalogProgressFill");
+      const loadBtnText = document.getElementById("loadMoreBtnText");
+      const viewAllBtn = document.getElementById("viewAllProductsBtn");
+      if (pagBar) {
+        if (list.length > visibleList.length) {
+          const remaining = list.length - visibleList.length;
+          const nextBatch = Math.min(12, remaining);
+          const pct = Math.round((visibleList.length / list.length) * 100);
+          pagBar.classList.remove("hidden");
+          if (progText) progText.textContent = `Showing ${visibleList.length} of ${list.length} products • ${remaining} more available`;
+          if (progFill) progFill.style.width = `${pct}%`;
+          if (loadBtnText) loadBtnText.textContent = `Show ${nextBatch} More Products`;
+          if (viewAllBtn) viewAllBtn.textContent = `View All (${list.length})`;
+        } else {
+          pagBar.classList.add("hidden");
+        }
+      }
+
+      grid.innerHTML = visibleList.map(p => {
         const imgs = getProductImages(p);
         const img = imgs[0];
         const hoverImg = imgs.length > 1 ? imgs[1] : "";
@@ -1045,21 +1082,21 @@
                 </span>
                 <span class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity px-3 py-1 rounded-full text-[11px] font-semibold bg-[#171311]/85 text-white backdrop-blur-sm">View Details →</span>
               </div>
-              <div class="p-4">
-                <div class="flex items-center justify-between text-[11px] text-[#B8533E] font-semibold uppercase tracking-wide">
+              <div class="p-2.5 sm:p-4">
+                <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-[#B8533E] font-semibold uppercase tracking-wide gap-1">
                   <span>${p.category}</span>
                   <span class="text-[#5C524B]">${p.size}</span>
                 </div>
-                <h3 class="font-semibold text-sm text-[#171311] mt-1.5 line-clamp-2 min-h-[2.5rem] cursor-pointer group-hover:text-[#B8533E] transition-colors qv-trigger" data-id="${p.id}">${p.name}</h3>
+                <h3 class="font-semibold text-xs sm:text-sm text-[#171311] mt-1 sm:mt-1.5 line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem] cursor-pointer group-hover:text-[#B8533E] transition-colors qv-trigger" data-id="${p.id}">${p.name}</h3>
               </div>
             </div>
-            <div class="px-4 pb-4 pt-2 flex items-center justify-between border-t border-[#F2ECE1]">
+            <div class="px-2.5 pb-2.5 pt-2 sm:px-4 sm:pb-4 flex items-center justify-between gap-1 border-t border-[#F2ECE1]">
               <div class="flex flex-wrap items-baseline gap-1.5">
-                <span class="text-base font-bold text-[#1F1D1A]">৳${getEffectivePrice(p).toLocaleString()}</span>
+                <span class="text-sm sm:text-base font-bold text-[#1F1D1A]">৳${getEffectivePrice(p).toLocaleString()}</span>
                 ${getEffectivePrice(p) < p.price ? `<span class="text-xs line-through text-[#8C7355]">৳${p.price.toLocaleString()}</span><span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700">-${Math.round(((p.price - getEffectivePrice(p)) / p.price) * 100)}%</span>` : ""}
                 ${p.isCombo ? `<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">${p.comboTag || "Combo Offer"}</span>` : ""}
               </div>
-              <button type="button" data-add="${p.id}" ${inStock ? "" : "disabled"} class="add-cart-btn inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-colors ${inStock ? "bg-[#1F1D1A] text-[#FAF7F2] hover:bg-[#36322D]" : "bg-[#E6DEC8] text-[#8C7355] cursor-not-allowed"}">
+              <button type="button" data-add="${p.id}" ${inStock ? "" : "disabled"} class="add-cart-btn shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium transition-colors ${inStock ? "bg-[#1F1D1A] text-[#FAF7F2] hover:bg-[#36322D]" : "bg-[#E6DEC8] text-[#8C7355] cursor-not-allowed"}">
                 <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                 ${inStock ? "Add" : "Sold Out"}
               </button>
@@ -1110,18 +1147,18 @@
 
       const steps = ["Step 1 • Cleanse / Prep", "Step 2 • Treat / Hydrate", "Step 3 • Seal / Protect"];
       document.getElementById("routineStepsGrid").innerHTML = items.map((p, idx) => `
-        <div class="bg-white rounded-2xl p-3.5 border border-[#E6DEC8] flex flex-col justify-between">
+        <div class="bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3.5 border border-[#E6DEC8] flex flex-col justify-between">
           <div>
-            <span class="text-[10px] font-semibold uppercase tracking-wider text-[#5E6B52]">${steps[idx] || "Step"}</span>
-            <div class="aspect-[4/3] rounded-xl overflow-hidden bg-[#F2ECE1] my-2.5 cursor-pointer qv-trigger group" data-id="${p.id}">
+            <span class="text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider text-[#5E6B52] block truncate">${steps[idx] || "Step"}</span>
+            <div class="aspect-square sm:aspect-[4/3] rounded-lg sm:rounded-xl overflow-hidden bg-[#F2ECE1] my-1.5 sm:my-2.5 cursor-pointer qv-trigger group" data-id="${p.id}">
               <img src="${getProductImages(p)[0]}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
             </div>
-            <p class="text-[11px] text-[#8C7355] font-medium">${p.brand} • ${p.size}</p>
-            <h4 class="text-xs sm:text-sm font-medium text-[#1F1D1A] mt-0.5 line-clamp-2 cursor-pointer hover:text-[#B8533E] transition-colors qv-trigger" data-id="${p.id}">${p.name}</h4>
+            <p class="text-[9px] sm:text-[11px] text-[#8C7355] font-medium truncate">${p.brand} • ${p.size}</p>
+            <h4 class="text-[10px] sm:text-sm font-medium text-[#1F1D1A] mt-0.5 line-clamp-2 leading-tight cursor-pointer hover:text-[#B8533E] transition-colors qv-trigger" data-id="${p.id}">${p.name}</h4>
           </div>
-          <div class="pt-2.5 mt-2 border-t border-[#F2ECE1] flex items-center justify-between">
-            <span class="font-bold text-sm text-[#1F1D1A]">৳${getEffectivePrice(p).toLocaleString()}</span>
-            <button type="button" data-add="${p.id}" class="add-cart-btn text-xs font-medium text-[#1F1D1A] underline hover:text-[#8C7355]">+ Add</button>
+          <div class="pt-1.5 sm:pt-2.5 mt-1.5 sm:mt-2 border-t border-[#F2ECE1] flex items-center justify-between gap-1">
+            <span class="font-bold text-[11px] sm:text-sm text-[#1F1D1A]">৳${getEffectivePrice(p).toLocaleString()}</span>
+            <button type="button" data-add="${p.id}" class="add-cart-btn text-[10px] sm:text-xs font-medium text-[#1F1D1A] underline hover:text-[#8C7355] shrink-0">+ Add</button>
           </div>
         </div>
       `).join("");
@@ -1502,6 +1539,47 @@
         const el = document.querySelector('[data-i18n="shop_title"]');
         if (el) el.textContent = cfg.shopTitle;
       }
+      if (cfg.shopKicker) {
+        const el = document.querySelector('[data-i18n="shop_kicker"]');
+        if (el) el.textContent = cfg.shopKicker;
+      }
+      if (cfg.customCategories && typeof cfg.customCategories === "string") {
+        cfg.customCategories.split(",").map(s => s.trim()).filter(Boolean).forEach(cat => {
+          if (!categories.includes(cat)) categories.push(cat);
+        });
+      }
+      if (cfg.exploreCatKicker) {
+        const el = document.getElementById("exploreCatKicker");
+        if (el) el.textContent = cfg.exploreCatKicker;
+      }
+      if (cfg.exploreCatTitle) {
+        const el = document.getElementById("exploreCatTitle");
+        if (el) el.textContent = cfg.exploreCatTitle;
+      }
+      if (Array.isArray(cfg.exploreCategories) && cfg.exploreCategories.length > 0) {
+        const grid = document.getElementById("exploreCategoryGrid");
+        if (grid) {
+          grid.innerHTML = cfg.exploreCategories.map(c => `
+            <button type="button" data-cat-jump="${c.category || "All"}" class="group text-left rounded-2xl overflow-hidden bg-white border border-[#E6DEC8] hover:shadow-md transition-all">
+              <div class="aspect-[4/3] overflow-hidden bg-[#F2ECE1]">
+                <img src="${c.imageUrl || IMG_MAP[c.category] || IMG_MAP.Serum}" alt="${c.title || ""}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              </div>
+              <div class="p-3.5">
+                <h3 class="font-serif-editorial text-lg font-semibold text-[#1F1D1A]">${c.title || ""}</h3>
+                <p class="text-xs text-[#463E38] mt-0.5">${c.subtitle || ""}</p>
+              </div>
+            </button>
+          `).join("");
+          grid.querySelectorAll("[data-cat-jump]").forEach(btn => {
+            btn.addEventListener("click", () => {
+              state.category = btn.dataset.catJump;
+              renderFilters();
+              renderProducts();
+              document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" });
+            });
+          });
+        }
+      }
       if (cfg.consultTitle) {
         const el = document.querySelector('[data-i18n="consult_title"]');
         if (el) el.textContent = cfg.consultTitle;
@@ -1509,6 +1587,89 @@
       if (cfg.consultDesc) {
         const el = document.querySelector('[data-i18n="consult_desc"]');
         if (el) el.textContent = cfg.consultDesc;
+      }
+      if (cfg.consultKicker) {
+        const el = document.querySelector('[data-i18n="consult_kicker"]');
+        if (el) el.textContent = cfg.consultKicker;
+      }
+      if (cfg.consultLocation) {
+        const el = document.getElementById("consultLocationText");
+        if (el) el.textContent = cfg.consultLocation;
+      }
+      if (cfg.consultHours) {
+        const el = document.getElementById("consultHoursText");
+        if (el) el.textContent = cfg.consultHours;
+      }
+      if (cfg.consultSubmitText) {
+        const el = document.querySelector('[data-i18n="consult_submit"]');
+        if (el) el.textContent = cfg.consultSubmitText;
+      }
+      if (cfg.routineKicker) {
+        const el = document.querySelector('[data-i18n="routine_kicker"]');
+        if (el) el.textContent = cfg.routineKicker;
+      }
+      if (cfg.routineTitle) {
+        const el = document.querySelector('[data-i18n="routine_title"]');
+        if (el) el.textContent = cfg.routineTitle;
+      }
+      if (cfg.routineDesc) {
+        const el = document.querySelector('[data-i18n="routine_desc"]');
+        if (el) el.textContent = cfg.routineDesc;
+      }
+      if (cfg.authKicker) {
+        const el = document.querySelector('[data-i18n="auth_kicker"]');
+        if (el) el.textContent = cfg.authKicker;
+      }
+      if (cfg.authTitle) {
+        const el = document.querySelector('[data-i18n="auth_title"]');
+        if (el) el.textContent = cfg.authTitle;
+      }
+      [
+        ["edge1Title", "edge_1_t"], ["edge1Desc", "edge_1_d"],
+        ["edge2Title", "edge_2_t"], ["edge2Desc", "edge_2_d"],
+        ["edge3Title", "edge_3_t"], ["edge3Desc", "edge_3_d"],
+        ["edge4Title", "edge_4_t"], ["edge4Desc", "edge_4_d"]
+      ].forEach(([cfgKey, i18nKey]) => {
+        if (cfg[cfgKey]) {
+          const el = document.querySelector(`[data-i18n="${i18nKey}"]`);
+          if (el) el.textContent = cfg[cfgKey];
+        }
+      });
+      if (cfg.headerBrandName) {
+        const el = document.getElementById("headerBrandName");
+        if (el) el.textContent = cfg.headerBrandName;
+      }
+      if (cfg.headerSubtitle) {
+        const el = document.getElementById("headerSubtitle");
+        if (el) el.textContent = cfg.headerSubtitle;
+      }
+      if (cfg.navShopText) {
+        document.querySelectorAll('[data-i18n="nav_shop"]').forEach(el => el.textContent = cfg.navShopText);
+      }
+      if (cfg.navRoutineText) {
+        document.querySelectorAll('[data-i18n="nav_routine"]').forEach(el => el.textContent = cfg.navRoutineText);
+      }
+      if (cfg.navAuthText) {
+        document.querySelectorAll('[data-i18n="nav_auth"]').forEach(el => el.textContent = cfg.navAuthText);
+      }
+      if (cfg.navConsultText) {
+        document.querySelectorAll('[data-i18n="nav_consult"]').forEach(el => el.textContent = cfg.navConsultText);
+      }
+      if (cfg.headerBgColor) {
+        const hdr = document.getElementById("siteHeader");
+        if (hdr) hdr.style.backgroundColor = cfg.headerBgColor;
+      }
+      if (cfg.footerBgColor) {
+        const ftr = document.getElementById("siteFooter");
+        if (ftr) ftr.style.backgroundColor = cfg.footerBgColor;
+      }
+      if (cfg.footerBrandName) {
+        const el = document.getElementById("footerBrandName");
+        if (el) el.textContent = cfg.footerBrandName;
+      }
+      if (cfg.footerRightTag) {
+        const el = document.getElementById("footerRightTag");
+        if (el) el.textContent = cfg.footerRightTag;
       }
       if (cfg.footerTagline) {
         const el = document.getElementById("footerTagline");
@@ -1531,6 +1692,8 @@
         if (el) el.textContent = cfg.contactBtnText;
       }
       if (cfg.contactBtnUrl) {
+        const lnk = document.getElementById("footerContactLink");
+        if (lnk) lnk.setAttribute("href", cfg.contactBtnUrl);
         const el = document.getElementById("footerContactBtn");
         if (el) {
           el.setAttribute("href", cfg.contactBtnUrl);
@@ -1731,8 +1894,8 @@
         applyLanguage();
       });
 
-      document.getElementById("mobileMenuBtn").addEventListener("click", () => {
-        document.getElementById("mobileMenu").classList.toggle("hidden");
+      document.getElementById("mobileMenuBtn")?.addEventListener("click", () => {
+        document.getElementById("mobileMenu")?.classList.toggle("hidden");
       });
       document.querySelectorAll(".mobile-nav-link").forEach(link => {
         link.addEventListener("click", () => document.getElementById("mobileMenu").classList.add("hidden"));
@@ -1742,6 +1905,7 @@
         const btn = e.target.closest(".cat-pill");
         if (!btn) return;
         state.category = btn.dataset.cat;
+        state.visibleCount = 12;
         renderFilters();
         renderProducts();
       });
@@ -1757,17 +1921,29 @@
 
       document.getElementById("brandFilter").addEventListener("change", (e) => {
         state.brand = e.target.value;
+        state.visibleCount = 12;
         renderProducts();
       });
       document.getElementById("sortFilter").addEventListener("change", (e) => {
         state.sort = e.target.value;
+        state.visibleCount = 12;
         renderProducts();
       });
       document.getElementById("searchInput").addEventListener("input", (e) => {
         state.search = e.target.value;
+        state.visibleCount = 12;
+        renderProducts();
+      });
+      document.getElementById("loadMoreProductsBtn")?.addEventListener("click", () => {
+        state.visibleCount += 12;
+        renderProducts();
+      });
+      document.getElementById("viewAllProductsBtn")?.addEventListener("click", () => {
+        state.visibleCount = PRODUCTS.length + 100;
         renderProducts();
       });
       document.getElementById("resetFiltersBtn").addEventListener("click", () => {
+        state.visibleCount = 12;
         state.category = "All";
         state.brand = "All";
         state.search = "";
