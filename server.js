@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const { getConfiguredCouriers, bookParcel, trackParcel } = require("./services/couriers");
 
 const app = express();
@@ -16,6 +17,8 @@ const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
 const DEFAULT_PRODUCTS_FILE = path.join(DATA_DIR, "default-products.json");
 const SITE_CONFIG_FILE = path.join(DATA_DIR, "site-config.json");
+const COUPONS_FILE = path.join(DATA_DIR, "coupons.json");
+const CUSTOMERS_FILE = path.join(DATA_DIR, "customers.json");
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -38,7 +41,9 @@ const REDIS_MAP = {
   [CONSULTATIONS_FILE]: "aureva:consultations",
   [SETTINGS_FILE]: "aureva:settings",
   [PRODUCTS_FILE]: "aureva:products",
-  [SITE_CONFIG_FILE]: "aureva:site_config"
+  [SITE_CONFIG_FILE]: "aureva:site_config",
+  [COUPONS_FILE]: "aureva:coupons",
+  [CUSTOMERS_FILE]: "aureva:customers"
 };
 
 function hasUpstash() {
@@ -174,7 +179,8 @@ app.get(["/", "/index.html"], (req, res) => {
   if (!tpl) return res.status(404).send("Not found");
   const cfg = readJson(SITE_CONFIG_FILE, {});
   const products = getProducts();
-  const bootScript = `<script>window.__INITIAL_SITE_CONFIG__=${safeJsonForHtml(cfg)};window.__INITIAL_PRODUCTS__=${safeJsonForHtml(products)};</script>`;
+  const fbPixelId = String(getSettings().FB_PIXEL_ID || "").trim();
+  const bootScript = `<script>window.__INITIAL_SITE_CONFIG__=${safeJsonForHtml(cfg)};window.__INITIAL_PRODUCTS__=${safeJsonForHtml(products)};window.__INITIAL_PIXEL_ID__=${safeJsonForHtml(fbPixelId)};</script>`;
   const out = tpl.includes("</head>") ? tpl.replace("</head>", bootScript + "\n</head>") : bootScript + tpl;
   res.type("html").send(out);
 });
@@ -192,7 +198,7 @@ app.get("/api/health", (req, res) => {
   const isLive = String(s.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
   res.json({
     ok: true,
-    build: "v29",
+    build: "v30",
     gatewayConfigured: Boolean(s.SSLCOMMERZ_STORE_ID && s.SSLCOMMERZ_STORE_PASSWD && s.SSLCOMMERZ_STORE_ID !== "your_store_id"),
     couriersConfigured: getConfiguredCouriers(s),
     mode: isLive ? "LIVE" : "SANDBOX",
@@ -231,7 +237,7 @@ app.post("/api/products", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
 
-  const { name, brand, category, size, price, offerPrice, isCombo, comboTag, stock, desc, imageUrl, images, ingredients, howToUse, skinType } = req.body || {};
+  const { name, brand, category, size, price, offerPrice, costPrice, isCombo, comboTag, stock, desc, imageUrl, images, ingredients, howToUse, skinType } = req.body || {};
   if (!name || !brand || !category || !price) {
     return res.status(400).json({ error: "Name, brand, category, and price are required." });
   }
@@ -246,6 +252,7 @@ app.post("/api/products", (req, res) => {
     size: String(size || "").trim(),
     price: Number(price) || 0,
     offerPrice: parsedOffer > 0 ? parsedOffer : null,
+    costPrice: Number(costPrice) > 0 ? Number(costPrice) : 0,
     isCombo: Boolean(isCombo === true || isCombo === "true" || isCombo === "on"),
     comboTag: String(comboTag || "").trim(),
     stock: Number(stock ?? 5),
@@ -279,6 +286,7 @@ app.put("/api/products/:id", (req, res) => {
     size: b.size !== undefined ? String(b.size).trim() : cur.size,
     price: b.price !== undefined ? Number(b.price) || 0 : cur.price,
     offerPrice: parsedOffer && parsedOffer > 0 ? parsedOffer : null,
+    costPrice: b.costPrice !== undefined ? (Number(b.costPrice) || 0) : (cur.costPrice || 0),
     isCombo: b.isCombo !== undefined ? Boolean(b.isCombo === true || b.isCombo === "true" || b.isCombo === "on") : cur.isCombo,
     comboTag: b.comboTag !== undefined ? String(b.comboTag).trim() : cur.comboTag,
     stock: b.stock !== undefined ? Number(b.stock) : cur.stock,
@@ -313,13 +321,251 @@ app.delete("/api/products/:id", (req, res) => {
   res.json({ status: "success" });
 });
 
+
+function sha256Hex(val) {
+  return crypto.createHash("sha256").update(String(val || "").trim().toLowerCase()).digest("hex");
+}
+
+async function sendFbCapiEvent(eventName, { orderRef, total, phone, email, items, eventId }) {
+  try {
+    const s = getSettings();
+    const pixelId = String(s.FB_PIXEL_ID || "").trim();
+    const token = String(s.FB_CAPI_TOKEN || "").trim();
+    if (!pixelId || !token) return;
+    const userData = {};
+    if (phone) userData.ph = [sha256Hex(phone.replace(/[^0-9]/g, ""))];
+    if (email) userData.em = [sha256Hex(email)];
+    const body = {
+      data: [{
+        event_name: eventName,
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: eventId || orderRef || ("ev-" + Date.now()),
+        action_source: "website",
+        user_data: userData,
+        custom_data: {
+          currency: "BDT",
+          value: Number(total) || 0,
+          order_id: orderRef || "",
+          num_items: Array.isArray(items) ? items.reduce((sum, i) => sum + (Number(i.qty) || 1), 0) : 1
+        }
+      }]
+    };
+    await fetch(`https://graph.facebook.com/v19.0/${encodeURIComponent(pixelId)}/events?access_token=${encodeURIComponent(token)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+  } catch (err) {
+    console.error("FB CAPI error:", err.message);
+  }
+}
+
+function enrichOrderItems(rawItems) {
+  const products = getProducts();
+  let modifiedStock = false;
+  const enriched = (Array.isArray(rawItems) ? rawItems : []).map(it => {
+    const prod = products.find(p => p.id === it.id);
+    const qty = Math.max(1, Number(it.qty) || 1);
+    const unitCost = prod ? (Number(prod.costPrice) || 0) : 0;
+    if (prod && Number(prod.stock) > 0) {
+      prod.stock = Math.max(0, Number(prod.stock) - qty);
+      modifiedStock = true;
+    }
+    return { ...it, qty, costPrice: unitCost, lineCost: unitCost * qty };
+  });
+  if (modifiedStock) writeJson(PRODUCTS_FILE, products);
+  return enriched;
+}
+
+function computeCouponDiscount(code, subtotal) {
+  if (!code) return { valid: false, discount: 0, message: "Enter a promo code." };
+  const coupons = readJson(COUPONS_FILE, []);
+  const norm = String(code).trim().toUpperCase();
+  const c = coupons.find(item => String(item.code).toUpperCase() === norm && item.active !== false);
+  if (!c) return { valid: false, discount: 0, message: "Invalid or inactive promo code." };
+  const sub = Number(subtotal) || 0;
+  if (c.minOrder && sub < Number(c.minOrder)) {
+    return { valid: false, discount: 0, message: `Minimum order ৳${Number(c.minOrder).toLocaleString()} required.` };
+  }
+  const val = Number(c.value) || 0;
+  const discount = c.type === "percent" ? Math.round((sub * val) / 100) : Math.min(sub, Math.round(val));
+  return { valid: true, code: norm, discount, finalSubtotal: Math.max(0, sub - discount), message: `Applied ${norm}: -৳${discount.toLocaleString()}` };
+}
+
+// Public & Admin Coupon Routes
+app.post("/api/coupons/validate", (req, res) => {
+  const { code, subtotal } = req.body || {};
+  res.json(computeCouponDiscount(code, subtotal));
+});
+
+app.get("/api/coupons", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+  res.json(readJson(COUPONS_FILE, []));
+});
+
+app.post("/api/coupons", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+  const { code, type, value, minOrder } = req.body || {};
+  const cleanCode = String(code || "").trim().toUpperCase();
+  if (!cleanCode || !value) return res.status(400).json({ error: "Code and value are required." });
+  const coupons = readJson(COUPONS_FILE, []).filter(c => String(c.code).toUpperCase() !== cleanCode);
+  const record = { code: cleanCode, type: type === "percent" ? "percent" : "fixed", value: Number(value) || 0, minOrder: Number(minOrder) || 0, active: true, createdAt: new Date().toISOString() };
+  coupons.unshift(record);
+  writeJson(COUPONS_FILE, coupons);
+  res.json({ status: "success", coupon: record });
+});
+
+app.delete("/api/coupons/:code", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+  const target = String(req.params.code || "").trim().toUpperCase();
+  const coupons = readJson(COUPONS_FILE, []).filter(c => String(c.code).toUpperCase() !== target);
+  writeJson(COUPONS_FILE, coupons);
+  res.json({ status: "success" });
+});
+
+// Customer Auth & Order History
+function hashPassword(pwd, salt) {
+  const s = salt || crypto.randomBytes(8).toString("hex");
+  const hash = crypto.scryptSync(String(pwd), s, 32).toString("hex");
+  return `${s}:${hash}`;
+}
+function verifyPassword(pwd, stored) {
+  const [s, h] = String(stored || "").split(":");
+  if (!s || !h) return false;
+  return hashPassword(pwd, s) === `${s}:${h}`;
+}
+function signCustomerToken(phone) {
+  const secret = getSettings().ADMIN_KEY || ADMIN_KEY;
+  const sig = crypto.createHmac("sha256", secret).update(phone).digest("hex");
+  return Buffer.from(`${phone}|${sig}`).toString("base64");
+}
+function verifyCustomerToken(token) {
+  try {
+    const raw = Buffer.from(String(token || ""), "base64").toString("utf8");
+    const [phone, sig] = raw.split("|");
+    if (!phone || !sig) return null;
+    const secret = getSettings().ADMIN_KEY || ADMIN_KEY;
+    const expected = crypto.createHmac("sha256", secret).update(phone).digest("hex");
+    return sig === expected ? phone : null;
+  } catch { return null; }
+}
+
+app.post("/api/customers/register", (req, res) => {
+  const { name, phone, email, address, password } = req.body || {};
+  const cleanPhone = String(phone || "").trim();
+  if (!name || !cleanPhone || !password) return res.status(400).json({ error: "Name, phone, and password are required." });
+  const customers = readJson(CUSTOMERS_FILE, []);
+  if (customers.find(c => c.phone === cleanPhone)) return res.status(400).json({ error: "Phone number already registered. Please log in." });
+  const customer = { name: String(name).trim(), phone: cleanPhone, email: String(email || "").trim(), address: String(address || "").trim(), passwordHash: hashPassword(password), createdAt: new Date().toISOString() };
+  customers.push(customer);
+  writeJson(CUSTOMERS_FILE, customers);
+  res.json({ status: "success", token: signCustomerToken(cleanPhone), customer: { name: customer.name, phone: customer.phone, email: customer.email, address: customer.address } });
+});
+
+app.post("/api/customers/login", (req, res) => {
+  const { phone, password } = req.body || {};
+  const cleanPhone = String(phone || "").trim();
+  const customers = readJson(CUSTOMERS_FILE, []);
+  const c = customers.find(u => u.phone === cleanPhone);
+  if (!c || !verifyPassword(password, c.passwordHash)) return res.status(401).json({ error: "Invalid phone number or password." });
+  res.json({ status: "success", token: signCustomerToken(cleanPhone), customer: { name: c.name, phone: c.phone, email: c.email, address: c.address } });
+});
+
+app.get("/api/customers/orders", (req, res) => {
+  const auth = req.headers.authorization || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : (req.query.token || "");
+  const phone = verifyCustomerToken(token);
+  if (!phone) return res.status(401).json({ error: "Unauthorized" });
+  const orders = readJson(ORDERS_FILE, []).filter(o => String(o.phone || "").trim() === phone);
+  res.json({ orders });
+});
+
+// Bulk Courier Booking
+app.post("/api/courier/book-bulk", async (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+  const { orderRefs, provider } = req.body || {};
+  const refs = Array.isArray(orderRefs) ? orderRefs : [];
+  let bookedCount = 0;
+  let failedCount = 0;
+  const results = [];
+  for (const ref of refs) {
+    const r = await autoBookOrder(ref, provider);
+    if (r.booked) bookedCount++;
+    else failedCount++;
+    results.push({ orderRef: ref, ...r });
+  }
+  res.json({ status: "success", bookedCount, failedCount, results });
+});
+
+// Daily/Monthly Sales, Profit & Loss & Low-Stock Reports
+app.get("/api/reports/summary", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+  const orders = readJson(ORDERS_FILE, []);
+  const products = getProducts();
+  const costLookup = {};
+  products.forEach(p => { costLookup[p.id] = Number(p.costPrice) || 0; });
+
+  const toDhakaDate = (iso) => {
+    const d = new Date(new Date(iso || Date.now()).getTime() + 6 * 3600 * 1000);
+    return d.toISOString().slice(0, 10);
+  };
+  const todayStr = toDhakaDate(new Date().toISOString());
+  const monthStr = todayStr.slice(0, 7);
+
+  let todaySales = 0, todayOrders = 0, todayProfit = 0;
+  let monthSales = 0, monthOrders = 0, monthProfit = 0;
+  let totalSales = 0, totalCost = 0;
+  const dailyMap = {};
+  const monthlyMap = {};
+
+  orders.forEach(o => {
+    const rev = Number(o.total) || 0;
+    const ordCost = Array.isArray(o.items)
+      ? o.items.reduce((s, it) => s + (Number(it.lineCost) || ((costLookup[it.id] || 0) * (Number(it.qty) || 1))), 0)
+      : 0;
+    const ordProfit = rev - ordCost;
+    const dKey = toDhakaDate(o.createdAt);
+    const mKey = dKey.slice(0, 7);
+
+    totalSales += rev;
+    totalCost += ordCost;
+    if (dKey === todayStr) { todaySales += rev; todayOrders++; todayProfit += ordProfit; }
+    if (mKey === monthStr) { monthSales += rev; monthOrders++; monthProfit += ordProfit; }
+
+    dailyMap[dKey] = dailyMap[dKey] || { period: dKey, orders: 0, sales: 0, cost: 0, profit: 0 };
+    dailyMap[dKey].orders++; dailyMap[dKey].sales += rev; dailyMap[dKey].cost += ordCost; dailyMap[dKey].profit += ordProfit;
+
+    monthlyMap[mKey] = monthlyMap[mKey] || { period: mKey, orders: 0, sales: 0, cost: 0, profit: 0 };
+    monthlyMap[mKey].orders++; monthlyMap[mKey].sales += rev; monthlyMap[mKey].cost += ordCost; monthlyMap[mKey].profit += ordProfit;
+  });
+
+  const lowStock = products.filter(p => Number(p.stock) <= 2).sort((a, b) => Number(a.stock) - Number(b.stock));
+  const daily = Object.values(dailyMap).sort((a, b) => b.period.localeCompare(a.period)).slice(0, 14);
+  const monthly = Object.values(monthlyMap).sort((a, b) => b.period.localeCompare(a.period)).slice(0, 12);
+
+  res.json({
+    today: { orders: todayOrders, sales: todaySales, profit: todayProfit },
+    month: { orders: monthOrders, sales: monthSales, profit: monthProfit },
+    overall: { orders: orders.length, sales: totalSales, cost: totalCost, profit: totalSales - totalCost },
+    lowStock,
+    daily,
+    monthly
+  });
+});
+
 // Cash on Delivery Order + Auto Courier Booking
 app.post("/api/orders/cod", async (req, res) => {
-  const { orderRef, name, phone, address, items, itemsSummary, total } = req.body || {};
+  const { orderRef, name, phone, email, address, items, itemsSummary, subtotal, deliveryCharge, couponCode, discount, total } = req.body || {};
   if (!name || !phone || !address || !total) {
     return res.status(400).json({ status: "error", message: "Missing required order fields." });
   }
 
+  const enrichedItems = enrichOrderItems(items);
   const orders = readJson(ORDERS_FILE, []);
   const record = {
     orderRef: orderRef || "ORD-" + Math.floor(1000 + Math.random() * 9000),
@@ -327,14 +573,20 @@ app.post("/api/orders/cod", async (req, res) => {
     paymentStatus: "PENDING_COD",
     name,
     phone,
+    email: email || "",
     address,
-    items: Array.isArray(items) ? items : [],
+    items: enrichedItems,
     itemsSummary: itemsSummary || "",
+    subtotal: Number(subtotal) || 0,
+    deliveryCharge: Number(deliveryCharge) || 0,
+    couponCode: couponCode || "",
+    discount: Number(discount) || 0,
     total: Number(total) || 0,
     createdAt: new Date().toISOString()
   };
   orders.unshift(record);
   writeJson(ORDERS_FILE, orders);
+  sendFbCapiEvent("Purchase", { orderRef: record.orderRef, total: record.total, phone, email, items: enrichedItems });
 
   const s = getSettings();
   let courierResult = null;
