@@ -214,12 +214,66 @@ app.get("/admin", (req, res) => {
 });
 
 // Health check
+app.post("/api/ai/autofill-product", async (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+
+  const s = getSettings();
+  const apiKey = String(s.GEMINI_API_KEY || process.env.GEMINI_API_KEY || "").trim();
+  if (!apiKey) {
+    return res.status(400).json({ error: "Please set your Gemini API Key in Payment & Courier Setup (Settings tab) first." });
+  }
+
+  const { name, brand, category, size } = req.body || {};
+  if (!name) return res.status(400).json({ error: "Product name is required for AI Auto-Fill." });
+
+  const prompt = `You are a Korean skincare (K-Beauty) product specialist for Aureva Bangladesh.
+Given this product:
+- Name: ${name}
+- Brand: ${brand || "Unknown"}
+- Category: ${category || "Skincare"}
+- Size: ${size || ""}
+
+Return ONLY valid JSON with these exact keys:
+{
+  "desc": "Concise 1-2 sentence English product overview.",
+  "ingredients": "Key active ingredients in English + short Bengali benefit (e.g. Niacinamide 10%, TXA 4% — দাগ হালকা করে ও উজ্জ্বলতা বাড়ায়।)",
+  "howToUse": "Clear step-by-step usage instructions in natural Bengali.",
+  "skinType": "Suitable skin types in English + Bengali (e.g. Oily, Combination, Sensitive ত্বকের জন্য উপযোগী।)",
+  "routineMatch": {
+    "skinType": "one of: oily, dry, combo, sensitive",
+    "concern": "one of: acne, glow, barrier, sun",
+    "step": 1 or 2 or 3
+  }
+}`;
+
+  try {
+    const apiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: "application/json" }
+      })
+    });
+    const json = await apiRes.json();
+    if (!apiRes.ok) {
+      return res.status(502).json({ error: json?.error?.message || "Gemini API error." });
+    }
+    const rawText = json?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+    const parsed = JSON.parse(rawText);
+    res.json({ status: "success", data: parsed });
+  } catch (err) {
+    res.status(500).json({ error: err.message || "Failed to generate product details." });
+  }
+});
+
 app.get("/api/health", (req, res) => {
   const s = getSettings();
   const isLive = String(s.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
   res.json({
     ok: true,
-    build: "v36",
+    build: "v42",
     gatewayConfigured: Boolean(s.SSLCOMMERZ_STORE_ID && s.SSLCOMMERZ_STORE_PASSWD && s.SSLCOMMERZ_STORE_ID !== "your_store_id"),
     couriersConfigured: getConfiguredCouriers(s),
     mode: isLive ? "LIVE" : "SANDBOX",

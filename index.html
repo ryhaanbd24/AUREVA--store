@@ -18,11 +18,14 @@
       --accent-sage: #2F5241;
       --accent-gold: #B8533E;
     }
+    html, body {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
     body {
       font-family: 'Inter', 'Hind Siliguri', sans-serif;
       background-color: var(--bg-ivory);
       color: var(--ink-dark);
-      overflow-x: hidden;
     }
     .font-serif-editorial {
       font-family: 'Cormorant Garamond', 'Hind Siliguri', serif;
@@ -49,13 +52,13 @@
   <!-- Sticky Header -->
   <header id="siteHeader" class="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E6DEC8]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 gap-3">
+      <div class="flex items-center justify-between h-14 sm:h-16 gap-1.5 sm:gap-3">
         <!-- Brand -->
-        <a href="#top" class="flex items-center gap-2.5 shrink-0">
-          <div class="w-9 h-9 rounded-full bg-[#1F1D1A] text-[#FAF7F2] flex items-center justify-center font-serif-editorial text-xl font-semibold tracking-wider">A</div>
+        <a href="#top" class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#1F1D1A] text-[#FAF7F2] flex items-center justify-center font-serif-editorial text-lg sm:text-xl font-semibold tracking-wider shrink-0">A</div>
           <div>
-            <span class="font-serif-editorial text-2xl font-semibold tracking-[0.14em] text-[#1F1D1A] block leading-none">AUREVA</span>
-            <span class="text-[10px] uppercase tracking-[0.2em] text-[#8C7355] block mt-0.5">K-Beauty Bangladesh</span>
+            <span id="headerBrandName" class="font-serif-editorial text-xl sm:text-2xl font-semibold tracking-[0.12em] sm:tracking-[0.14em] text-[#1F1D1A] block leading-none">AUREVA</span>
+            <span id="headerSubtitle" class="text-[9px] sm:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[#8C7355] block mt-0.5">K-Beauty Bangladesh</span>
           </div>
         </a>
 
@@ -68,20 +71,20 @@
         </nav>
 
         <!-- Actions -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          <button id="langToggleBtn" type="button" class="px-2.5 py-1.5 rounded-full border border-[#D8CEBA] text-xs font-medium text-[#1F1D1A] hover:bg-[#F2ECE1] transition-colors">
+        <div class="flex items-center gap-1 sm:gap-3 shrink-0">
+          <button id="langToggleBtn" type="button" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-full border border-[#D8CEBA] text-[11px] sm:text-xs font-medium text-[#1F1D1A] hover:bg-[#F2ECE1] transition-colors">
             বাংলা
           </button>
 
-          <button id="openCustomerModalBtn" type="button" class="px-2.5 py-1.5 rounded-full border border-[#D8CEBA] text-xs font-medium text-[#1F1D1A] hover:bg-[#F2ECE1] transition-colors inline-flex items-center gap-1">
-            <i data-lucide="user" class="w-3.5 h-3.5"></i>
-            <span id="customerHeaderLabel">Account</span>
+          <button id="openCustomerModalBtn" type="button" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-full border border-[#D8CEBA] text-[11px] sm:text-xs font-medium text-[#1F1D1A] hover:bg-[#F2ECE1] transition-colors inline-flex items-center gap-1">
+            <i data-lucide="user" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
+            <span id="customerHeaderLabel" class="hidden sm:inline">Account</span>
           </button>
 
-          <button id="openCartBtn" type="button" class="relative flex items-center gap-2 bg-[#1F1D1A] text-[#FAF7F2] px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-[#36322D] transition-colors">
-            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <button id="openCartBtn" type="button" class="relative flex items-center gap-1.5 sm:gap-2 bg-[#1F1D1A] text-[#FAF7F2] px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full text-[11px] sm:text-sm font-medium hover:bg-[#36322D] transition-colors">
+            <i data-lucide="shopping-bag" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
             <span class="hidden sm:inline" data-i18n="bag">Bag</span>
-            <span id="cartBadge" class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#8C7355] text-white text-[11px] font-semibold">0</span>
+            <span id="cartBadge" class="inline-flex items-center justify-center min-w-[18px] h-[18px] sm:min-w-[20px] sm:h-5 px-1 sm:px-1.5 rounded-full bg-[#8C7355] text-white text-[10px] sm:text-[11px] font-semibold">0</span>
           </button>
         </div>
       </div>
@@ -96,7 +99,7 @@
     </div>
   </header>
 
-  <main id="top">
+  <main id="top" class="overflow-x-hidden">
     <!-- Hero Section -->
     <section class="relative overflow-hidden bg-gradient-to-br from-[#FBF5EE] via-[#F6E8DC] to-[#EFE5D8] border-b border-[#EAD9C9]">
       <div class="pointer-events-none absolute -top-20 -right-20 w-72 h-72 rounded-full bg-[#D97757]/15 blur-3xl"></div>
@@ -488,7 +491,7 @@
     <!-- Free Consultation & Contact -->
     <section id="contact" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
       <div class="bg-[#1F1D1A] text-[#FAF7F2] rounded-2xl sm:rounded-3xl p-4 sm:p-10 lg:p-12 grid grid-cols-12 gap-3 sm:gap-8 items-center">
-        <div class="col-span-5 lg:col-span-6 space-y-2 sm:space-y-4">
+        <div class="col-span-5 lg:col-span-6 min-w-0 space-y-2 sm:space-y-4">
           <span class="text-[9px] sm:text-xs font-semibold uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#D4B996] block" data-i18n="consult_kicker">1-on-1 Skincare Help</span>
           <h2 class="font-serif-editorial text-lg sm:text-3xl lg:text-4xl font-semibold leading-snug sm:leading-tight" data-i18n="consult_title">Not Sure Which Cleanser or Serum Suits You?</h2>
           <p class="text-[11px] sm:text-sm text-[#CFC7BA] leading-snug sm:leading-relaxed" data-i18n="consult_desc">
@@ -500,7 +503,7 @@
           </div>
         </div>
 
-        <form id="consultForm" class="col-span-7 lg:col-span-6 bg-[#FAF7F2] text-[#1F1D1A] rounded-xl sm:rounded-2xl p-3 sm:p-6 space-y-2 sm:space-y-3.5">
+        <form id="consultForm" class="col-span-7 lg:col-span-6 min-w-0 bg-[#FAF7F2] text-[#1F1D1A] rounded-xl sm:rounded-2xl p-3 sm:p-6 space-y-2 sm:space-y-3.5">
           <div class="grid grid-cols-2 gap-2 sm:gap-3">
             <div>
               <label class="block text-[10px] sm:text-xs font-medium text-[#463E38] mb-0.5 sm:mb-1">Your Name</label>
@@ -1196,19 +1199,54 @@
           sun: { ids: ["AUR-COS-001", "AUR-ALH-016", "AUR-SKI-012"], note: "Gentle cleansing, calming 345 Relief Cream, and pocket-sized Hyalu-Cica Sun Serum 15ml for sensitive skin." }
         }
       };
-      return map[state.skinType][state.concern];
+      const def = map[state.skinType][state.concern];
+      const ovMap = window.__AUREVA_ROUTINE_OVERRIDES__;
+      const ov = ovMap && ovMap[`${state.skinType}_${state.concern}`];
+      if (ov && (Array.isArray(ov.ids) || ov.note)) {
+        return {
+          ids: (Array.isArray(ov.ids) && ov.ids.filter(Boolean).length > 0)
+            ? ov.ids.map((id, i) => id || def.ids[i])
+            : def.ids,
+          note: (ov.note && String(ov.note).trim()) ? ov.note : def.note
+        };
+      }
+      return def;
+    }
+
+    const ROUTINE_LEGACY_MAP = {
+      "AUR-COS-001": "AUR-SK-001", "AUR-COS-002": "AUR-SK-002", "AUR-TFS-003": "AUR-SK-003",
+      "AUR-TFS-004": "AUR-SK-004", "AUR-ANU-005": "AUR-SK-005", "AUR-IMF-006": "AUR-SK-006",
+      "AUR-COS-007": "AUR-SK-007", "AUR-COS-008": "AUR-SK-008", "AUR-BOJ-009": "AUR-SK-009",
+      "AUR-BOJ-010": "AUR-SK-010", "AUR-SKI-011": "AUR-SK-011", "AUR-SKI-012": "AUR-SK-012",
+      "AUR-COS-015": "AUR-SK-015", "AUR-ALH-016": "AUR-SK-016", "AUR-SKI-017": "AUR-SK-017",
+      "AUR-SKI-019": "AUR-SK-019", "AUR-APL-020": "AUR-SK-020", "AUR-ANU-023": "AUR-SK-023",
+      "AUR-ANU-024": "AUR-SK-024", "AUR-ARE-026": "AUR-SK-026", "AUR-COS-027": "AUR-SK-027",
+      "AUR-SKI-028": "AUR-SK-030"
+    };
+
+    function getRoutineItems(rec) {
+      const fallbackCats = [["Cleanser", "Toner"], ["Serum", "Toner", "Treatment"], ["Cream", "Sunscreen"]];
+      return (rec.ids || []).map((id, idx) => {
+        const legacy = ROUTINE_LEGACY_MAP[id];
+        let found = PRODUCTS.find(p => p.id === id || (legacy && p.id === legacy));
+        if (!found) {
+          const cats = fallbackCats[idx] || ["Serum"];
+          found = PRODUCTS.find(p => cats.includes(p.category) && Number(p.stock) > 0) || PRODUCTS[idx];
+        }
+        return found;
+      }).filter(Boolean);
     }
 
     function renderRoutine() {
       const rec = getRoutineRecommendation();
       document.getElementById("routineCounselorNote").textContent = rec.note;
-      const items = rec.ids.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
+      const items = getRoutineItems(rec);
       const total = items.reduce((s, p) => s + getEffectivePrice(p), 0);
       document.getElementById("routineBundleTotal").textContent = `Bundle Total: ৳${total.toLocaleString()} (${items.length} products)`;
 
       const steps = ["Step 1 • Cleanse / Prep", "Step 2 • Treat / Hydrate", "Step 3 • Seal / Protect"];
       document.getElementById("routineStepsGrid").innerHTML = items.map((p, idx) => `
-        <div class="bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3.5 border border-[#E6DEC8] flex flex-col justify-between">
+        <div class="min-w-0 bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3.5 border border-[#E6DEC8] flex flex-col justify-between overflow-hidden">
           <div>
             <span class="text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider text-[#5E6B52] block truncate">${steps[idx] || "Step"}</span>
             <div class="aspect-square sm:aspect-[4/3] rounded-lg sm:rounded-xl overflow-hidden bg-[#F2ECE1] my-1.5 sm:my-2.5 cursor-pointer qv-trigger group" data-id="${p.id}">
@@ -1685,6 +1723,10 @@
         const el = document.querySelector('[data-i18n="routine_desc"]');
         if (el) el.textContent = cfg.routineDesc;
       }
+      if (cfg.routineOverrides && typeof cfg.routineOverrides === "object") {
+        window.__AUREVA_ROUTINE_OVERRIDES__ = cfg.routineOverrides;
+        if (typeof renderRoutine === "function") renderRoutine();
+      }
       if (cfg.authKicker) {
         const el = document.querySelector('[data-i18n="auth_kicker"]');
         if (el) el.textContent = cfg.authKicker;
@@ -1830,6 +1872,7 @@
               PRODUCTS = pData;
               if (typeof renderProducts === "function") renderProducts();
               if (typeof renderCart === "function") renderCart();
+              if (typeof renderRoutine === "function") renderRoutine();
               if (window.__aurevaCfg && typeof window.__aurevaApply === "function") {
                 window.__aurevaApply(window.__aurevaCfg);
               }
@@ -2065,7 +2108,7 @@
 
       document.getElementById("addRoutineBundleBtn").addEventListener("click", () => {
         const rec = getRoutineRecommendation();
-        rec.ids.forEach(id => addToCart(id));
+        getRoutineItems(rec).forEach(p => addToCart(p.id));
         document.getElementById("cartDrawer").classList.remove("hidden");
       });
 

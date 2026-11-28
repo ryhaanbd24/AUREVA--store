@@ -161,6 +161,11 @@
               </div>
               <div id="prodMultiImagesPreview" class="flex flex-wrap gap-2"></div>
             </div>
+                        <div class="sm:col-span-3 flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-[#F2ECE1] border border-[#DFD5C3]">
+              <span class="text-[11px] text-[#463E38]">Type Product Name &amp; Brand above, then auto-fill with AI (or fill manually below):</span>
+              <button id="aiAutofillAddBtn" type="button" class="px-4 py-1.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D] text-xs">✨ Auto-Fill with Gemini AI</button>
+            </div>
+            <div id="aiRoutineSuggestion" class="hidden sm:col-span-3 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between gap-2"></div>
             <textarea name="desc" rows="2" placeholder="Short description..." class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
             <textarea name="ingredients" rows="2" placeholder="Key Ingredients (e.g. Niacinamide 10%, TXA 4%, Centella...)" class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
             <textarea name="howToUse" rows="2" placeholder="Use Case / How to Use (ব্যবহারের নিয়ম...)" class="sm:col-span-3 px-3 py-2 rounded-xl border border-[#DFD5C3]"></textarea>
@@ -316,6 +321,47 @@
               <div class="sm:col-span-2">
                 <label class="block text-[#645E56] mb-1">Routine Description</label>
                 <input name="routineDesc" type="text" placeholder="Select your skin type and main goal..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+            </div>
+            <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#DFD5C3] space-y-3 text-xs">
+              <p class="font-semibold text-[#1F1D1A]">Customize 3-Step Kit Products (Per Skin Type &amp; Goal)</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-[#645E56] mb-1">Skin Type</label>
+                  <select id="rmSkinType" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white">
+                    <option value="oily">Oily / Acne-Prone</option>
+                    <option value="dry">Dry / Dehydrated</option>
+                    <option value="combo">Combination</option>
+                    <option value="sensitive">Sensitive / Redness</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[#645E56] mb-1">Primary Skin Goal</label>
+                  <select id="rmConcern" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white">
+                    <option value="acne">Acne &amp; Pores</option>
+                    <option value="glow">Brightening &amp; Spots</option>
+                    <option value="barrier">Barrier &amp; Hydration</option>
+                    <option value="sun">Daily Sun Defense</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div>
+                  <label class="block text-[#645E56] mb-1">Step 1 (Cleanse / Prep)</label>
+                  <select id="rmStep1" class="rm-step-sel w-full px-2.5 py-2 rounded-xl border border-[#DFD5C3] bg-white"></select>
+                </div>
+                <div>
+                  <label class="block text-[#645E56] mb-1">Step 2 (Treat / Hydrate)</label>
+                  <select id="rmStep2" class="rm-step-sel w-full px-2.5 py-2 rounded-xl border border-[#DFD5C3] bg-white"></select>
+                </div>
+                <div>
+                  <label class="block text-[#645E56] mb-1">Step 3 (Seal / Protect)</label>
+                  <select id="rmStep3" class="rm-step-sel w-full px-2.5 py-2 rounded-xl border border-[#DFD5C3] bg-white"></select>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Counselor Note for This Combination</label>
+                <input id="rmNote" type="text" placeholder="Optional tip for this skin type &amp; goal..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white" />
               </div>
             </div>
           </div>
@@ -732,6 +778,14 @@
             </div>
           </div>
 
+          <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
+            <h3 class="font-semibold text-sm">8. Gemini AI Product Auto-Fill</h3>
+            <div>
+              <label class="block text-[#645E56] mb-1">Gemini API Key (for Auto-Fill product details &amp; 3-Step Kit suggestion)</label>
+              <input name="GEMINI_API_KEY" type="password" placeholder="AIza..." class="w-full sm:w-96 px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+            </div>
+          </div>
+
           <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-2 text-xs">
             <h3 class="font-semibold text-[#1F1D1A]">Control Panel Security (Admin Password)</h3>
             <label class="block text-[#645E56]">Admin Password / Key (Change here &amp; click Save Settings)</label>
@@ -796,6 +850,9 @@
         <div>
           <label class="block text-[#645E56] mb-1">Buying / Cost Price (BDT)</label>
           <input name="costPrice" type="number" min="0" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div class="sm:col-span-2 flex justify-end">
+          <button id="aiAutofillEditBtn" type="button" class="px-3.5 py-1.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D] text-xs">✨ Auto-Fill Details with AI</button>
         </div>
         <div class="sm:col-span-2">
           <label class="block text-[#645E56] mb-1">Short Description</label>
@@ -1052,6 +1109,8 @@
           renderHeroPreview();
           exploreCategoriesList = Array.isArray(siteCfg.exploreCategories) ? siteCfg.exploreCategories.slice() : [];
           renderExploreCatsManager();
+          routineOverridesMap = (siteCfg.routineOverrides && typeof siteCfg.routineOverrides === "object") ? { ...siteCfg.routineOverrides } : {};
+          syncRoutineManagerUi();
         }
 
         if (reportData) {
@@ -1185,6 +1244,7 @@
     let prodImagesList = [];
     let heroImagesList = [];
     let exploreCategoriesList = [];
+    let routineOverridesMap = {};
 
     function compressImageFile(file, maxW = 1000) {
       return new Promise((resolve) => {
@@ -1485,6 +1545,7 @@
       new FormData(e.target).forEach((val, key) => { payload[key] = val; });
       payload.heroImages = heroImagesList.slice();
       if (exploreCategoriesList.length > 0) payload.exploreCategories = exploreCategoriesList.slice();
+      if (Object.keys(routineOverridesMap).length > 0) payload.routineOverrides = routineOverridesMap;
       const res = await fetch(`/api/site-config?key=${encodeURIComponent(adminKey)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1615,6 +1676,113 @@
 
     ["name", "brand", "size"].forEach(field => {
       document.querySelector(`#addProductForm [name="${field}"]`)?.addEventListener("input", updateAddSkuPreview);
+    });
+
+    const DEFAULT_ROUTINE_PRESETS = {
+      oily_acne: ["AUR-COS-002", "AUR-COS-015", "AUR-BOJ-010"],
+      oily_glow: ["AUR-COS-001", "AUR-ANU-023", "AUR-SKI-011"],
+      oily_barrier: ["AUR-COS-001", "AUR-ANU-005", "AUR-ALH-016"],
+      oily_sun: ["AUR-SKI-017", "AUR-COS-001", "AUR-BOJ-010"],
+      dry_acne: ["AUR-COS-001", "AUR-COS-027", "AUR-COS-008"],
+      dry_glow: ["AUR-TFS-003", "AUR-ARE-026", "AUR-BOJ-009"],
+      dry_barrier: ["AUR-SKI-017", "AUR-IMF-006", "AUR-SKI-028"],
+      dry_sun: ["AUR-ANU-005", "AUR-TFS-004", "AUR-SKI-011"],
+      combo_acne: ["AUR-COS-002", "AUR-ANU-024", "AUR-ALH-016"],
+      combo_glow: ["AUR-TFS-003", "AUR-SKI-019", "AUR-BOJ-010"],
+      combo_barrier: ["AUR-COS-001", "AUR-COS-027", "AUR-COS-007"],
+      combo_sun: ["AUR-COS-001", "AUR-ANU-005", "AUR-SKI-011"],
+      sensitive_acne: ["AUR-COS-001", "AUR-ANU-024", "AUR-ALH-016"],
+      sensitive_glow: ["AUR-APL-020", "AUR-SKI-019", "AUR-SKI-011"],
+      sensitive_barrier: ["AUR-SKI-017", "AUR-ANU-005", "AUR-SKI-028"],
+      sensitive_sun: ["AUR-COS-001", "AUR-ALH-016", "AUR-SKI-012"]
+    };
+
+    function syncRoutineManagerUi() {
+      const prods = window.__adminProducts || [];
+      const opts = ['<option value="">-- Default Product --</option>']
+        .concat(prods.map(p => `<option value="${p.id}">${p.name} (৳${p.offerPrice || p.price})</option>`)).join("");
+      ["rmStep1", "rmStep2", "rmStep3"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = opts;
+      });
+      const key = `${document.getElementById("rmSkinType")?.value || "oily"}_${document.getElementById("rmConcern")?.value || "acne"}`;
+      const ov = routineOverridesMap[key] || {};
+      const def = DEFAULT_ROUTINE_PRESETS[key] || [];
+      const ids = Array.isArray(ov.ids) ? ov.ids : def;
+      ["rmStep1", "rmStep2", "rmStep3"].forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) el.value = ids[i] || "";
+      });
+      const noteEl = document.getElementById("rmNote");
+      if (noteEl) noteEl.value = ov.note || "";
+    }
+
+    function saveCurrentRoutineDraft() {
+      const key = `${document.getElementById("rmSkinType")?.value || "oily"}_${document.getElementById("rmConcern")?.value || "acne"}`;
+      const ids = [
+        document.getElementById("rmStep1")?.value || "",
+        document.getElementById("rmStep2")?.value || "",
+        document.getElementById("rmStep3")?.value || ""
+      ];
+      const note = (document.getElementById("rmNote")?.value || "").trim();
+      routineOverridesMap[key] = { ids, note };
+    }
+
+    document.getElementById("rmSkinType")?.addEventListener("change", syncRoutineManagerUi);
+    document.getElementById("rmConcern")?.addEventListener("change", syncRoutineManagerUi);
+    document.querySelectorAll(".rm-step-sel").forEach(sel => sel.addEventListener("change", saveCurrentRoutineDraft));
+    document.getElementById("rmNote")?.addEventListener("input", saveCurrentRoutineDraft);
+
+    async function runAiAutofill(formEl, btnEl, suggestionBoxEl) {
+      const name = (formEl.elements.namedItem("name")?.value || "").trim();
+      const brand = (formEl.elements.namedItem("brand")?.value || "").trim();
+      const category = (formEl.elements.namedItem("category")?.value || "").trim();
+      const size = (formEl.elements.namedItem("size")?.value || "").trim();
+      if (!name) { showToast("Please enter Product Name first."); return; }
+      const orig = btnEl.textContent;
+      btnEl.disabled = true; btnEl.textContent = "Generating...";
+      try {
+        const res = await fetch(`/api/ai/autofill-product?key=${encodeURIComponent(adminKey)}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, brand, category, size })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.data) {
+          showToast(json.error || "AI Auto-Fill failed.");
+          return;
+        }
+        const d = json.data;
+        if (d.desc && formEl.elements.namedItem("desc")) formEl.elements.namedItem("desc").value = d.desc;
+        if (d.ingredients && formEl.elements.namedItem("ingredients")) formEl.elements.namedItem("ingredients").value = d.ingredients;
+        if (d.howToUse && formEl.elements.namedItem("howToUse")) formEl.elements.namedItem("howToUse").value = d.howToUse;
+        if (d.skinType && formEl.elements.namedItem("skinType")) formEl.elements.namedItem("skinType").value = d.skinType;
+        if (suggestionBoxEl && d.routineMatch) {
+          const rm = d.routineMatch;
+          suggestionBoxEl.classList.remove("hidden");
+          suggestionBoxEl.innerHTML = `<span><strong>AI 3-Step Kit Suggestion:</strong> ${rm.skinType} + ${rm.concern} (Step ${rm.step}) — You can review/edit manually anytime.</span>`;
+        }
+        showToast("AI filled product details! Review and edit if needed.");
+      } catch {
+        showToast("Could not connect to AI service.");
+      } finally {
+        btnEl.disabled = false; btnEl.textContent = orig;
+      }
+    }
+
+    document.getElementById("aiAutofillAddBtn")?.addEventListener("click", () => {
+      runAiAutofill(
+        document.getElementById("addProductForm"),
+        document.getElementById("aiAutofillAddBtn"),
+        document.getElementById("aiRoutineSuggestion")
+      );
+    });
+    document.getElementById("aiAutofillEditBtn")?.addEventListener("click", () => {
+      runAiAutofill(
+        document.getElementById("editProductForm"),
+        document.getElementById("aiAutofillEditBtn"),
+        null
+      );
     });
 
     if (adminKey) loadDashboard();
