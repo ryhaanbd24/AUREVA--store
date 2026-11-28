@@ -21,8 +21,8 @@
       <form id="loginForm" class="space-y-3">
         <div>
           <label class="block text-xs font-medium text-[#645E56] mb-1">Admin Password / Key</label>
-          <input id="loginKeyInput" type="password" required value="aureva-admin-2026" class="w-full px-3.5 py-2.5 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
-          <p class="text-[11px] text-[#645E56] mt-1">Default: <code class="bg-[#F2ECE1] px-1 rounded">aureva-admin-2026</code></p>
+          <input id="loginKeyInput" type="password" required placeholder="Enter Admin Password" class="w-full px-3.5 py-2.5 rounded-xl border border-[#DFD5C3] text-sm focus:outline-none focus:border-[#8C7355]" />
+          
         </div>
         <button type="submit" class="w-full py-2.5 rounded-full bg-[#1F1D1A] text-white text-sm font-semibold hover:bg-[#36322D]">Access Control Panel</button>
       </form>
@@ -245,8 +245,24 @@
               <input name="heroCtaRoutine" type="text" placeholder="Find My Routine" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             </div>
             <div>
+              <label class="block text-[#645E56] mb-1">Collection Kicker</label>
+              <input name="shopKicker" type="text" placeholder="Live Inventory" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            </div>
+            <div>
               <label class="block text-[#645E56] mb-1">Collection Section Title</label>
               <input name="shopTitle" type="text" placeholder="Aureva Skincare Collection" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[#645E56] mb-1">Extra Collection Categories (comma-separated, e.g. Masks, Lip Care, Hair Care)</label>
+              <input name="customCategories" type="text" placeholder="Masks, Lip Care, Hair Care" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            </div>
+            <div>
+              <label class="block text-[#645E56] mb-1">Explore by Category Kicker</label>
+              <input name="exploreCatKicker" type="text" placeholder="Browse by Step" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            </div>
+            <div>
+              <label class="block text-[#645E56] mb-1">Explore by Category Title</label>
+              <input name="exploreCatTitle" type="text" placeholder="Explore by Category" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             </div>
             <div>
               <label class="block text-[#645E56] mb-1">Consultation Heading</label>
@@ -254,9 +270,153 @@
             </div>
           </div>
 
+                    <div class="pt-3 border-t border-[#EFE8D8] space-y-3">
+                      <div class="pt-3 border-t border-[#EFE8D8] space-y-3">
+            <h3 class="font-semibold text-sm text-[#1F1D1A]">Routine Finder Section</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[#645E56] mb-1">Routine Kicker</label>
+                <input name="routineKicker" type="text" placeholder="Personalized Counseling" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Routine Heading</label>
+                <input name="routineTitle" type="text" placeholder="Build Your 3-Step K-Beauty Routine" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[#645E56] mb-1">Routine Description</label>
+                <input name="routineDesc" type="text" placeholder="Select your skin type and main goal..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-[#EFE8D8] space-y-3">
+            <h3 class="font-semibold text-sm text-[#1F1D1A]">Authenticity &amp; Trust Cards Section</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[#645E56] mb-1">Section Kicker</label>
+                <input name="authKicker" type="text" placeholder="Why Shop With Aureva" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Section Heading</label>
+                <input name="authTitle" type="text" placeholder="Built on Trust &amp; Transparency" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Card 1 Title</label>
+                <input name="edge1Title" type="text" placeholder="Batch &amp; Barcode Verified" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Card 1 Description</label>
+                <input name="edge1Desc" type="text" placeholder="Every product carries verifiable batch codes..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Card 2 Title</label>
+                <input name="edge2Title" type="text" placeholder="Free Skin Counseling" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Card 2 Description</label>
+                <input name="edge2Desc" type="text" placeholder="Get 1-on-1 routine guidance..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Card 3 Title</label>
+                <input name="edge3Title" type="text" placeholder="100% Direct K-Beauty Sourcing" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Card 3 Description</label>
+                <input name="edge3Desc" type="text" placeholder="Sourced directly from authorized Korean distributors..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Card 4 Title</label>
+                <input name="edge4Title" type="text" placeholder="Fast Nationwide COD" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Card 4 Description</label>
+                <input name="edge4Desc" type="text" placeholder="Inside Dhaka ৳70 (24–48h)..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-[#EFE8D8] space-y-3">
+            <h3 class="font-semibold text-sm text-[#1F1D1A]">1-on-1 Consultation Section</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[#645E56] mb-1">Consultation Kicker</label>
+                <input name="consultKicker" type="text" placeholder="1-on-1 Skincare Help" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Submit Button Text</label>
+                <input name="consultSubmitText" type="text" placeholder="Request Free Routine Advice" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[#645E56] mb-1">Consultation Description</label>
+                <input name="consultDesc" type="text" placeholder="Send us your skin type and concerns..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Location Badge</label>
+                <input name="consultLocation" type="text" placeholder="Dhaka, Bangladesh" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Hours Badge</label>
+                <input name="consultHours" type="text" placeholder="10:00 AM – 10:00 PM Daily" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+            </div>
+          </div>
+
+<div class="pt-3 border-t border-[#EFE8D8] space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-semibold text-sm text-[#1F1D1A]">Explore by Category Cards (Add / Edit)</h3>
+              <button id="addExploreCatBtn" type="button" class="px-3 py-1.5 rounded-full bg-[#1F1D1A] text-white text-xs font-semibold hover:bg-[#36322D]">+ Add Category Card</button>
+            </div>
+            <div id="exploreCatsManager" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+          </div>
+
+          <h3 class="font-semibold text-sm text-[#1F1D1A]">Header Navigation &amp; Branding</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[#645E56] mb-1">Header Brand Name</label>
+                <input name="headerBrandName" type="text" placeholder="AUREVA" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Header Subtitle</label>
+                <input name="headerSubtitle" type="text" placeholder="K-Beauty Bangladesh" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Header Background Color</label>
+                <input name="headerBgColor" type="color" value="#FAF7F2" class="w-full h-10 rounded-xl border border-[#DFD5C3] cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Menu 1 Text</label>
+                <input name="navShopText" type="text" placeholder="Shop All" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Menu 2 Text</label>
+                <input name="navRoutineText" type="text" placeholder="Routine Finder" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Menu 3 Text</label>
+                <input name="navAuthText" type="text" placeholder="Authenticity" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Menu 4 Text</label>
+                <input name="navConsultText" type="text" placeholder="Free Counseling" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+            </div>
+          </div>
+
           <div class="pt-3 border-t border-[#EFE8D8] space-y-3">
             <h3 class="font-semibold text-sm text-[#1F1D1A]">Footer, Contact Us &amp; Social Media Links</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[#645E56] mb-1">Footer Brand Name</label>
+                <input name="footerBrandName" type="text" placeholder="AUREVA" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Footer Background Color</label>
+                <input name="footerBgColor" type="color" value="#223026" class="w-full h-10 rounded-xl border border-[#DFD5C3] cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-[#645E56] mb-1">Footer Bottom-Right Text</label>
+                <input name="footerRightTag" type="text" placeholder="Authentic K-Beauty Bangladesh" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+              </div>
               <div class="sm:col-span-2">
                 <label class="block text-[#645E56] mb-1">Footer Brand Tagline</label>
                 <input name="footerTagline" type="text" placeholder="Authentic Korean skincare curated for Bangladesh weather..." class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
@@ -372,7 +532,13 @@
             </div>
           </div>
 
-          <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">Save Settings</button>
+                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-2 text-xs">
+            <h3 class="font-semibold text-[#1F1D1A]">Control Panel Security (Admin Password)</h3>
+            <label class="block text-[#645E56]">Admin Password / Key (Change here &amp; click Save Settings)</label>
+            <input name="ADMIN_KEY" type="password" placeholder="Enter new admin password" class="w-full sm:w-80 px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white" />
+          </div>
+
+<button type="submit" class="px-6 py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">Save Settings</button>
         </form>
       </section>
     </main>
@@ -626,6 +792,8 @@
             heroImagesList = [];
           }
           renderHeroPreview();
+          exploreCategoriesList = Array.isArray(siteCfg.exploreCategories) ? siteCfg.exploreCategories.slice() : [];
+          renderExploreCatsManager();
         }
 
         const form = document.getElementById("settingsForm");
@@ -669,6 +837,7 @@
     
     let prodImagesList = [];
     let heroImagesList = [];
+    let exploreCategoriesList = [];
 
     function compressImageFile(file, maxW = 1000) {
       return new Promise((resolve) => {
@@ -769,6 +938,49 @@
         heroImagesList.push({ src: url, name: "", productId: "", caption: "" });
       }
       renderHeroPreview();
+    });
+
+    function renderExploreCatsManager() {
+      const box = document.getElementById("exploreCatsManager");
+      if (!box) return;
+      box.innerHTML = exploreCategoriesList.map((c, i) => `
+        <div class="p-3 rounded-xl border border-[#DFD5C3] bg-[#FAF7F2] space-y-2 text-xs relative">
+          <button type="button" data-ec-del="${i}" class="absolute top-2 right-2 bg-red-600 text-white w-5 h-5 rounded-full text-[11px] leading-none">×</button>
+          <input type="text" data-ec-field="title" data-ec-idx="${i}" value="${(c.title || "").replace(/"/g, '&quot;')}" placeholder="Card Title (e.g. Sheet Masks)" class="ec-inp w-full px-2.5 py-1.5 rounded-lg border border-[#DFD5C3] bg-white pr-7" />
+          <input type="text" data-ec-field="subtitle" data-ec-idx="${i}" value="${(c.subtitle || "").replace(/"/g, '&quot;')}" placeholder="Subtitle (e.g. Hydration & Glow)" class="ec-inp w-full px-2.5 py-1.5 rounded-lg border border-[#DFD5C3] bg-white" />
+          <input type="text" data-ec-field="category" data-ec-idx="${i}" value="${(c.category || "").replace(/"/g, '&quot;')}" placeholder="Filter Category (e.g. Cleanser, Serum)" class="ec-inp w-full px-2.5 py-1.5 rounded-lg border border-[#DFD5C3] bg-white" />
+          <div class="flex items-center gap-2">
+            <input type="url" data-ec-field="imageUrl" data-ec-idx="${i}" value="${(c.imageUrl || "").replace(/"/g, '&quot;')}" placeholder="Image URL or upload ->" class="ec-inp flex-1 px-2.5 py-1.5 rounded-lg border border-[#DFD5C3] bg-white" />
+            <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-[#2E2A25] text-white shrink-0">Upload<input type="file" accept="image/*" data-ec-file="${i}" class="hidden" /></label>
+          </div>
+        </div>
+      `).join("");
+      box.querySelectorAll(".ec-inp").forEach(inp => {
+        inp.addEventListener("input", () => {
+          const idx = Number(inp.dataset.ecIdx);
+          if (exploreCategoriesList[idx]) exploreCategoriesList[idx][inp.dataset.ecField] = inp.value;
+        });
+      });
+      box.querySelectorAll("[data-ec-file]").forEach(fInp => {
+        fInp.addEventListener("change", async (e) => {
+          const f = e.target.files[0];
+          if (!f) return;
+          const idx = Number(fInp.dataset.ecFile);
+          exploreCategoriesList[idx].imageUrl = await compressImageFile(f, 800);
+          renderExploreCatsManager();
+        });
+      });
+      box.querySelectorAll("[data-ec-del]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          exploreCategoriesList.splice(Number(btn.dataset.ecDel), 1);
+          renderExploreCatsManager();
+        });
+      });
+    }
+
+    document.getElementById("addExploreCatBtn")?.addEventListener("click", () => {
+      exploreCategoriesList.push({ title: "", subtitle: "", category: "Serum", imageUrl: "" });
+      renderExploreCatsManager();
     });
 
     document.getElementById("addHeroUrlBtn")?.addEventListener("click", () => {
@@ -924,6 +1136,7 @@
       const payload = {};
       new FormData(e.target).forEach((val, key) => { payload[key] = val; });
       payload.heroImages = heroImagesList.slice();
+      if (exploreCategoriesList.length > 0) payload.exploreCategories = exploreCategoriesList.slice();
       const res = await fetch(`/api/site-config?key=${encodeURIComponent(adminKey)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

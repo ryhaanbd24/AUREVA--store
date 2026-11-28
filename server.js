@@ -192,7 +192,7 @@ app.get("/api/health", (req, res) => {
   const isLive = String(s.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
   res.json({
     ok: true,
-    build: "v16",
+    build: "v27",
     gatewayConfigured: Boolean(s.SSLCOMMERZ_STORE_ID && s.SSLCOMMERZ_STORE_PASSWD && s.SSLCOMMERZ_STORE_ID !== "your_store_id"),
     couriersConfigured: getConfiguredCouriers(s),
     mode: isLive ? "LIVE" : "SANDBOX",
@@ -207,7 +207,7 @@ app.get("/api/site-config", (req, res) => {
 
 app.post("/api/site-config", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
   const current = readJson(SITE_CONFIG_FILE, {});
   const updated = { ...current, ...(req.body || {}) };
   writeJson(SITE_CONFIG_FILE, updated);
@@ -216,7 +216,7 @@ app.post("/api/site-config", (req, res) => {
 
 app.delete("/api/site-config", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
   writeJson(SITE_CONFIG_FILE, {});
   res.json({ status: "success" });
 });
@@ -229,7 +229,7 @@ app.get("/api/products", (req, res) => {
 // Admin Product Management (Add & Delete)
 app.post("/api/products", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
 
   const { name, brand, category, size, price, offerPrice, isCombo, comboTag, stock, desc, imageUrl, images, ingredients, howToUse, skinType } = req.body || {};
   if (!name || !brand || !category || !price) {
@@ -263,7 +263,7 @@ app.post("/api/products", (req, res) => {
 
 app.put("/api/products/:id", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
   const products = getProducts();
   const idx = products.findIndex(p => p.id === req.params.id);
   if (idx === -1) return res.status(404).json({ status: "error", message: "Product not found." });
@@ -293,7 +293,7 @@ app.put("/api/products/:id", (req, res) => {
 
 app.patch("/api/products/:id/images", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
   const products = getProducts();
   const idx = products.findIndex(p => p.id === req.params.id);
   if (idx === -1) return res.status(404).json({ status: "error", message: "Product not found." });
@@ -306,7 +306,7 @@ app.patch("/api/products/:id/images", (req, res) => {
 
 app.delete("/api/products/:id", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
 
   const products = getProducts().filter(p => p.id !== req.params.id);
   writeJson(PRODUCTS_FILE, products);
@@ -564,7 +564,7 @@ app.get("/api/courier/track/:orderRef", async (req, res) => {
 // Manual Courier Booking / Provider Override (Admin Protected)
 app.post("/api/courier/book/:orderRef", async (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
 
   const preferredProvider = req.query.provider || req.body?.provider;
   const result = await autoBookOrder(req.params.orderRef, preferredProvider);
@@ -591,25 +591,25 @@ app.post("/api/consultations", (req, res) => {
 // Protected Control Panel Endpoints
 app.get("/api/orders", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
   res.json(readJson(ORDERS_FILE, []));
 });
 
 app.get("/api/consultations", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
   res.json(readJson(CONSULTATIONS_FILE, []));
 });
 
 app.get("/api/settings", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
   res.json(getSettings());
 });
 
 app.post("/api/settings", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) return res.status(401).json({ error: "Unauthorized" });
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
   const current = readJson(SETTINGS_FILE, {});
   const updated = { ...current, ...(req.body || {}) };
   writeJson(SETTINGS_FILE, updated);
