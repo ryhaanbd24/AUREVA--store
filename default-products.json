@@ -1,6 +1,6 @@
 [
   {
-    "id": "AUR-SK-001",
+    "id": "AUR-COS-001",
     "name": "COSRX Low pH Good Morning Gel Cleanser",
     "brand": "COSRX",
     "category": "Cleanser",
@@ -13,7 +13,7 @@
     "skinType": "Oily, Combination, Acne-prone এবং Sensitive সব ধরনের ত্বকের জন্য উপযোগী।"
   },
   {
-    "id": "AUR-SK-002",
+    "id": "AUR-COS-002",
     "name": "COSRX Salicylic Acid Daily Gentle Cleanser",
     "brand": "COSRX",
     "category": "Cleanser",
@@ -26,7 +26,7 @@
     "skinType": "Oily, Combination এবং Acne-prone (ব্রণ ও হোয়াইটহেডস যুক্ত) ত্বকের জন্য সেরা।"
   },
   {
-    "id": "AUR-SK-003",
+    "id": "AUR-TFS-003",
     "name": "The Face Shop Rice Water Bright Cleansing Foam",
     "brand": "The Face Shop",
     "category": "Cleanser",
@@ -39,7 +39,7 @@
     "skinType": "Normal, Dry এবং Combination ত্বকের জন্য উপযোগী (Dull skin উজ্জ্বল করতে দারুণ)।"
   },
   {
-    "id": "AUR-SK-004",
+    "id": "AUR-TFS-004",
     "name": "The Face Shop Rice Ceramide Moisture Cream",
     "brand": "The Face Shop",
     "category": "Cream",
@@ -52,7 +52,7 @@
     "skinType": "Dry, Normal এবং Dehydrated (রুক্ষ ও টানটান) ত্বকের জন্য উপযোগী।"
   },
   {
-    "id": "AUR-SK-005",
+    "id": "AUR-ANU-005",
     "name": "ANUA Rice Milky Toner",
     "brand": "ANUA",
     "category": "Toner",
@@ -65,7 +65,7 @@
     "skinType": "All Skin Types — বিশেষ করে Dry, Combination ও Sensitive ত্বকের জন্য চমৎকার।"
   },
   {
-    "id": "AUR-SK-006",
+    "id": "AUR-IMF-006",
     "name": "I'M FROM Rice Toner",
     "brand": "I'm From",
     "category": "Toner",
@@ -78,7 +78,7 @@
     "skinType": "Dry, Normal, Combination এবং Dull (মলিন) ত্বকের জন্য উপযোগী।"
   },
   {
-    "id": "AUR-SK-007",
+    "id": "AUR-COS-007",
     "name": "COSRX Advanced Snail 92 All In One Cream (Mini)",
     "brand": "COSRX",
     "category": "Cream",
@@ -91,7 +91,7 @@
     "skinType": "All Skin Types — Oily, Acne-prone, Dry এবং Sensitive সব ত্বকেই ব্যবহার করা যায়।"
   },
   {
-    "id": "AUR-SK-008",
+    "id": "AUR-COS-008",
     "name": "COSRX Advanced Snail 92 All In One Cream",
     "brand": "COSRX",
     "category": "Cream",
@@ -104,7 +104,7 @@
     "skinType": "All Skin Types — বিশেষ করে Acne-scarred, Combination ও Dehydrated ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-009",
+    "id": "AUR-BOJ-009",
     "name": "Beauty of Joseon Dynasty Cream",
     "brand": "Beauty of Joseon",
     "category": "Cream",
@@ -117,7 +117,7 @@
     "skinType": "Dry, Normal এবং Combination ত্বকের জন্য দারুণ উপযোগী।"
   },
   {
-    "id": "AUR-SK-010",
+    "id": "AUR-BOJ-010",
     "name": "Beauty of Joseon Relief Sun Aqua-fresh",
     "brand": "Beauty of Joseon",
     "category": "Sunscreen",
@@ -130,7 +130,7 @@
     "skinType": "Oily, Combination, Normal এবং Humid আবহাওয়ায় সব ত্বকের জন্য সেরা।"
   },
   {
-    "id": "AUR-SK-011",
+    "id": "AUR-SKI-011",
     "name": "SKIN1004 Centella Hyalu-Cica Water-Fit Sun Serum",
     "brand": "SKIN1004",
     "category": "Sunscreen",
@@ -143,7 +143,7 @@
     "skinType": "All Skin Types — বিশেষ করে Oily, Sensitive ও Acne-prone ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-012",
+    "id": "AUR-SKI-012",
     "name": "SKIN1004 Centella Hyalu-Cica Water-Fit Sun Serum (Mini)",
     "brand": "SKIN1004",
     "category": "Sunscreen",
@@ -156,7 +156,7 @@
     "skinType": "All Skin Types — Sensitive ও Oily ত্বকের জন্য অত্যন্ত উপযোগী।"
   },
   {
-    "id": "AUR-SK-013",
+    "id": "AUR-APL-013",
     "name": "APLB Glutathione Niacinamide Body Lotion",
     "brand": "APLB",
     "category": "Body Care",
@@ -169,7 +169,7 @@
     "skinType": "All Skin Types — শরীরের শুষ্ক বা অসম রঙের ত্বকের জন্য উপযোগী।"
   },
   {
-    "id": "AUR-SK-014",
+    "id": "AUR-APL-014",
     "name": "APLB Glutathione Niacinamide Facial Cream",
     "brand": "APLB",
     "category": "Cream",
@@ -182,7 +182,7 @@
     "skinType": "Normal, Dry, Combination এবং Dull বা Pigmented ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-015",
+    "id": "AUR-COS-015",
     "name": "COSRX Acne Pimple Master Patch (24pcs)",
     "brand": "COSRX",
     "category": "Treatment",
@@ -195,7 +195,7 @@
     "skinType": "All Skin Types — বিশেষ করে সক্রিয় ব্রণ বা পিম্পল যুক্ত ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-016",
+    "id": "AUR-ALH-016",
     "name": "Dr. Althea 345 Relief Cream",
     "brand": "Dr. Althea",
     "category": "Cream",
@@ -208,7 +208,7 @@
     "skinType": "Acne-prone, Sensitive, Oily এবং Combination ত্বকের জন্য অত্যন্ত জনপ্রিয়।"
   },
   {
-    "id": "AUR-SK-017",
+    "id": "AUR-SKI-017",
     "name": "SKIN1004 Centella Light Cleansing Oil (Mini)",
     "brand": "SKIN1004",
     "category": "Cleanser",
@@ -221,7 +221,7 @@
     "skinType": "All Skin Types — Oily, Combination, Dry ও Sensitive ত্বকের ডাবল ক্লিনজিংয়ের জন্য।"
   },
   {
-    "id": "AUR-SK-018",
+    "id": "AUR-SKI-018",
     "name": "SKIN1004 Centella Light Cleansing Oil",
     "brand": "SKIN1004",
     "category": "Cleanser",
@@ -234,7 +234,7 @@
     "skinType": "All Skin Types — বিশেষ করে সানস্ক্রিন/মেকআপ ব্যবহারকারী ও Blackhead যুক্ত ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-019",
+    "id": "AUR-SKI-019",
     "name": "SKIN1004 Centella Tone Brightening Capsule Ampoule",
     "brand": "SKIN1004",
     "category": "Serum",
@@ -247,7 +247,7 @@
     "skinType": "All Skin Types — Sensitive, Acne-mark ও Uneven skin tone-এর জন্য দারুণ।"
   },
   {
-    "id": "AUR-SK-020",
+    "id": "AUR-APL-020",
     "name": "APLB Glutathione Niacinamide Facial Cleanser",
     "brand": "APLB",
     "category": "Cleanser",
@@ -260,7 +260,7 @@
     "skinType": "All Skin Types — Normal, Combination এবং Dull ত্বকের জন্য উপযোগী।"
   },
   {
-    "id": "AUR-SK-021",
+    "id": "AUR-APL-021",
     "name": "APLB Glutathione Niacinamide Body Wash",
     "brand": "APLB",
     "category": "Body Care",
@@ -273,7 +273,7 @@
     "skinType": "All Skin Types — প্রতিদিনের ব্যবহারের জন্য নিরাপদ।"
   },
   {
-    "id": "AUR-SK-022",
+    "id": "AUR-APL-022",
     "name": "APLB Collagen Peptide Beauty Tablet",
     "brand": "APLB",
     "category": "Supplement",
@@ -286,7 +286,7 @@
     "skinType": "সব ধরনের ত্বকের ভেতর থেকে পুষ্টি ও অ্যান্টি-এজিং কেয়ারের জন্য।"
   },
   {
-    "id": "AUR-SK-023",
+    "id": "AUR-ANU-023",
     "name": "ANUA Niacinamide 10% + TXA 4% Serum",
     "brand": "ANUA",
     "category": "Serum",
@@ -299,7 +299,7 @@
     "skinType": "Oily, Combination, Normal এবং Dark spots/PIH যুক্ত ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-024",
+    "id": "AUR-ANU-024",
     "name": "ANUA Azelaic Acid 10 Hyaluron Redness Serum",
     "brand": "ANUA",
     "category": "Serum",
@@ -312,7 +312,7 @@
     "skinType": "Sensitive, Rosacea-prone, Redness এবং Acne-prone ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-025",
+    "id": "AUR-KSC-025",
     "name": "KSecret Seoul 1988 Eye Cream Fermented Bean",
     "brand": "KSecret",
     "category": "Eye Care",
@@ -325,7 +325,7 @@
     "skinType": "All Skin Types — Dark circles ও Fine lines যুক্ত ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-026",
+    "id": "AUR-ARE-026",
     "name": "ARENCIA Vitamin C Booster Shot",
     "brand": "Arencia",
     "category": "Serum",
@@ -338,7 +338,7 @@
     "skinType": "Normal, Combination, Dry এবং Dull skin-এর জন্য উপযোগী।"
   },
   {
-    "id": "AUR-SK-027",
+    "id": "AUR-COS-027",
     "name": "COSRX Advanced Snail 96 Mucin Power Essence",
     "brand": "COSRX",
     "category": "Serum",
@@ -351,7 +351,7 @@
     "skinType": "All Skin Types — Dry, Oily, Acne-prone ও Sensitive সবার জন্য নিরাপদ।"
   },
   {
-    "id": "AUR-SK-030",
+    "id": "AUR-SKI-028",
     "name": "SKIN1004 Centella Probio-Cica Enrich Cream",
     "brand": "SKIN1004",
     "category": "Cream",
@@ -364,7 +364,7 @@
     "skinType": "Dry, Very Sensitive, Compromised barrier এবং শীতকালীন রুক্ষ ত্বকের জন্য।"
   },
   {
-    "id": "AUR-SK-031",
+    "id": "AUR-NEL-029",
     "name": "Nella White Snow Fermented Underarm Whitening Cream",
     "brand": "Nella",
     "category": "Body Care",

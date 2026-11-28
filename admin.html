@@ -8,7 +8,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     body { font-family: 'Inter', sans-serif; background: #FAF7F2; color: #1F1D1A; }
+    html.aureva-admin-authed #loginScreen { display: none !important; }
+    html.aureva-admin-authed #panelApp { display: flex !important; }
   </style>
+  <script>
+    try {
+      if (localStorage.getItem("aureva_admin_key")) {
+        document.documentElement.classList.add("aureva-admin-authed");
+      }
+    } catch {}
+  </script>
 </head>
 <body class="min-h-screen">
   <!-- Login Screen -->
@@ -41,6 +50,9 @@
         <button data-tab="productsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Products</button>
         <button data-tab="consultsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Consultations</button>
         <button data-tab="designTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Frontend Design</button>
+        <button data-tab="reportsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Reports &amp; Stock</button>
+        <button data-tab="couponsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Coupons</button>
+        <button data-tab="customersTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Customers</button>
         <button data-tab="settingsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Payment &amp; Courier Setup</button>
         <a href="/" class="px-3 py-1.5 rounded-full border border-[#4A443C] hover:bg-[#2E2A25]">View Store</a>
         <button id="logoutBtn" class="px-3 py-1.5 rounded-full border border-red-400/50 text-red-200 hover:bg-red-900/30">Logout</button>
@@ -77,10 +89,27 @@
             <button id="refreshBtn" class="text-xs px-3 py-1 rounded-full bg-[#1F1D1A] text-white">Refresh</button>
           </div>
         </div>
+        <div class="px-5 py-2.5 bg-[#FAF7F2] border-b border-[#E6DEC8] flex flex-wrap items-center justify-between gap-3 text-xs">
+          <label class="inline-flex items-center gap-2 font-semibold cursor-pointer">
+            <input id="selectAllOrdersCb" type="checkbox" class="accent-[#1F1D1A]" />
+            <span>Select All Orders</span>
+          </label>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="bulkCourierProvider" class="border border-[#DFD5C3] rounded-lg px-2.5 py-1.5 bg-white">
+              <option value="">Auto Courier</option>
+              <option value="steadfast">Steadfast</option>
+              <option value="pathao">Pathao</option>
+              <option value="redx">RedX</option>
+              <option value="ecourier">eCourier</option>
+            </select>
+            <button id="bulkBookCourierBtn" type="button" class="px-3.5 py-1.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">Bulk Book Selected</button>
+          </div>
+        </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
               <tr>
+                <th class="px-3 py-3 w-8"></th>
                 <th class="px-4 py-3">Order Ref</th>
                 <th class="px-4 py-3">Customer</th>
                 <th class="px-4 py-3">Items</th>
@@ -100,6 +129,7 @@
         <div class="bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-4">
           <h2 class="font-semibold text-base">Add New Product</h2>
           <form id="addProductForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <input id="addProdSkuInput" name="id" type="text" placeholder="Auto SKU (e.g. AUR-SK-032)" class="px-3 py-2 rounded-xl border border-[#DFD5C3] bg-[#FAF7F2] font-mono uppercase" />
             <input name="name" type="text" required placeholder="Product Name (e.g. COSRX Toner 150ml)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <input name="brand" type="text" required placeholder="Brand (e.g. COSRX)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <select name="category" required class="px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white">
@@ -116,6 +146,7 @@
             <input name="size" type="text" placeholder="Size (e.g. 50ml)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <input name="price" type="number" required min="1" placeholder="Regular Price in BDT (e.g. 1250)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <input name="offerPrice" type="number" min="0" placeholder="Offer Price (Optional, e.g. 990)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <input name="costPrice" type="number" min="0" placeholder="Buying / Cost Price (BDT, for Profit)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <input name="stock" type="number" min="0" value="5" placeholder="Stock Qty" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <label class="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#DFD5C3] bg-[#FAF7F2] cursor-pointer">
               <input name="isCombo" type="checkbox" class="accent-[#1F1D1A]" />
@@ -472,6 +503,167 @@
         </form>
       </section>
 
+      <!-- TAB: REPORTS & STOCK -->
+      <section id="reportsTab" class="tab-panel hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-[#E6DEC8] p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div>
+            <p class="font-bold text-sm text-[#1F1D1A]">Successful Deliveries Sales &amp; Profit Report</p>
+            <p id="repPendingNote" class="text-[#645E56] mt-0.5">Only confirmed delivered orders are counted in sales &amp; profit. Pending / In-transit: 0 orders</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="syncDeliveriesBtn" type="button" class="px-4 py-2 rounded-full bg-emerald-700 text-white font-semibold hover:bg-emerald-800">Sync Courier Delivery Statuses</button>
+            <button id="exportSalesCsvBtn" type="button" class="px-4 py-2 rounded-full border border-[#DFD5C3] font-semibold hover:bg-[#F2ECE1]">Export CSV</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+            <p class="text-xs text-[#645E56]">Today's Sales</p>
+            <p id="repTodaySales" class="text-2xl font-bold mt-1">৳0</p>
+            <p id="repTodayOrders" class="text-[11px] text-[#645E56] mt-0.5">0 orders</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+            <p class="text-xs text-[#645E56]">This Month's Sales</p>
+            <p id="repMonthSales" class="text-2xl font-bold mt-1">৳0</p>
+            <p id="repMonthOrders" class="text-[11px] text-[#645E56] mt-0.5">0 orders</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+            <p class="text-xs text-[#645E56]">Total Net Profit</p>
+            <p id="repTotalProfit" class="text-2xl font-bold text-emerald-700 mt-1">৳0</p>
+            <p id="repTotalCost" class="text-[11px] text-[#645E56] mt-0.5">Cost: ৳0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
+            <p class="text-xs text-[#645E56]">Low Stock Alerts (&le; 2)</p>
+            <p id="repLowStockCount" class="text-2xl font-bold text-rose-600 mt-1">0</p>
+            <p class="text-[11px] text-[#645E56] mt-0.5">Need restock</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-7 bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+            <div class="px-5 py-4 border-b border-[#E6DEC8] flex items-center justify-between">
+              <h2 class="font-semibold text-sm">Sales &amp; Profit / Loss Report</h2>
+              <div class="flex items-center gap-1.5 text-xs">
+                <button id="repDailyBtn" type="button" class="px-3 py-1 rounded-full bg-[#1F1D1A] text-white font-semibold">Daily</button>
+                <button id="repMonthlyBtn" type="button" class="px-3 py-1 rounded-full bg-[#F2ECE1] text-[#1F1D1A]">Monthly</button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+                  <tr>
+                    <th class="px-4 py-2.5">Period</th>
+                    <th class="px-4 py-2.5">Orders</th>
+                    <th class="px-4 py-2.5">Sales</th>
+                    <th class="px-4 py-2.5">Cost</th>
+                    <th class="px-4 py-2.5">Profit</th>
+                  </tr>
+                </thead>
+                <tbody id="repBreakdownBody" class="divide-y divide-[#EFE8D8]"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+            <div class="px-5 py-4 border-b border-[#E6DEC8]">
+              <h2 class="font-semibold text-sm text-rose-700">Low Stock Alert Products</h2>
+            </div>
+            <div class="overflow-x-auto max-h-96 overflow-y-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+                  <tr>
+                    <th class="px-4 py-2.5">Product</th>
+                    <th class="px-4 py-2.5">Stock</th>
+                    <th class="px-4 py-2.5">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="repLowStockBody" class="divide-y divide-[#EFE8D8]"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+          <div class="px-5 py-4 border-b border-[#E6DEC8] flex items-center justify-between">
+            <h2 class="font-semibold text-sm">Complete Delivered Orders Sales Ledger</h2>
+            <span id="repDeliveredCountBadge" class="text-xs px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-semibold">0 Delivered</span>
+          </div>
+          <div class="overflow-x-auto max-h-96 overflow-y-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+                <tr>
+                  <th class="px-4 py-2.5">Date</th>
+                  <th class="px-4 py-2.5">Order Ref</th>
+                  <th class="px-4 py-2.5">Customer</th>
+                  <th class="px-4 py-2.5">Courier / Tracking</th>
+                  <th class="px-4 py-2.5">Sales</th>
+                  <th class="px-4 py-2.5">Cost</th>
+                  <th class="px-4 py-2.5">Net Profit</th>
+                </tr>
+              </thead>
+              <tbody id="repDeliveredLedgerBody" class="divide-y divide-[#EFE8D8]"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: COUPONS & PROMO CODES -->
+      <section id="couponsTab" class="tab-panel hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-4">
+          <h2 class="font-semibold text-base">Create Promo / Coupon Code</h2>
+          <form id="addCouponForm" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+            <input name="code" type="text" required placeholder="Code (e.g. AUREVA10)" class="px-3 py-2 rounded-xl border border-[#DFD5C3] uppercase" />
+            <select name="type" class="px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white">
+              <option value="percent">Percentage (%)</option>
+              <option value="fixed">Fixed Amount (৳)</option>
+            </select>
+            <input name="value" type="number" required min="1" placeholder="Value (e.g. 10 or 150)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <input name="minOrder" type="number" min="0" placeholder="Min Order (Optional, e.g. 1000)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+            <div class="sm:col-span-4">
+              <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold hover:bg-[#36322D]">+ Create Promo Code</button>
+            </div>
+          </form>
+        </div>
+        <div class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+          <div class="px-5 py-4 border-b border-[#E6DEC8]"><h2 class="font-semibold text-sm">Active Coupons</h2></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+                <tr>
+                  <th class="px-4 py-3">Code</th>
+                  <th class="px-4 py-3">Discount</th>
+                  <th class="px-4 py-3">Min Order</th>
+                  <th class="px-4 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody id="couponsBody" class="divide-y divide-[#EFE8D8]"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: REGISTERED CUSTOMERS -->
+      <section id="customersTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+        <div class="px-5 py-4 border-b border-[#E6DEC8] flex items-center justify-between">
+          <h2 class="font-semibold text-sm">Registered Customers</h2>
+          <span id="statCustomersBadge" class="text-xs px-3 py-1 rounded-full bg-[#F2ECE1] font-semibold text-[#1F1D1A]">Total Accounts: 0</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+              <tr>
+                <th class="px-4 py-3">Name</th>
+                <th class="px-4 py-3">Phone</th>
+                <th class="px-4 py-3">Email</th>
+                <th class="px-4 py-3">Address</th>
+                <th class="px-4 py-3">Orders</th>
+                <th class="px-4 py-3">Joined</th>
+              </tr>
+            </thead>
+            <tbody id="customersBody" class="divide-y divide-[#EFE8D8]"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- TAB 4: SETTINGS -->
       <section id="settingsTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-6">
         <div>
@@ -532,7 +724,15 @@
             </div>
           </div>
 
-                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-2 text-xs">
+                    <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-3">
+            <h3 class="font-semibold text-sm">7. Facebook Pixel &amp; Conversions API (CAPI)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div><label class="block text-[#645E56] mb-1">Facebook Pixel ID</label><input name="FB_PIXEL_ID" type="text" placeholder="e.g. 123456789012345" class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+              <div><label class="block text-[#645E56] mb-1">Conversions API Access Token</label><input name="FB_CAPI_TOKEN" type="password" placeholder="EAA..." class="w-full px-3 py-2 rounded-xl bg-white border border-[#DFD5C3]" /></div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E6DEC8] space-y-2 text-xs">
             <h3 class="font-semibold text-[#1F1D1A]">Control Panel Security (Admin Password)</h3>
             <label class="block text-[#645E56]">Admin Password / Key (Change here &amp; click Save Settings)</label>
             <input name="ADMIN_KEY" type="password" placeholder="Enter new admin password" class="w-full sm:w-80 px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white" />
@@ -592,6 +792,10 @@
         <div>
           <label class="block text-[#645E56] mb-1">Offer Price (Optional)</label>
           <input name="offerPrice" type="number" min="0" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
+        </div>
+        <div>
+          <label class="block text-[#645E56] mb-1">Buying / Cost Price (BDT)</label>
+          <input name="costPrice" type="number" min="0" class="w-full px-3 py-2 rounded-xl border border-[#DFD5C3]" />
         </div>
         <div class="sm:col-span-2">
           <label class="block text-[#645E56] mb-1">Short Description</label>
@@ -658,21 +862,27 @@
 
     async function loadDashboard() {
       try {
-        const [healthRes, ordersRes, consultsRes, settingsRes, productsRes, siteCfgRes] = await Promise.all([
+        const [healthRes, ordersRes, consultsRes, settingsRes, productsRes, siteCfgRes, reportsRes, couponsRes, customersRes] = await Promise.all([
           fetch("/api/health"),
           fetch(`/api/orders?key=${encodeURIComponent(adminKey)}`),
           fetch(`/api/consultations?key=${encodeURIComponent(adminKey)}`),
           fetch(`/api/settings?key=${encodeURIComponent(adminKey)}`),
           fetch("/api/products"),
-          fetch("/api/site-config")
+          fetch("/api/site-config"),
+          fetch(`/api/reports/summary?key=${encodeURIComponent(adminKey)}`),
+          fetch(`/api/coupons?key=${encodeURIComponent(adminKey)}`),
+          fetch(`/api/customers?key=${encodeURIComponent(adminKey)}`)
         ]);
 
         if (!ordersRes.ok) {
           showToast("Invalid Admin Password.");
+          document.documentElement.classList.remove("aureva-admin-authed");
+          try { localStorage.removeItem("aureva_admin_key"); } catch {}
           document.getElementById("loginScreen").classList.remove("hidden");
           document.getElementById("panelApp").classList.add("hidden");
           return false;
         }
+        document.documentElement.classList.add("aureva-admin-authed");
 
         document.getElementById("loginScreen").classList.add("hidden");
         document.getElementById("panelApp").classList.remove("hidden");
@@ -683,6 +893,9 @@
         const settings = await settingsRes.json();
         const products = await productsRes.json();
         const siteCfg = await siteCfgRes.json();
+        const reportData = reportsRes.ok ? await reportsRes.json() : null;
+        const coupons = couponsRes.ok ? await couponsRes.json() : [];
+        const customers = customersRes.ok ? await customersRes.json() : [];
 
         const activeCouriers = Object.entries(health.couriersConfigured || {})
           .filter(([, ok]) => ok)
@@ -697,22 +910,49 @@
         document.getElementById("statConsults").textContent = consults.length;
 
         const ordersBody = document.getElementById("ordersBody");
+        window.__adminOrders = orders;
         ordersBody.innerHTML = orders.length === 0
-          ? '<tr><td colspan="7" class="px-4 py-8 text-center text-[#645E56]">No orders yet.</td></tr>'
+          ? '<tr><td colspan="8" class="px-4 py-8 text-center text-[#645E56]">No orders yet.</td></tr>'
           : orders.map(o => `
             <tr class="hover:bg-[#FAF7F2]">
-              <td class="px-4 py-3 font-semibold">${o.orderRef}</td>
+              <td class="px-3 py-3"><input type="checkbox" data-ord-cb="${o.orderRef}" class="order-select-cb accent-[#1F1D1A]" /></td>
+              <td class="px-4 py-3 font-semibold">${o.orderRef}${o.couponCode ? `<br><span class="text-[10px] text-emerald-700 font-medium">${o.couponCode} (-৳${Number(o.discount || 0)})</span>` : ""}</td>
               <td class="px-4 py-3"><p class="font-medium">${o.name}</p><p class="text-[#645E56]">${o.phone}</p><p class="text-[#645E56] truncate max-w-[180px]">${o.address}</p></td>
               <td class="px-4 py-3 max-w-[200px]">${o.itemsSummary || "-"}</td>
               <td class="px-4 py-3 font-bold">৳${Number(o.total || 0).toLocaleString()}</td>
-              <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full font-medium ${o.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.paymentMethod} • ${o.paymentStatus}</span></td>
-              <td class="px-4 py-3">${o.courier ? `<span class="font-semibold">${o.courier.provider}</span><br><span class="text-[#645E56]">${o.courier.trackingCode}</span>` : '<span class="text-[#645E56]">Not booked</span>'}</td>
+              <td class="px-4 py-3 space-y-1">
+                <span class="inline-block px-2 py-0.5 rounded-full font-medium ${o.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.paymentMethod} • ${o.paymentStatus}</span>
+                <div>${String(o.deliveryStatus || "").toUpperCase() === "DELIVERED" || (o.courier && /delivered/i.test(String(o.courier.status || "")) && !/partial|cancel|return/i.test(String(o.courier.status || "")))
+                  ? '<span class="inline-block px-2 py-0.5 rounded-full bg-emerald-700 text-white text-[10px] font-semibold">DELIVERED</span>'
+                  : `<button type="button" data-mark-deliv="${o.orderRef}" class="mark-deliv-btn px-2 py-0.5 rounded-full border border-[#DFD5C3] text-[10px] font-medium hover:bg-emerald-50">Confirm Delivered</button>`}</div>
+              </td>
+              <td class="px-4 py-3">${o.courier ? (() => {
+                const tc = o.courier.trackingCode || "";
+                const prov = (o.courier.provider || "").toLowerCase();
+                const tUrl = o.courier.trackingUrl || (
+                  prov.includes("steadfast") ? `https://steadfast.com.bd/t/${encodeURIComponent(tc)}` :
+                  prov.includes("pathao") ? "https://merchant.pathao.com/" :
+                  prov.includes("redx") ? "https://redx.com.bd/track-global-parcel/" :
+                  prov.includes("ecourier") ? "https://ecourier.com.bd/tracking/" : ""
+                );
+                return `
+                  <div class="space-y-1">
+                    <span class="font-semibold text-[#1F1D1A]">${o.courier.provider}</span>
+                    <div class="font-mono text-[11px] text-[#645E56]">${tc}</div>
+                    <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                      ${tUrl ? `<a href="${tUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-700 text-white text-[10px] font-semibold hover:bg-emerald-800">Track Link →</a>` : ""}
+                      <button type="button" data-copy-track="${tUrl || tc}" class="copy-track-btn px-2 py-0.5 rounded border border-[#DFD5C3] text-[10px] font-medium hover:bg-[#F2ECE1]">Copy</button>
+                      <button type="button" data-live-track="${o.orderRef}" class="live-track-btn px-2 py-0.5 rounded border border-[#DFD5C3] text-[10px] font-medium hover:bg-[#F2ECE1]">Live Status</button>
+                    </div>
+                  </div>`;
+              })() : '<span class="text-[#645E56]">Not booked</span>'}</td>
               <td class="px-4 py-3">
                 <div class="flex items-center gap-1.5">
                   <select id="prov-${o.orderRef}" class="border border-[#DFD5C3] rounded-lg px-2 py-1 bg-white">
                     <option value="steadfast">Steadfast</option><option value="pathao">Pathao</option><option value="redx">RedX</option><option value="ecourier">eCourier</option>
                   </select>
                   <button data-book="${o.orderRef}" class="book-btn px-2.5 py-1 rounded-lg bg-[#1F1D1A] text-white">Send</button>
+                  <button data-inv="${o.orderRef}" class="print-inv-btn px-2.5 py-1 rounded-lg border border-[#DFD5C3] hover:bg-[#F2ECE1]">Invoice</button>
                 </div>
               </td>
             </tr>
@@ -729,6 +969,23 @@
           });
         });
 
+        document.querySelectorAll(".copy-track-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const val = btn.getAttribute("data-copy-track") || "";
+            try { await navigator.clipboard.writeText(val); showToast("Tracking link copied!"); }
+            catch { showToast(val); }
+          });
+        });
+
+        document.querySelectorAll(".live-track-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const ref = btn.getAttribute("data-live-track");
+            const res = await fetch(`/api/courier/track/${encodeURIComponent(ref)}`);
+            const data = await res.json();
+            showToast(data.liveDeliveryStatus ? `${ref}: ${data.liveDeliveryStatus}` : `${ref}: ${data.courier?.status || "Status unavailable"}`);
+          });
+        });
+
         const productsBody = document.getElementById("productsBody");
         productsBody.innerHTML = products.map(p => `
           <tr class="hover:bg-[#FAF7F2]">
@@ -736,7 +993,7 @@
             <td class="px-4 py-3"><p class="font-semibold">${p.name}</p><p class="text-[#645E56]">${p.brand} ${p.size ? '• ' + p.size : ''}</p></td>
             <td class="px-4 py-3">${p.category}</td>
             <td class="px-4 py-3 font-bold">${p.offerPrice && p.offerPrice < p.price ? `<span class="text-emerald-700">৳${Number(p.offerPrice).toLocaleString()}</span> <span class="line-through text-[#645E56] font-normal">৳${Number(p.price).toLocaleString()}</span>` : `৳${Number(p.price || 0).toLocaleString()}`}${p.isCombo ? ` <span class="ml-1 px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px]">${p.comboTag || "Combo"}</span>` : ""}</td>
-            <td class="px-4 py-3">${p.stock}</td>
+            <td class="px-4 py-3">${Number(p.stock) <= 0 ? `<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-semibold">Out (0)</span>` : (Number(p.stock) <= 2 ? `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">Low (${p.stock})</span>` : p.stock)}</td>
             <td class="px-4 py-3">
               <div class="flex items-center gap-1.5">
                 <button data-edit-prod="${p.id}" class="edit-prod-btn px-2.5 py-1 rounded-lg bg-[#8C7355] text-white hover:bg-[#735D43]">Edit</button>
@@ -756,6 +1013,7 @@
         });
 
         window.__adminProducts = products;
+        updateAddSkuPreview();
         document.querySelectorAll(".edit-prod-btn").forEach(btn => {
           btn.addEventListener("click", () => {
             const id = btn.getAttribute("data-edit-prod");
@@ -796,6 +1054,76 @@
           renderExploreCatsManager();
         }
 
+        if (reportData) {
+          document.getElementById("repTodaySales").textContent = `৳${Number(reportData.today?.sales || 0).toLocaleString()}`;
+          document.getElementById("repTodayOrders").textContent = `${reportData.today?.orders || 0} orders • Profit ৳${Number(reportData.today?.profit || 0).toLocaleString()}`;
+          document.getElementById("repMonthSales").textContent = `৳${Number(reportData.month?.sales || 0).toLocaleString()}`;
+          document.getElementById("repMonthOrders").textContent = `${reportData.month?.orders || 0} orders • Profit ৳${Number(reportData.month?.profit || 0).toLocaleString()}`;
+          document.getElementById("repTotalProfit").textContent = `৳${Number(reportData.overall?.profit || 0).toLocaleString()}`;
+          document.getElementById("repTotalCost").textContent = `Cost: ৳${Number(reportData.overall?.cost || 0).toLocaleString()}`;
+          const lowList = reportData.lowStock || [];
+          document.getElementById("repLowStockCount").textContent = lowList.length;
+          window.__repData = reportData;
+          const pend = reportData.pending || { orders: 0, sales: 0 };
+          document.getElementById("repPendingNote").textContent = `Only confirmed delivered orders are counted in sales & profit. Pending / In-transit: ${pend.orders} orders (৳${Number(pend.sales || 0).toLocaleString()})`;
+          const delivRows = reportData.deliveredOrders || [];
+          document.getElementById("repDeliveredCountBadge").textContent = `${delivRows.length} Delivered`;
+          document.getElementById("repDeliveredLedgerBody").innerHTML = delivRows.length === 0
+            ? '<tr><td colspan="7" class="px-4 py-6 text-center text-[#645E56]">No confirmed delivered orders yet. Use "Sync Courier Delivery Statuses" or "Confirm Delivered" on an order.</td></tr>'
+            : delivRows.map(d => `<tr><td class="px-4 py-2.5">${d.date}</td><td class="px-4 py-2.5 font-semibold">${d.orderRef}</td><td class="px-4 py-2.5">${d.name} (${d.phone})</td><td class="px-4 py-2.5">${d.courier} • ${d.trackingCode}</td><td class="px-4 py-2.5 font-semibold">৳${Number(d.sales).toLocaleString()}</td><td class="px-4 py-2.5 text-[#645E56]">৳${Number(d.cost).toLocaleString()}</td><td class="px-4 py-2.5 font-bold ${d.profit >= 0 ? "text-emerald-700" : "text-rose-600"}">৳${Number(d.profit).toLocaleString()}</td></tr>`).join("");
+          renderRepBreakdown("daily");
+          document.getElementById("repLowStockBody").innerHTML = lowList.length === 0
+            ? '<tr><td colspan="3" class="px-4 py-6 text-center text-[#645E56]">All products are well stocked!</td></tr>'
+            : lowList.map(p => `<tr><td class="px-4 py-2.5 font-medium">${p.name}</td><td class="px-4 py-2.5 font-bold ${Number(p.stock) <= 0 ? "text-rose-600" : "text-amber-700"}">${p.stock}</td><td class="px-4 py-2.5"><button type="button" data-ls-edit="${p.id}" class="ls-edit-btn px-2.5 py-1 rounded bg-[#1F1D1A] text-white text-[11px]">Restock</button></td></tr>`).join("");
+          document.querySelectorAll(".ls-edit-btn").forEach(b => {
+            b.addEventListener("click", () => {
+              const prod = (window.__adminProducts || []).find(item => item.id === b.dataset.lsEdit);
+              if (prod) openEditProductModal(prod);
+            });
+          });
+        }
+
+        const custBadge = document.getElementById("statCustomersBadge");
+        if (custBadge) custBadge.textContent = `Total Accounts: ${customers.length}`;
+        const custBody = document.getElementById("customersBody");
+        if (custBody) {
+          custBody.innerHTML = customers.length === 0
+            ? '<tr><td colspan="6" class="px-4 py-6 text-center text-[#645E56]">No customer accounts registered yet.</td></tr>'
+            : customers.map(c => {
+                const ordCount = orders.filter(o => String(o.phone || "").trim() === String(c.phone || "").trim()).length;
+                return `<tr><td class="px-4 py-3 font-semibold">${c.name}</td><td class="px-4 py-3 font-mono">${c.phone}</td><td class="px-4 py-3">${c.email || "-"}</td><td class="px-4 py-3 max-w-[200px] truncate">${c.address || "-"}</td><td class="px-4 py-3 font-bold">${ordCount}</td><td class="px-4 py-3 text-[#645E56]">${c.createdAt ? new Date(c.createdAt).toLocaleString() : "-"}</td></tr>`;
+              }).join("");
+        }
+
+                document.getElementById("couponsBody").innerHTML = coupons.length === 0
+          ? '<tr><td colspan="4" class="px-4 py-6 text-center text-[#645E56]">No promo codes created yet.</td></tr>'
+          : coupons.map(c => `<tr><td class="px-4 py-3 font-mono font-bold">${c.code}</td><td class="px-4 py-3">${c.type === "percent" ? c.value + "%" : "৳" + c.value}</td><td class="px-4 py-3">${c.minOrder ? "৳" + Number(c.minOrder).toLocaleString() : "None"}</td><td class="px-4 py-3"><button type="button" data-del-coupon="${c.code}" class="del-coupon-btn px-2.5 py-1 rounded bg-red-600 text-white">Delete</button></td></tr>`).join("");
+        document.querySelectorAll(".del-coupon-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const res = await fetch(`/api/coupons/${encodeURIComponent(btn.dataset.delCoupon)}?key=${encodeURIComponent(adminKey)}`, { method: "DELETE" });
+            if (res.ok) { showToast("Coupon deleted!"); loadDashboard(); }
+          });
+        });
+
+        document.querySelectorAll(".mark-deliv-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const ref = btn.dataset.markDeliv;
+            const res = await fetch(`/api/orders/${encodeURIComponent(ref)}/delivery-status?key=${encodeURIComponent(adminKey)}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ deliveryStatus: "DELIVERED" })
+            });
+            if (res.ok) { showToast(`${ref} confirmed as Delivered!`); loadDashboard(); }
+          });
+        });
+
+                document.querySelectorAll(".print-inv-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const ord = (window.__adminOrders || []).find(x => x.orderRef === btn.dataset.inv);
+            if (ord) printOrderInvoice(ord);
+          });
+        });
+
         const form = document.getElementById("settingsForm");
         Object.entries(settings).forEach(([k, v]) => {
           const input = form.elements.namedItem(k);
@@ -817,6 +1145,7 @@
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
       adminKey = "";
+      document.documentElement.classList.remove("aureva-admin-authed");
       try { localStorage.removeItem("aureva_admin_key"); } catch {}
       document.getElementById("panelApp").classList.add("hidden");
       document.getElementById("loginScreen").classList.remove("hidden");
@@ -824,15 +1153,33 @@
 
     document.getElementById("refreshBtn").addEventListener("click", loadDashboard);
 
-    document.querySelectorAll(".nav-tab").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.getAttribute("data-tab");
-        document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
-        document.getElementById(target).classList.remove("hidden");
-        document.querySelectorAll(".nav-tab").forEach(b => b.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]");
-        btn.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold";
+    function activateAdminTab(target) {
+      const panel = document.getElementById(target);
+      if (!panel) return;
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+      panel.classList.remove("hidden");
+      document.querySelectorAll(".nav-tab").forEach(b => {
+        const active = b.getAttribute("data-tab") === target;
+        b.className = active
+          ? "nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold"
+          : "nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]";
       });
+      try { localStorage.setItem("aureva_admin_tab", target); } catch {}
+      try { history.replaceState(null, "", "#" + target); } catch {}
+    }
+
+    document.querySelectorAll(".nav-tab").forEach(btn => {
+      btn.addEventListener("click", () => activateAdminTab(btn.getAttribute("data-tab")));
     });
+
+    (function restoreSavedTab() {
+      let saved = "";
+      try {
+        saved = (window.location.hash || "").replace("#", "") || localStorage.getItem("aureva_admin_tab") || "ordersTab";
+      } catch { saved = "ordersTab"; }
+      if (!document.getElementById(saved)) saved = "ordersTab";
+      activateAdminTab(saved);
+    })();
 
     
     let prodImagesList = [];
@@ -1004,6 +1351,7 @@
       f.elements.namedItem("stock").value = prod.stock ?? 0;
       f.elements.namedItem("price").value = prod.price || "";
       f.elements.namedItem("offerPrice").value = prod.offerPrice || "";
+      if (f.elements.namedItem("costPrice")) f.elements.namedItem("costPrice").value = prod.costPrice || "";
       f.elements.namedItem("desc").value = prod.desc || "";
       f.elements.namedItem("ingredients").value = prod.ingredients || "";
       f.elements.namedItem("howToUse").value = prod.howToUse || "";
@@ -1153,6 +1501,120 @@
     document.getElementById("resetDesignBtn").addEventListener("click", async () => {
       const res = await fetch(`/api/site-config?key=${encodeURIComponent(adminKey)}`, { method: "DELETE" });
       if (res.ok) { showToast("Website design reset to default!"); loadDashboard(); }
+    });
+
+    function renderRepBreakdown(mode) {
+      const data = window.__repData;
+      if (!data) return;
+      const rows = mode === "monthly" ? (data.monthly || []) : (data.daily || []);
+      document.getElementById("repDailyBtn").className = mode === "daily" ? "px-3 py-1 rounded-full bg-[#1F1D1A] text-white font-semibold" : "px-3 py-1 rounded-full bg-[#F2ECE1] text-[#1F1D1A]";
+      document.getElementById("repMonthlyBtn").className = mode === "monthly" ? "px-3 py-1 rounded-full bg-[#1F1D1A] text-white font-semibold" : "px-3 py-1 rounded-full bg-[#F2ECE1] text-[#1F1D1A]";
+      document.getElementById("repBreakdownBody").innerHTML = rows.length === 0
+        ? '<tr><td colspan="5" class="px-4 py-6 text-center text-[#645E56]">No sales data yet.</td></tr>'
+        : rows.map(r => `<tr><td class="px-4 py-2.5 font-medium">${r.period}</td><td class="px-4 py-2.5">${r.orders}</td><td class="px-4 py-2.5 font-semibold">৳${Number(r.sales).toLocaleString()}</td><td class="px-4 py-2.5 text-[#645E56]">৳${Number(r.cost).toLocaleString()}</td><td class="px-4 py-2.5 font-bold ${r.profit >= 0 ? "text-emerald-700" : "text-rose-600"}">৳${Number(r.profit).toLocaleString()}</td></tr>`).join("");
+    }
+    document.getElementById("syncDeliveriesBtn")?.addEventListener("click", async () => {
+      const btn = document.getElementById("syncDeliveriesBtn");
+      btn.disabled = true; btn.textContent = "Syncing...";
+      const res = await fetch(`/api/reports/sync-deliveries?key=${encodeURIComponent(adminKey)}`, { method: "POST" });
+      const data = await res.json();
+      btn.disabled = false; btn.textContent = "Sync Courier Delivery Statuses";
+      showToast(`Checked ${data.checked || 0} orders • ${data.newlyDelivered || 0} newly delivered.`);
+      loadDashboard();
+    });
+
+    document.getElementById("exportSalesCsvBtn")?.addEventListener("click", () => {
+      const rows = (window.__repData && window.__repData.deliveredOrders) || [];
+      const header = "Date,OrderRef,Customer,Phone,Courier,Tracking,Sales,Cost,Profit\n";
+      const body = rows.map(r => [r.date, r.orderRef, `"${(r.name || "").replace(/"/g, '""')}"`, r.phone, r.courier, r.trackingCode, r.sales, r.cost, r.profit].join(",")).join("\n");
+      const blob = new Blob([header + body], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "aureva-sales-report.csv";
+      a.click();
+    });
+
+    document.getElementById("repDailyBtn")?.addEventListener("click", () => renderRepBreakdown("daily"));
+    document.getElementById("repMonthlyBtn")?.addEventListener("click", () => renderRepBreakdown("monthly"));
+
+    document.getElementById("selectAllOrdersCb")?.addEventListener("change", (e) => {
+      document.querySelectorAll(".order-select-cb").forEach(cb => { cb.checked = e.target.checked; });
+    });
+
+    document.getElementById("bulkBookCourierBtn")?.addEventListener("click", async () => {
+      const refs = Array.from(document.querySelectorAll(".order-select-cb:checked")).map(cb => cb.dataset.ordCb);
+      if (refs.length === 0) { showToast("Select at least one order first."); return; }
+      const provider = document.getElementById("bulkCourierProvider").value;
+      const btn = document.getElementById("bulkBookCourierBtn");
+      btn.disabled = true; btn.textContent = "Booking...";
+      const res = await fetch(`/api/courier/book-bulk?key=${encodeURIComponent(adminKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderRefs: refs, provider })
+      });
+      const data = await res.json();
+      btn.disabled = false; btn.textContent = "Bulk Book Selected";
+      showToast(`Bulk booked: ${data.bookedCount || 0} succeeded, ${data.failedCount || 0} failed.`);
+      loadDashboard();
+    });
+
+    document.getElementById("addCouponForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = Object.fromEntries(new FormData(e.target).entries());
+      const res = await fetch(`/api/coupons?key=${encodeURIComponent(adminKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) { e.target.reset(); showToast("Promo code created!"); loadDashboard(); }
+      else { showToast("Failed to create promo code."); }
+    });
+
+    function printOrderInvoice(o) {
+      const itemsRows = (Array.isArray(o.items) && o.items.length)
+        ? o.items.map(i => `<tr><td style="padding:8px;border-bottom:1px solid #eee;">${i.name || i.id}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${i.qty || 1}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">৳${Number(i.lineTotal || (i.price * (i.qty || 1)) || 0).toLocaleString()}</td></tr>`).join("")
+        : `<tr><td colspan="2" style="padding:8px;border-bottom:1px solid #eee;">${o.itemsSummary || "Skincare Order"}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">৳${Number(o.total || 0).toLocaleString()}</td></tr>`;
+      const win = window.open("", "_blank", "width=720,height=850");
+      win.document.write(`<!DOCTYPE html><html><head><title>Invoice ${o.orderRef}</title><style>body{font-family:Inter,Arial,sans-serif;padding:32px;color:#1F1D1A;} .hdr{display:flex;justify-content:space-between;border-bottom:2px solid #1F1D1A;padding-bottom:16px;margin-bottom:20px;} table{width:100%;border-collapse:collapse;margin-top:16px;} th{text-align:left;background:#F5ECE3;padding:8px;font-size:12px;} .tot{margin-top:16px;text-align:right;font-size:14px;} @media print{button{display:none;}}</style></head><body>
+        <div class="hdr"><div><h1 style="margin:0;letter-spacing:3px;">AUREVA</h1><p style="margin:4px 0;font-size:12px;color:#645E56;">Authentic K-Beauty Bangladesh</p></div><div style="text-align:right;font-size:12px;"><strong>INVOICE: ${o.orderRef}</strong><br/>Date: ${new Date(o.createdAt).toLocaleString()}<br/>Status: ${o.paymentMethod} (${o.paymentStatus})</div></div>
+        <p style="font-size:13px;"><strong>Bill To:</strong> ${o.name} | ${o.phone}<br/><strong>Address:</strong> ${o.address}${o.courier ? `<br/><strong>Courier:</strong> ${o.courier.provider} (${o.courier.trackingCode})` : ""}</p>
+        <table><thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Amount</th></tr></thead><tbody>${itemsRows}</tbody></table>
+        <div class="tot">${o.discount ? `<p>Promo (${o.couponCode || ""}): -৳${Number(o.discount).toLocaleString()}</p>` : ""}${o.deliveryCharge ? `<p>Delivery: ৳${Number(o.deliveryCharge).toLocaleString()}</p>` : ""}<h3>Total Payable: ৳${Number(o.total || 0).toLocaleString()}</h3></div>
+        <button onclick="window.print()" style="margin-top:24px;padding:10px 22px;background:#1F1D1A;color:#fff;border:none;border-radius:99px;cursor:pointer;">Print Invoice</button>
+      </body></html>`);
+      win.document.close();
+    }
+
+    function computePreviewSku(brand) {
+      const brandMap = {
+        "cosrx": "COS", "skin1004": "SKI", "beauty of joseon": "BOJ", "anua": "ANU",
+        "aplb": "APL", "the face shop": "TFS", "i'm from": "IMF", "dr. althea": "ALH",
+        "ksecret": "KSC", "arencia": "ARE", "nella": "NEL"
+      };
+      const cb = String(brand || "").trim().toLowerCase();
+      const bCode = brandMap[cb] || cb.replace(/[^a-z0-9]/g, "").slice(0, 3).toUpperCase() || "BRD";
+      let maxNum = 0;
+      (window.__adminProducts || []).forEach(p => {
+        const m = String(p.id || "").trim().toUpperCase().match(/^AUR-[A-Z0-9]+-(\d+)$/);
+        if (m && Number(m[1]) > maxNum) maxNum = Number(m[1]);
+      });
+      return `AUR-${bCode}-${String(maxNum + 1).padStart(3, "0")}`;
+    }
+
+    function updateAddSkuPreview() {
+      const f = document.getElementById("addProductForm");
+      const skuInp = document.getElementById("addProdSkuInput");
+      if (!f || !skuInp) return;
+      const preview = computePreviewSku(
+        f.elements.namedItem("brand")?.value,
+        f.elements.namedItem("name")?.value,
+        f.elements.namedItem("size")?.value
+      );
+      skuInp.placeholder = `Auto SKU: ${preview}`;
+    }
+
+    ["name", "brand", "size"].forEach(field => {
+      document.querySelector(`#addProductForm [name="${field}"]`)?.addEventListener("input", updateAddSkuPreview);
     });
 
     if (adminKey) loadDashboard();

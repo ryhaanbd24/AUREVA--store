@@ -73,6 +73,11 @@
             বাংলা
           </button>
 
+          <button id="openCustomerModalBtn" type="button" class="px-2.5 py-1.5 rounded-full border border-[#D8CEBA] text-xs font-medium text-[#1F1D1A] hover:bg-[#F2ECE1] transition-colors inline-flex items-center gap-1">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+            <span id="customerHeaderLabel">Account</span>
+          </button>
+
           <button id="openCartBtn" type="button" class="relative flex items-center gap-2 bg-[#1F1D1A] text-[#FAF7F2] px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-[#36322D] transition-colors">
             <i data-lucide="shopping-bag" class="w-4 h-4"></i>
             <span class="hidden sm:inline" data-i18n="bag">Bag</span>
@@ -621,10 +626,20 @@
           </div>
         </div>
 
+        <div class="flex items-center gap-2">
+          <input id="couponCodeInput" type="text" placeholder="Promo / Coupon Code" class="flex-1 px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#DFD5C3] text-xs uppercase focus:outline-none focus:border-[#8C7355]" />
+          <button id="applyCouponBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#1F1D1A] text-white text-xs font-semibold hover:bg-[#36322D]">Apply</button>
+        </div>
+        <p id="couponStatusMsg" class="hidden text-[11px] font-medium"></p>
+
         <div class="space-y-1.5 text-sm">
           <div class="flex justify-between text-[#463E38]">
             <span>Subtotal</span>
             <span id="cartSubtotal">৳0</span>
+          </div>
+          <div id="cartDiscountRow" class="hidden flex justify-between text-emerald-700 font-medium">
+            <span>Promo Discount</span>
+            <span id="cartDiscountVal">-৳0</span>
           </div>
           <div class="flex justify-between text-[#463E38]">
             <span>Delivery Charge</span>
@@ -700,6 +715,50 @@
     </div>
   </div>
 
+  <!-- Customer Account Modal (Login, Register & Order History) -->
+  <div id="customerModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#FAF7F2] rounded-3xl max-w-md w-full p-5 sm:p-6 border border-[#E6DEC8] shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="font-serif-editorial text-2xl font-semibold text-[#1F1D1A]">My Aureva Account</h3>
+        <button id="closeCustomerModalBtn" type="button" class="p-1.5 rounded-full hover:bg-[#E6DEC8]"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div id="custAuthView" class="space-y-4">
+        <div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#EFE5D8] text-xs font-semibold">
+          <button id="custTabLoginBtn" type="button" class="py-2 rounded-lg bg-[#1F1D1A] text-white">Login</button>
+          <button id="custTabRegBtn" type="button" class="py-2 rounded-lg text-[#463E38]">Register</button>
+        </div>
+        <form id="custLoginForm" autocomplete="off" class="space-y-3 text-xs">
+          <input id="custLoginPhone" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="tel" required placeholder="Phone Number (01XXXXXXXXX)" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custLoginPass" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');" type="password" required placeholder="Password" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DFD5C3]" />
+          <button type="submit" class="w-full py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold">Sign In</button>
+        </form>
+        <form id="custRegForm" autocomplete="off" class="hidden space-y-3 text-xs">
+          <input id="custRegName" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="text" required placeholder="Full Name" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegPhone" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="tel" required placeholder="Phone Number (01XXXXXXXXX)" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegEmail" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="email" placeholder="Email (Optional)" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegAddress" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="text" placeholder="Delivery Address" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegPass" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');" type="password" required placeholder="Create Password" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <button type="submit" class="w-full py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold">Create Account</button>
+        </form>
+      </div>
+
+      <div id="custLoggedView" class="hidden space-y-4 text-xs">
+        <div class="p-3.5 rounded-2xl bg-white border border-[#E6DEC8] flex items-center justify-between">
+          <div>
+            <p id="custProfileName" class="font-bold text-sm text-[#1F1D1A]"></p>
+            <p id="custProfilePhone" class="text-[#645E56]"></p>
+          </div>
+          <button id="custLogoutBtn" type="button" class="px-3 py-1.5 rounded-full border border-[#DFD5C3] font-semibold hover:bg-[#F2ECE1]">Logout</button>
+        </div>
+        <div class="space-y-2">
+          <p class="font-bold uppercase tracking-wider text-[#463E38]">My Order History</p>
+          <div id="custOrdersList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div id="toast" class="hidden fixed bottom-5 right-5 z-50 bg-[#1F1D1A] text-[#FAF7F2] px-4 py-3 rounded-2xl shadow-lg text-xs sm:text-sm flex items-center gap-2.5 max-w-sm">
     <i data-lucide="check-circle-2" class="w-4 h-4 text-[#A3B899] shrink-0"></i>
@@ -743,10 +802,10 @@
     }
 
     const DEFAULT_HERO_SLIDES = [
-      { src: "/assets/hero.jpg", name: "COSRX Snail 96 Power Essence", productId: "AUR-SK-027", caption: "96.3% Snail Mucin • Barrier & Glass Skin" },
-      { src: IMG_MAP.Serum, name: "SKIN1004 Brightening Ampoule", productId: "AUR-SK-019", caption: "Niacinamide & Madecassoside Glow" },
-      { src: IMG_MAP.Sunscreen, name: "BOJ Relief Sun Aqua-fresh", productId: "AUR-SK-010", caption: "Zero White-Cast SPF50+ PA++++" },
-      { src: IMG_MAP.Cream, name: "Beauty of Joseon Dynasty Cream", productId: "AUR-SK-009", caption: "Hanbang Nourishing Moisture" }
+      { src: "/assets/hero.jpg", name: "COSRX Snail 96 Power Essence", productId: "AUR-COS-027", caption: "96.3% Snail Mucin • Barrier & Glass Skin" },
+      { src: IMG_MAP.Serum, name: "SKIN1004 Brightening Ampoule", productId: "AUR-SKI-019", caption: "Niacinamide & Madecassoside Glow" },
+      { src: IMG_MAP.Sunscreen, name: "BOJ Relief Sun Aqua-fresh", productId: "AUR-BOJ-010", caption: "Zero White-Cast SPF50+ PA++++" },
+      { src: IMG_MAP.Cream, name: "Beauty of Joseon Dynasty Cream", productId: "AUR-BOJ-009", caption: "Hanbang Nourishing Moisture" }
     ];
     let heroSlides = [...DEFAULT_HERO_SLIDES];
     let heroSlideIdx = 0;
@@ -827,35 +886,35 @@
       }
     }
     let PRODUCTS = [
-      { id: "AUR-SK-001", name: "COSRX Low pH Good Morning Gel Cleanser", brand: "COSRX", category: "Cleanser", size: "150ml", price: 1050, stock: 2, desc: "Gentle tea-tree and BHA gel cleanser that respects your natural skin pH without stripping moisture." },
-      { id: "AUR-SK-002", name: "COSRX Salicylic Acid Daily Gentle Cleanser", brand: "COSRX", category: "Cleanser", size: "150ml", price: 1050, stock: 3, desc: "Targeted 0.5% salicylic acid foam cleanser to unclog pores, control excess sebum, and calm breakouts." },
-      { id: "AUR-SK-003", name: "The Face Shop Rice Water Bright Cleansing Foam", brand: "The Face Shop", category: "Cleanser", size: "150ml", price: 990, stock: 3, desc: "Whipped brightening foam enriched with rice water extract for soft, radiant, thoroughly cleansed skin." },
-      { id: "AUR-SK-004", name: "The Face Shop Rice Ceramide Moisture Cream", brand: "The Face Shop", category: "Cream", size: "50ml", price: 1050, stock: 3, desc: "Nourishing rice and ceramide barrier cream that locks in 24-hour hydration for dry and normal skin." },
-      { id: "AUR-SK-005", name: "ANUA Rice Milky Toner", brand: "ANUA", category: "Toner", size: "40ml", price: 800, stock: 2, desc: "Milky, lightweight rice and ceramide toner that deeply hydrates and preps skin for glass-skin glow." },
-      { id: "AUR-SK-006", name: "I'M FROM Rice Toner", brand: "I'm From", category: "Toner", size: "30ml", price: 650, stock: 2, desc: "Travel-friendly 77.78% Goami rice extract toner to brighten dull tone and balance oil-moisture levels." },
-      { id: "AUR-SK-007", name: "COSRX Advanced Snail 92 All In One Cream (Mini)", brand: "COSRX", category: "Cream", size: "50g", price: 900, stock: 2, desc: "92% snail mucin repair cream in a compact 50g jar to soothe redness and fade post-acne marks." },
-      { id: "AUR-SK-008", name: "COSRX Advanced Snail 92 All In One Cream", brand: "COSRX", category: "Cream", size: "100g", price: 1550, stock: 2, desc: "Full-size 100g cult-favorite snail mucin moisturizer for plump, resilient, deeply hydrated skin." },
-      { id: "AUR-SK-009", name: "Beauty of Joseon Dynasty Cream", brand: "Beauty of Joseon", category: "Cream", size: "50ml", price: 1900, stock: 2, desc: "Luxurious Hanbang moisturizer with rice bran water, ginseng, squalane, and niacinamide." },
-      { id: "AUR-SK-010", name: "Beauty of Joseon Relief Sun Aqua-fresh", brand: "Beauty of Joseon", category: "Sunscreen", size: "50ml", price: 1420, stock: 2, desc: "Featherlight, zero white-cast rice seed water SPF50+ PA++++ designed for humid weather." },
-      { id: "AUR-SK-011", name: "SKIN1004 Centella Hyalu-Cica Water-Fit Sun Serum", brand: "SKIN1004", category: "Sunscreen", size: "50ml", price: 1350, stock: 2, desc: "Serum-like calming sunscreen with Madagascar Centella and Hyaluronic Acid; zero sticky finish." },
-      { id: "AUR-SK-012", name: "SKIN1004 Centella Hyalu-Cica Water-Fit Sun Serum (Mini)", brand: "SKIN1004", category: "Sunscreen", size: "15ml", price: 650, stock: 2, desc: "Pocket-sized 15ml sun serum ideal for trial or effortless SPF reapplication on the go." },
-      { id: "AUR-SK-013", name: "APLB Glutathione Niacinamide Body Lotion", brand: "APLB", category: "Body Care", size: "300ml", price: 1350, stock: 4, desc: "Brightening and firming body lotion powered by Glutathione, Niacinamide, and Centella Asiatica." },
-      { id: "AUR-SK-014", name: "APLB Glutathione Niacinamide Facial Cream", brand: "APLB", category: "Cream", size: "55ml", price: 900, stock: 1, desc: "Daily brightening cream targeting uneven skin tone and dullness with gentle Centella care." },
-      { id: "AUR-SK-015", name: "COSRX Acne Pimple Master Patch (24pcs)", brand: "COSRX", category: "Treatment", size: "24 patches", price: 320, stock: 1, desc: "Hydrocolloid spot patches that absorb impurities overnight and protect healing blemishes." },
-      { id: "AUR-SK-016", name: "Dr. Althea 345 Relief Cream", brand: "Dr. Althea", category: "Cream", size: "15ml", price: 900, stock: 2, desc: "Post-blemish soothing gel-cream with niacinamide, panthenol, and resveratrol for sensitive skin." },
-      { id: "AUR-SK-017", name: "SKIN1004 Centella Light Cleansing Oil (Mini)", brand: "SKIN1004", category: "Cleanser", size: "30ml", price: 650, stock: 2, desc: "Water-light botanical cleansing oil that melts sunscreen and sebum without clogging pores." },
-      { id: "AUR-SK-018", name: "SKIN1004 Centella Light Cleansing Oil", brand: "SKIN1004", category: "Cleanser", size: "200ml", price: 1750, stock: 1, desc: "Full-size gentle Centella cleansing oil for effortless first-step double cleansing." },
-      { id: "AUR-SK-019", name: "SKIN1004 Centella Tone Brightening Capsule Ampoule", brand: "SKIN1004", category: "Serum", size: "30ml", price: 850, stock: 1, desc: "Madecassoside white capsules and niacinamide ampoule for luminous, even-toned skin." },
-      { id: "AUR-SK-020", name: "APLB Glutathione Niacinamide Facial Cleanser", brand: "APLB", category: "Cleanser", size: "100ml", price: 850, stock: 2, desc: "Refreshing brightening gel-foam cleanser that gently purifies while supporting skin clarity." },
-      { id: "AUR-SK-021", name: "APLB Glutathione Niacinamide Body Wash", brand: "APLB", category: "Body Care", size: "300ml", price: 1400, stock: 3, desc: "Mildly acidic body wash infused with Glutathione and Niacinamide for smooth, radiant skin." },
-      { id: "AUR-SK-022", name: "APLB Collagen Peptide Beauty Tablet", brand: "APLB", category: "Supplement", size: "30 tablets", price: 850, stock: 1, desc: "Inner-beauty collagen peptide and hyaluronic supplement for skin elasticity and glow." },
-      { id: "AUR-SK-023", name: "ANUA Niacinamide 10% + TXA 4% Serum", brand: "ANUA", category: "Serum", size: "10ml", price: 900, stock: 2, desc: "High-potency dark spot and hyperpigmentation serum with Niacinamide, Tranexamic Acid & Arbutin." },
-      { id: "AUR-SK-024", name: "ANUA Azelaic Acid 10 Hyaluron Redness Serum", brand: "ANUA", category: "Serum", size: "10ml", price: 900, stock: 2, desc: "Calming 10% Azelaic Acid serum to reduce visible redness, bumps, and post-acne erythema." },
-      { id: "AUR-SK-025", name: "KSecret Seoul 1988 Eye Cream Fermented Bean", brand: "KSecret", category: "Eye Care", size: "30ml", price: 1350, stock: 2, desc: "Retinal Liposome 4% + Fermented Bean eye cream to smooth fine lines and brighten under-eyes." },
-      { id: "AUR-SK-026", name: "ARENCIA Vitamin C Booster Shot", brand: "Arencia", category: "Serum", size: "10ml", price: 700, stock: 2, desc: "Concentrated antioxidant Vitamin C booster for morning radiance and dark-spot defense." },
-      { id: "AUR-SK-027", name: "COSRX Advanced Snail 96 Mucin Power Essence", brand: "COSRX", category: "Serum", size: "100ml", price: 1480, stock: 1, desc: "96.3% snail secretion filtrate essence that repairs damaged skin barrier and boosts bounce." },
-      { id: "AUR-SK-030", name: "SKIN1004 Centella Probio-Cica Enrich Cream", brand: "SKIN1004", category: "Cream", size: "50ml", price: 1750, stock: 1, desc: "Fermented Centella and ceramide rich cream for compromised, dry, or irritated skin barriers." },
-      { id: "AUR-SK-031", name: "Nella White Snow Fermented Underarm Whitening Cream", brand: "Nella", category: "Body Care", size: "50ml", price: 850, stock: 2, desc: "Gentle fermented brightening cream formulated for sensitive underarm and body areas." }
+      { id: "AUR-COS-001", name: "COSRX Low pH Good Morning Gel Cleanser", brand: "COSRX", category: "Cleanser", size: "150ml", price: 1050, stock: 2, desc: "Gentle tea-tree and BHA gel cleanser that respects your natural skin pH without stripping moisture." },
+      { id: "AUR-COS-002", name: "COSRX Salicylic Acid Daily Gentle Cleanser", brand: "COSRX", category: "Cleanser", size: "150ml", price: 1050, stock: 3, desc: "Targeted 0.5% salicylic acid foam cleanser to unclog pores, control excess sebum, and calm breakouts." },
+      { id: "AUR-TFS-003", name: "The Face Shop Rice Water Bright Cleansing Foam", brand: "The Face Shop", category: "Cleanser", size: "150ml", price: 990, stock: 3, desc: "Whipped brightening foam enriched with rice water extract for soft, radiant, thoroughly cleansed skin." },
+      { id: "AUR-TFS-004", name: "The Face Shop Rice Ceramide Moisture Cream", brand: "The Face Shop", category: "Cream", size: "50ml", price: 1050, stock: 3, desc: "Nourishing rice and ceramide barrier cream that locks in 24-hour hydration for dry and normal skin." },
+      { id: "AUR-ANU-005", name: "ANUA Rice Milky Toner", brand: "ANUA", category: "Toner", size: "40ml", price: 800, stock: 2, desc: "Milky, lightweight rice and ceramide toner that deeply hydrates and preps skin for glass-skin glow." },
+      { id: "AUR-IMF-006", name: "I'M FROM Rice Toner", brand: "I'm From", category: "Toner", size: "30ml", price: 650, stock: 2, desc: "Travel-friendly 77.78% Goami rice extract toner to brighten dull tone and balance oil-moisture levels." },
+      { id: "AUR-COS-007", name: "COSRX Advanced Snail 92 All In One Cream (Mini)", brand: "COSRX", category: "Cream", size: "50g", price: 900, stock: 2, desc: "92% snail mucin repair cream in a compact 50g jar to soothe redness and fade post-acne marks." },
+      { id: "AUR-COS-008", name: "COSRX Advanced Snail 92 All In One Cream", brand: "COSRX", category: "Cream", size: "100g", price: 1550, stock: 2, desc: "Full-size 100g cult-favorite snail mucin moisturizer for plump, resilient, deeply hydrated skin." },
+      { id: "AUR-BOJ-009", name: "Beauty of Joseon Dynasty Cream", brand: "Beauty of Joseon", category: "Cream", size: "50ml", price: 1900, stock: 2, desc: "Luxurious Hanbang moisturizer with rice bran water, ginseng, squalane, and niacinamide." },
+      { id: "AUR-BOJ-010", name: "Beauty of Joseon Relief Sun Aqua-fresh", brand: "Beauty of Joseon", category: "Sunscreen", size: "50ml", price: 1420, stock: 2, desc: "Featherlight, zero white-cast rice seed water SPF50+ PA++++ designed for humid weather." },
+      { id: "AUR-SKI-011", name: "SKIN1004 Centella Hyalu-Cica Water-Fit Sun Serum", brand: "SKIN1004", category: "Sunscreen", size: "50ml", price: 1350, stock: 2, desc: "Serum-like calming sunscreen with Madagascar Centella and Hyaluronic Acid; zero sticky finish." },
+      { id: "AUR-SKI-012", name: "SKIN1004 Centella Hyalu-Cica Water-Fit Sun Serum (Mini)", brand: "SKIN1004", category: "Sunscreen", size: "15ml", price: 650, stock: 2, desc: "Pocket-sized 15ml sun serum ideal for trial or effortless SPF reapplication on the go." },
+      { id: "AUR-APL-013", name: "APLB Glutathione Niacinamide Body Lotion", brand: "APLB", category: "Body Care", size: "300ml", price: 1350, stock: 4, desc: "Brightening and firming body lotion powered by Glutathione, Niacinamide, and Centella Asiatica." },
+      { id: "AUR-APL-014", name: "APLB Glutathione Niacinamide Facial Cream", brand: "APLB", category: "Cream", size: "55ml", price: 900, stock: 1, desc: "Daily brightening cream targeting uneven skin tone and dullness with gentle Centella care." },
+      { id: "AUR-COS-015", name: "COSRX Acne Pimple Master Patch (24pcs)", brand: "COSRX", category: "Treatment", size: "24 patches", price: 320, stock: 1, desc: "Hydrocolloid spot patches that absorb impurities overnight and protect healing blemishes." },
+      { id: "AUR-ALH-016", name: "Dr. Althea 345 Relief Cream", brand: "Dr. Althea", category: "Cream", size: "15ml", price: 900, stock: 2, desc: "Post-blemish soothing gel-cream with niacinamide, panthenol, and resveratrol for sensitive skin." },
+      { id: "AUR-SKI-017", name: "SKIN1004 Centella Light Cleansing Oil (Mini)", brand: "SKIN1004", category: "Cleanser", size: "30ml", price: 650, stock: 2, desc: "Water-light botanical cleansing oil that melts sunscreen and sebum without clogging pores." },
+      { id: "AUR-SKI-018", name: "SKIN1004 Centella Light Cleansing Oil", brand: "SKIN1004", category: "Cleanser", size: "200ml", price: 1750, stock: 1, desc: "Full-size gentle Centella cleansing oil for effortless first-step double cleansing." },
+      { id: "AUR-SKI-019", name: "SKIN1004 Centella Tone Brightening Capsule Ampoule", brand: "SKIN1004", category: "Serum", size: "30ml", price: 850, stock: 1, desc: "Madecassoside white capsules and niacinamide ampoule for luminous, even-toned skin." },
+      { id: "AUR-APL-020", name: "APLB Glutathione Niacinamide Facial Cleanser", brand: "APLB", category: "Cleanser", size: "100ml", price: 850, stock: 2, desc: "Refreshing brightening gel-foam cleanser that gently purifies while supporting skin clarity." },
+      { id: "AUR-APL-021", name: "APLB Glutathione Niacinamide Body Wash", brand: "APLB", category: "Body Care", size: "300ml", price: 1400, stock: 3, desc: "Mildly acidic body wash infused with Glutathione and Niacinamide for smooth, radiant skin." },
+      { id: "AUR-APL-022", name: "APLB Collagen Peptide Beauty Tablet", brand: "APLB", category: "Supplement", size: "30 tablets", price: 850, stock: 1, desc: "Inner-beauty collagen peptide and hyaluronic supplement for skin elasticity and glow." },
+      { id: "AUR-ANU-023", name: "ANUA Niacinamide 10% + TXA 4% Serum", brand: "ANUA", category: "Serum", size: "10ml", price: 900, stock: 2, desc: "High-potency dark spot and hyperpigmentation serum with Niacinamide, Tranexamic Acid & Arbutin." },
+      { id: "AUR-ANU-024", name: "ANUA Azelaic Acid 10 Hyaluron Redness Serum", brand: "ANUA", category: "Serum", size: "10ml", price: 900, stock: 2, desc: "Calming 10% Azelaic Acid serum to reduce visible redness, bumps, and post-acne erythema." },
+      { id: "AUR-KSC-025", name: "KSecret Seoul 1988 Eye Cream Fermented Bean", brand: "KSecret", category: "Eye Care", size: "30ml", price: 1350, stock: 2, desc: "Retinal Liposome 4% + Fermented Bean eye cream to smooth fine lines and brighten under-eyes." },
+      { id: "AUR-ARE-026", name: "ARENCIA Vitamin C Booster Shot", brand: "Arencia", category: "Serum", size: "10ml", price: 700, stock: 2, desc: "Concentrated antioxidant Vitamin C booster for morning radiance and dark-spot defense." },
+      { id: "AUR-COS-027", name: "COSRX Advanced Snail 96 Mucin Power Essence", brand: "COSRX", category: "Serum", size: "100ml", price: 1480, stock: 1, desc: "96.3% snail secretion filtrate essence that repairs damaged skin barrier and boosts bounce." },
+      { id: "AUR-SKI-028", name: "SKIN1004 Centella Probio-Cica Enrich Cream", brand: "SKIN1004", category: "Cream", size: "50ml", price: 1750, stock: 1, desc: "Fermented Centella and ceramide rich cream for compromised, dry, or irritated skin barriers." },
+      { id: "AUR-NEL-029", name: "Nella White Snow Fermented Underarm Whitening Cream", brand: "Nella", category: "Body Care", size: "50ml", price: 850, stock: 2, desc: "Gentle fermented brightening cream formulated for sensitive underarm and body areas." }
     ];
 
     const I18N = {
@@ -972,7 +1031,9 @@
       skinType: "oily",
       concern: "acne",
       quickViewId: null,
-      visibleCount: 12
+      visibleCount: 12,
+      couponCode: "",
+      couponDiscount: 0
     };
 
     const categories = ["All", "Cleanser", "Toner", "Serum", "Cream", "Sunscreen", "Body Care", "Eye Care", "Treatment", "Supplement"];
@@ -1111,28 +1172,28 @@
     function getRoutineRecommendation() {
       const map = {
         oily: {
-          acne: { ids: ["AUR-SK-002", "AUR-SK-015", "AUR-SK-010"], note: "Salicylic Acid cleanser clears pores, Master Patch targets active spots overnight, and Relief Sun Aqua-fresh protects with zero greasiness." },
-          glow: { ids: ["AUR-SK-001", "AUR-SK-023", "AUR-SK-011"], note: "Low pH gel keeps oil balanced, ANUA Niacinamide 10% + TXA 4% fades dark marks, and Hyalu-Cica Sun Serum stays featherlight." },
-          barrier: { ids: ["AUR-SK-001", "AUR-SK-005", "AUR-SK-016"], note: "Gentle gel cleansing + Rice Milky Toner + Dr. Althea 345 Relief Cream calms oil-dehydrated skin without heaviness." },
-          sun: { ids: ["AUR-SK-017", "AUR-SK-001", "AUR-SK-010"], note: "Double cleanse with Centella Light Cleansing Oil + Low pH Gel, and shield daily with BOJ Relief Sun Aqua-fresh." }
+          acne: { ids: ["AUR-COS-002", "AUR-COS-015", "AUR-BOJ-010"], note: "Salicylic Acid cleanser clears pores, Master Patch targets active spots overnight, and Relief Sun Aqua-fresh protects with zero greasiness." },
+          glow: { ids: ["AUR-COS-001", "AUR-ANU-023", "AUR-SKI-011"], note: "Low pH gel keeps oil balanced, ANUA Niacinamide 10% + TXA 4% fades dark marks, and Hyalu-Cica Sun Serum stays featherlight." },
+          barrier: { ids: ["AUR-COS-001", "AUR-ANU-005", "AUR-ALH-016"], note: "Gentle gel cleansing + Rice Milky Toner + Dr. Althea 345 Relief Cream calms oil-dehydrated skin without heaviness." },
+          sun: { ids: ["AUR-SKI-017", "AUR-COS-001", "AUR-BOJ-010"], note: "Double cleanse with Centella Light Cleansing Oil + Low pH Gel, and shield daily with BOJ Relief Sun Aqua-fresh." }
         },
         dry: {
-          acne: { ids: ["AUR-SK-001", "AUR-SK-027", "AUR-SK-008"], note: "Non-stripping Low pH cleanser paired with Snail 96 Essence & Snail 92 Cream heals blemishes while deeply hydrating." },
-          glow: { ids: ["AUR-SK-003", "AUR-SK-026", "AUR-SK-009"], note: "Rice Water Bright Foam + Arencia Vitamin C Booster + Beauty of Joseon Dynasty Cream deliver luminous, supple glass skin." },
-          barrier: { ids: ["AUR-SK-017", "AUR-SK-006", "AUR-SK-030"], note: "Centella Cleansing Oil + I'M FROM Rice Toner + Probio-Cica Enrich Cream deeply rebuild dry, flaky skin barriers." },
-          sun: { ids: ["AUR-SK-005", "AUR-SK-004", "AUR-SK-011"], note: "Layer Rice Milky Toner + Rice Ceramide Cream under SKIN1004 Hyalu-Cica Sun Serum for dewy all-day UV protection." }
+          acne: { ids: ["AUR-COS-001", "AUR-COS-027", "AUR-COS-008"], note: "Non-stripping Low pH cleanser paired with Snail 96 Essence & Snail 92 Cream heals blemishes while deeply hydrating." },
+          glow: { ids: ["AUR-TFS-003", "AUR-ARE-026", "AUR-BOJ-009"], note: "Rice Water Bright Foam + Arencia Vitamin C Booster + Beauty of Joseon Dynasty Cream deliver luminous, supple glass skin." },
+          barrier: { ids: ["AUR-SKI-017", "AUR-IMF-006", "AUR-SKI-028"], note: "Centella Cleansing Oil + I'M FROM Rice Toner + Probio-Cica Enrich Cream deeply rebuild dry, flaky skin barriers." },
+          sun: { ids: ["AUR-ANU-005", "AUR-TFS-004", "AUR-SKI-011"], note: "Layer Rice Milky Toner + Rice Ceramide Cream under SKIN1004 Hyalu-Cica Sun Serum for dewy all-day UV protection." }
         },
         combo: {
-          acne: { ids: ["AUR-SK-002", "AUR-SK-024", "AUR-SK-016"], note: "Salicylic cleanser balances the T-zone while Azelaic Acid 10 and 345 Relief Cream calm redness on cheeks." },
-          glow: { ids: ["AUR-SK-003", "AUR-SK-019", "AUR-SK-010"], note: "Rice Water Foam + SKIN1004 Tone Brightening Ampoule + BOJ Aqua-fresh keep combination skin bright and balanced." },
-          barrier: { ids: ["AUR-SK-001", "AUR-SK-027", "AUR-SK-007"], note: "Low pH Gel + Snail 96 Essence + Snail 92 Mini Cream give weightless bounce without clogging the T-zone." },
-          sun: { ids: ["AUR-SK-001", "AUR-SK-005", "AUR-SK-011"], note: "Fresh gel cleanse, milky rice hydration, and weightless Hyalu-Cica Sun Serum for humid Dhaka weather." }
+          acne: { ids: ["AUR-COS-002", "AUR-ANU-024", "AUR-ALH-016"], note: "Salicylic cleanser balances the T-zone while Azelaic Acid 10 and 345 Relief Cream calm redness on cheeks." },
+          glow: { ids: ["AUR-TFS-003", "AUR-SKI-019", "AUR-BOJ-010"], note: "Rice Water Foam + SKIN1004 Tone Brightening Ampoule + BOJ Aqua-fresh keep combination skin bright and balanced." },
+          barrier: { ids: ["AUR-COS-001", "AUR-COS-027", "AUR-COS-007"], note: "Low pH Gel + Snail 96 Essence + Snail 92 Mini Cream give weightless bounce without clogging the T-zone." },
+          sun: { ids: ["AUR-COS-001", "AUR-ANU-005", "AUR-SKI-011"], note: "Fresh gel cleanse, milky rice hydration, and weightless Hyalu-Cica Sun Serum for humid Dhaka weather." }
         },
         sensitive: {
-          acne: { ids: ["AUR-SK-001", "AUR-SK-024", "AUR-SK-016"], note: "Ultra-gentle Low pH Gel + calming Azelaic Acid 10 + Dr. Althea 345 Relief Cream soothe reactive breakouts." },
-          glow: { ids: ["AUR-SK-020", "AUR-SK-019", "AUR-SK-011"], note: "APLB Glutathione Cleanser + SKIN1004 Centella Brightening Ampoule + Hyalu-Cica Sun Serum brighten gently." },
-          barrier: { ids: ["AUR-SK-017", "AUR-SK-005", "AUR-SK-030"], note: "Madagascar Centella oil, soothing rice toner, and Probio-Cica Enrich Cream comfort stressed, sensitive skin." },
-          sun: { ids: ["AUR-SK-001", "AUR-SK-016", "AUR-SK-012"], note: "Gentle cleansing, calming 345 Relief Cream, and pocket-sized Hyalu-Cica Sun Serum 15ml for sensitive skin." }
+          acne: { ids: ["AUR-COS-001", "AUR-ANU-024", "AUR-ALH-016"], note: "Ultra-gentle Low pH Gel + calming Azelaic Acid 10 + Dr. Althea 345 Relief Cream soothe reactive breakouts." },
+          glow: { ids: ["AUR-APL-020", "AUR-SKI-019", "AUR-SKI-011"], note: "APLB Glutathione Cleanser + SKIN1004 Centella Brightening Ampoule + Hyalu-Cica Sun Serum brighten gently." },
+          barrier: { ids: ["AUR-SKI-017", "AUR-ANU-005", "AUR-SKI-028"], note: "Madagascar Centella oil, soothing rice toner, and Probio-Cica Enrich Cream comfort stressed, sensitive skin." },
+          sun: { ids: ["AUR-COS-001", "AUR-ALH-016", "AUR-SKI-012"], note: "Gentle cleansing, calming 345 Relief Cream, and pocket-sized Hyalu-Cica Sun Serum 15ml for sensitive skin." }
         }
       };
       return map[state.skinType][state.concern];
@@ -1175,6 +1236,7 @@
       state.cart[id] = current + 1;
       renderCart();
       showToast(`Added "${prod.name}" to your bag.`);
+      if (typeof window.fbq === "function") { try { window.fbq("track", "AddToCart", { content_name: prod.name, value: getEffectivePrice(prod), currency: "BDT" }); } catch {} }
     }
 
     function updateCartQty(id, delta) {
@@ -1233,14 +1295,21 @@
         `;
       }).join("");
 
-      const total = subtotal + state.deliveryCharge;
+      const disc = Math.min(subtotal, Number(state.couponDiscount) || 0);
+      const total = Math.max(0, subtotal - disc) + state.deliveryCharge;
+      const discRow = document.getElementById("cartDiscountRow");
+      const discVal = document.getElementById("cartDiscountVal");
+      if (discRow && discVal) {
+        discRow.classList.toggle("hidden", disc <= 0);
+        discVal.textContent = `-৳${disc.toLocaleString()}`;
+      }
       document.getElementById("cartSubtotal").textContent = `৳${subtotal.toLocaleString()}`;
       document.getElementById("cartDelivery").textContent = `৳${state.deliveryCharge}`;
       document.getElementById("cartTotal").textContent = `৳${total.toLocaleString()}`;
       document.getElementById("checkoutTotalLabel").textContent = `৳${total.toLocaleString()}`;
     }
 
-    const PRODUCT_GUIDES = {"AUR-SK-001": {"ingredients": "Tea Tree Leaf Oil, Betaine Salicylate (0.5% BHA), Allantoin — ত্বকের প্রাকৃতিক pH ব্যালেন্স ঠিক রাখে ও অতিরিক্ত তেল পরিষ্কার করে।", "howToUse": "সকাল ও রাতে ভেজা মুখে পরিমাণমতো নিয়ে হালকা ফেনা তৈরি করে ৩০ সেকেন্ড ম্যাসাজ করুন, তারপর কুসুম গরম বা সাধারণ পানি দিয়ে ধুয়ে ফেলুন।", "skinType": "Oily, Combination, Acne-prone এবং Sensitive সব ধরনের ত্বকের জন্য উপযোগী।"}, "AUR-SK-002": {"ingredients": "Salicylic Acid (0.5% BHA), Tea Tree Leaf Oil, Willow Bark Water — পোরস গভীর থেকে পরিষ্কার করে এবং ব্রণ ও ব্ল্যাকহেডস কমায়।", "howToUse": "হাতে অল্প পানি দিয়ে ফেনা করে টি-জোন বা ব্রণপ্রবণ জায়গায় আলতোভাবে ম্যাসাজ করুন এবং ভালোভাবে ধুয়ে ফেলুন। প্রতিদিন ১–২ বার ব্যবহারযোগ্য।", "skinType": "Oily, Combination এবং Acne-prone (ব্রণ ও হোয়াইটহেডস যুক্ত) ত্বকের জন্য সেরা।"}, "AUR-SK-003": {"ingredients": "Rice Extract (Oryza Sativa), Soapwort Extract, Moringa Oil — ত্বক শুষ্ক না করেই উজ্জ্বলতা (brightening) বাড়ায়।", "howToUse": "অল্প পরিমাণে নিয়ে পানির সাথে ফেনা তৈরি করে পুরো মুখে ১ মিনিট ম্যাসাজ করে ধুয়ে নিন।", "skinType": "Normal, Dry এবং Combination ত্বকের জন্য উপযোগী (Dull skin উজ্জ্বল করতে দারুণ)।"}, "AUR-SK-004": {"ingredients": "Rice Extract, Rice Bran Oil, Ceramide NP, Shea Butter — ত্বকের ময়েশ্চার ব্যারিয়ার মজবুত করে ও দীর্ঘক্ষণ হাইড্রেটেড রাখে।", "howToUse": "টোনার ও সিরাম ব্যবহারের পর সকাল ও রাতে পরিমাণমতো ক্রিম মুখে ও গলায় আলতো করে লাগিয়ে নিন।", "skinType": "Dry, Normal এবং Dehydrated (রুক্ষ ও টানটান) ত্বকের জন্য উপযোগী।"}, "AUR-SK-005": {"ingredients": "Rice Extract (70%+), Niacinamide, Ceramides, Panthenol — ত্বককে তাৎক্ষণিক হাইড্রেশন দেয় এবং গ্লাস-স্কিন গ্লো আনে।", "howToUse": "মুখ ধোয়ার পর হাতে বা কটন প্যাডে নিয়ে পুরো মুখে হালকা চাপ দিয়ে (pat করে) শোষণ করান। সকাল ও রাতে ব্যবহার করুন।", "skinType": "All Skin Types — বিশেষ করে Dry, Combination ও Sensitive ত্বকের জন্য চমৎকার।"}, "AUR-SK-006": {"ingredients": "77.78% Yeoju Rice Extract, Niacinamide, Adenosine — মরা কোষ দূর করে ত্বককে নরম, মসৃণ ও উজ্জ্বল করে।", "howToUse": "ব্যবহারের আগে বোতল ভালো করে ঝাঁকিয়ে নিন (shake well)। ফেসওয়াশের পর হাতে নিয়ে মুখে আলতোভাবে চেপে লাগান।", "skinType": "Dry, Normal, Combination এবং Dull (মলিন) ত্বকের জন্য উপযোগী।"}, "AUR-SK-007": {"ingredients": "92% Snail Secretion Filtrate, Hyaluronic Acid, Panthenol, Allantoin — ক্ষতিগ্রস্ত ত্বক রিপেয়ার করে ও হাইড্রেশন দেয়।", "howToUse": "সকাল ও রাতে সিরামের পর অল্প পরিমাণ নিয়ে মুখে ও গলায় লাগিয়ে হালকা ট্যাপ করে মিশিয়ে নিন।", "skinType": "All Skin Types — Oily, Acne-prone, Dry এবং Sensitive সব ত্বকেই ব্যবহার করা যায়।"}, "AUR-SK-008": {"ingredients": "92% Snail Secretion Filtrate, Sodium Hyaluronate, Betaine, Allantoin — ব্রণের দাগ হালকা করে ও স্কিন ব্যারিয়ার রিপেয়ার করে।", "howToUse": "রুটিনের শেষ ধাপে (ময়েশ্চারাইজার হিসেবে) পরিমাণমতো মুখে লাগিয়ে আঙুলের ডগা দিয়ে হালকা থपथপ করে মিশিয়ে দিন।", "skinType": "All Skin Types — বিশেষ করে Acne-scarred, Combination ও Dehydrated ত্বকের জন্য।"}, "AUR-SK-009": {"ingredients": "Rice Bran Water (29%), Ginseng Root Water (5%), Squalane (2%), Niacinamide (2%) — ত্বকে গভীর পুষ্টি ও ন্যাচারাল গ্লো দেয়।", "howToUse": "সকাল ও রাতে ময়েশ্চারাইজার হিসেবে পরিমাণমতো মুখে লাগান। সকালে এর পর অবশ্যই সানস্ক্রিন ব্যবহার করুন।", "skinType": "Dry, Normal এবং Combination ত্বকের জন্য দারুণ উপযোগী।"}, "AUR-SK-010": {"ingredients": "Rice Seed Water (30%), Panthenol (Vitamin B5), Hyaluronic Acid, Modern UV Filters (SPF50+ PA++++) — কোনো white cast বা তেলতেলে ভাব ছাড়াই রোদ থেকে সুরক্ষা দেয়।", "howToUse": "সকালে স্কিনকেয়ারের শেষ ধাপে (বাইরে যাওয়ার ১৫ মিনিট আগে) দুই আঙুল পরিমাণ নিয়ে মুখ ও গলায় সমানভাবে লাগান। প্রতি ২–৩ ঘণ্টা পর পুনরায় লাগান।", "skinType": "Oily, Combination, Normal এবং Humid আবহাওয়ায় সব ত্বকের জন্য সেরা।"}, "AUR-SK-011": {"ingredients": "Madagascar Centella Asiatica Extract, Hyaluronic Acid, Niacinamide, Adenosine (SPF50+ PA++++) — সিরামের মতো হালকা ও আরামদায়ক সান প্রোটেকশন।", "howToUse": "সকালের রুটিনের একদম শেষে মুখ ও গলায় পর্যাপ্ত পরিমাণে লাগান। মেকআপের নিচেও প্রাইমার হিসেবে দারুণ কাজ করে।", "skinType": "All Skin Types — বিশেষ করে Oily, Sensitive ও Acne-prone ত্বকের জন্য।"}, "AUR-SK-012": {"ingredients": "Madagascar Centella Asiatica Extract, Hyaluronic Acid, Niacinamide (SPF50+ PA++++) — ট্রাভেল-ফ্রেন্ডলি মিনি সাইজ, কোনো white cast নেই।", "howToUse": "বাইরে বের হওয়ার ১৫–২০ মিনিট আগে মুখ ও গলায় লাগিয়ে নিন। ব্যাগে রেখে প্রয়োজনে দিনের বেলা রি-অ্যাপ্লাই করুন।", "skinType": "All Skin Types — Sensitive ও Oily ত্বকের জন্য অত্যন্ত উপযোগী।"}, "AUR-SK-013": {"ingredients": "Glutathione, Niacinamide, Centella Asiatica 3X Complex, Squalane — শরীরের ত্বক উজ্জ্বল, মসৃণ ও ময়েশ্চারাইজড রাখে।", "howToUse": "গোসলের পর হালকা ভেজা শরীরে পরিমাণমতো লোশন নিয়ে ভালোভাবে ম্যাসাজ করুন। প্রতিদিন ব্যবহারে ভালো ফল পাওয়া যায়।", "skinType": "All Skin Types — শরীরের শুষ্ক বা অসম রঙের ত্বকের জন্য উপযোগী।"}, "AUR-SK-014": {"ingredients": "Glutathione, Niacinamide, Centella Asiatica, Collagen, Hyaluronic Acid — কালচে দাগ কমিয়ে ত্বককে উজ্জ্বল ও টানটান করে।", "howToUse": "সকাল ও রাতে মুখ পরিষ্কার ও সিরাম লাগানোর পর ময়েশ্চারাইজার হিসেবে মুখে ও গলায় ব্যবহার করুন।", "skinType": "Normal, Dry, Combination এবং Dull বা Pigmented ত্বকের জন্য।"}, "AUR-SK-015": {"ingredients": "100% Medical-grade Hydrocolloid — পেকে যাওয়া ব্রণের পুঁজ ও তেল শুষে নেয় এবং ব্যাকটেরিয়া থেকে রক্ষা করে।", "howToUse": "মুখ ধুয়ে শুকিয়ে নেওয়ার পর (কোনো ক্রিম বা সিরাম লাগানোর আগে) ব্রণের ওপর একটি প্যাচ লাগিয়ে রাখুন। প্যাচ সাদা হয়ে গেলে বদলে ফেলুন।", "skinType": "All Skin Types — বিশেষ করে সক্রিয় ব্রণ বা পিম্পল যুক্ত ত্বকের জন্য।"}, "AUR-SK-016": {"ingredients": "Niacinamide, Panthenol (10,000ppm), Madecassoside, Resveratrol, Centella Asiatica — ব্রণ-পরবর্তী লালচে ভাব, দাগ ও দুর্বল ব্যারিয়ার দ্রুত সারিয়ে তোলে।", "howToUse": "রাতে বা সকালে টোনার ও সিরামের পর পরিমাণমতো ক্রিম মুখে লাগান। নন-গ্রীসি হওয়ায় সহজেই মিশে যায়।", "skinType": "Acne-prone, Sensitive, Oily এবং Combination ত্বকের জন্য অত্যন্ত জনপ্রিয়।"}, "AUR-SK-017": {"ingredients": "Madagascar Centella Asiatica Oil, Jojoba Seed Oil, Sunflower Seed Oil, Olive Oil — ওয়াটারপ্রুফ মেকআপ, সানস্ক্রিন ও ব্ল্যাকহেডস গলিয়ে পরিষ্কার করে।", "howToUse": "শুকনো হাতে ২–৩ পাম্প তেল নিয়ে শুকনো মুখে ১ মিনিট ম্যাসাজ করুন। এরপর হাতে সামান্য পানি নিয়ে মুখ দুধের মতো সাদা হলে ধুয়ে ফেলুন এবং ফেসওয়াশ ব্যবহার করুন।", "skinType": "All Skin Types — Oily, Combination, Dry ও Sensitive ত্বকের ডাবল ক্লিনজিংয়ের জন্য।"}, "AUR-SK-018": {"ingredients": "Madagascar Centella Asiatica Extract, 6 Botanical Oils (Jojoba, Olive, Sunflower, Bergamot, Pelargonium, Damask Rose) — পোরস ক্লগ না করে গভীর পরিষ্কার করে।", "howToUse": "রাতে শুকনো মুখে ম্যাসাজ করে অল্প পানিতে ইমালসিফাই (সাদা ফেনা) করে ধুয়ে নিন। এরপর আপনার রেগুলার ফেসওয়াশ দিয়ে মুখ ধুয়ে ফেলুন।", "skinType": "All Skin Types — বিশেষ করে সানস্ক্রিন/মেকআপ ব্যবহারকারী ও Blackhead যুক্ত ত্বকের জন্য।"}, "AUR-SK-019": {"ingredients": "Madewhite™ (Madecassoside), Niacinamide (4%), Tranexamic Acid (2%), Madagascar Centella — জ্বালাপোড়া ছাড়াই কালো দাগ ও মেছতার দাগ হালকা করে।", "howToUse": "টোনার লাগানোর পর ২–৩ ফোঁটা অ্যাম্পুল মুখ ও গলায় লাগিয়ে আলতো করে চেপে দিন। সকাল ও রাতে ব্যবহার করা যায়।", "skinType": "All Skin Types — Sensitive, Acne-mark ও Uneven skin tone-এর জন্য দারুণ।"}, "AUR-SK-020": {"ingredients": "Glutathione, Niacinamide, Centella Asiatica, Panthenol — ত্বকের ময়লা পরিষ্কারের পাশাপাশি ন্যাচারাল ব্রাইটনিং লুক দেয়।", "howToUse": "সকাল ও রাতে ভেজা মুখে অল্প পরিমাণে নিয়ে ফেনা তৈরি করে ৩০–৪৫ সেকেন্ড ম্যাসাজ করে ধুয়ে ফেলুন।", "skinType": "All Skin Types — Normal, Combination এবং Dull ত্বকের জন্য উপযোগী।"}, "AUR-SK-021": {"ingredients": "Glutathione, Niacinamide, Centella 3X Complex, Tea Tree & Lotus Extract — শরীরের ঘাম, ময়লা ও বডি অ্যাকনে কমিয়ে ত্বক উজ্জ্বল রাখে।", "howToUse": "গোসলের সময় ভেজা শরীর বা লুফাতে পরিমাণমতো নিয়ে ফেনা তৈরি করে ম্যাসাজ করুন, তারপর পরিষ্কার পানি দিয়ে ধুয়ে ফেলুন।", "skinType": "All Skin Types — প্রতিদিনের ব্যবহারের জন্য নিরাপদ।"}, "AUR-SK-022": {"ingredients": "Low-molecular Fish Collagen Peptide, Vitamin C, Hyaluronic Acid, Biotin — ভেতর থেকে ত্বকের ইলাস্টিসিটি, গ্লো ও চুল-নখের স্বাস্থ্য ভালো রাখে।", "howToUse": "প্রতিদিন ১–২টি ট্যাবলেট পর্যাপ্ত পানির সাথে সেবন করুন (প্যাকেটের নির্দেশনা অনুযায়ী)।", "skinType": "সব ধরনের ত্বকের ভেতর থেকে পুষ্টি ও অ্যান্টি-এজিং কেয়ারের জন্য।"}, "AUR-SK-023": {"ingredients": "Niacinamide (10%), Tranexamic Acid (4%), Alpha Arbutin (2%), Hyaluronic Acid, Ceramides — পুরনো ব্রণের কালো দাগ ও হাইপারপিগমেন্টেশন দ্রুত হালকা করে।", "howToUse": "টোনারের পর ২–৩ ফোঁটা সিরাম মুখে লাগান (প্রথম সপ্তাহে শুধু রাতে ব্যবহার করা ভালো, পরে সকাল-রাত)। সকালে অবশ্যই সানস্ক্রিন লাগাবেন।", "skinType": "Oily, Combination, Normal এবং Dark spots/PIH যুক্ত ত্বকের জন্য।"}, "AUR-SK-024": {"ingredients": "Azelaic Acid (10%), Hyaluronic Acid, Panthenol, Gentle Centella Complex — লালচে ভাব (redness), ব্রণ ও পোরস শান্ত করে।", "howToUse": "মুখ পরিষ্কার ও টোনারের পর ১–২ ফোঁটা সিরাম পুরো মুখে বা শুধু লালচে/ব্রণযুক্ত অংশে লাগান। এরপর ময়েশ্চারাইজার ব্যবহার করুন।", "skinType": "Sensitive, Rosacea-prone, Redness এবং Acne-prone ত্বকের জন্য।"}, "AUR-SK-025": {"ingredients": "Retinal Liposome (2%), Fermented Bean Extract, Peptides, Niacinamide — চোখের নিচের কালো দাগ, ফোলাভাব ও সূক্ষ্ম বলিরেখা কমায়।", "howToUse": "শুধু রাতে মুখ ধোয়ার পর মটরদানার সমান অল্প পরিমাণ নিয়ে অনামিকা (ring finger) দিয়ে চোখের চারপাশে আলতো করে ট্যাপ করে লাগান।", "skinType": "All Skin Types — Dark circles ও Fine lines যুক্ত ত্বকের জন্য।"}, "AUR-SK-026": {"ingredients": "Stabilized Vitamin C, Niacinamide, Glutathione, Ferulic Acid — রোদে পোড়া কালচে ভাব দূর করে ও ত্বকে ইনস্ট্যান্ট গ্লো আনে।", "howToUse": "সকালে (সানস্ক্রিনের আগে) বা রাতে টোনারের পর ২–৩ ফোঁটা সিরাম মুখে লাগিয়ে মিশিয়ে নিন।", "skinType": "Normal, Combination, Dry এবং Dull skin-এর জন্য উপযোগী।"}, "AUR-SK-027": {"ingredients": "96.3% Snail Secretion Filtrate, Sodium Hyaluronate, Panthenol, Arginine — ত্বকে গভীর আর্দ্রতা দেয়, লালচে ভাব কমায় এবং গ্লাস-স্কিন এফেক্ট তৈরি করে।", "howToUse": "হালকা ভেজা মুখে টোনারের পর ২ পাম্প এসেন্স নিয়ে আলতোভাবে থপথপ করে লাগান, এরপর ময়েশ্চারাইজার দিয়ে সিল করুন।", "skinType": "All Skin Types — Dry, Oily, Acne-prone ও Sensitive সবার জন্য নিরাপদ।"}, "AUR-SK-030": {"ingredients": "Fermented Centella (Probio-Cica), Ceramide NP, Macadamia Seed Oil, Shea Butter — অতি সংবেদনশীল ও ক্ষতিগ্রস্ত স্কিন ব্যারিয়ার গভীরভাবে সারিয়ে তোলে।", "howToUse": "সকাল ও রাতে সিরামের পর পরিমাণমতো ক্রিম মুখে ও গলায় লাগিয়ে হালকা ম্যাসাজ করুন।", "skinType": "Dry, Very Sensitive, Compromised barrier এবং শীতকালীন রুক্ষ ত্বকের জন্য।"}, "AUR-SK-031": {"ingredients": "Fermented Extracts, Niacinamide, Alpha Arbutin, Vitamin E — আন্ডারআর্ম, হাঁটু ও কনুইয়ের কালচে দাগ হালকা করে ও ত্বক মসৃণ রাখে।", "howToUse": "পরিষ্কার ও শুষ্ক আন্ডারআর্ম বা কাঙ্ক্ষিত জায়গায় দিনে ১–২ বার অল্প পরিমাণ ক্রিম হালকা ম্যাসাজ করে লাগান।", "skinType": "All Skin Types — সেনসিটিভ আন্ডারআর্ম এরিয়ার জন্যও কোমল।"}};
+    const PRODUCT_GUIDES = {"AUR-COS-001": {"ingredients": "Tea Tree Leaf Oil, Betaine Salicylate (0.5% BHA), Allantoin — ত্বকের প্রাকৃতিক pH ব্যালেন্স ঠিক রাখে ও অতিরিক্ত তেল পরিষ্কার করে।", "howToUse": "সকাল ও রাতে ভেজা মুখে পরিমাণমতো নিয়ে হালকা ফেনা তৈরি করে ৩০ সেকেন্ড ম্যাসাজ করুন, তারপর কুসুম গরম বা সাধারণ পানি দিয়ে ধুয়ে ফেলুন।", "skinType": "Oily, Combination, Acne-prone এবং Sensitive সব ধরনের ত্বকের জন্য উপযোগী।"}, "AUR-COS-002": {"ingredients": "Salicylic Acid (0.5% BHA), Tea Tree Leaf Oil, Willow Bark Water — পোরস গভীর থেকে পরিষ্কার করে এবং ব্রণ ও ব্ল্যাকহেডস কমায়।", "howToUse": "হাতে অল্প পানি দিয়ে ফেনা করে টি-জোন বা ব্রণপ্রবণ জায়গায় আলতোভাবে ম্যাসাজ করুন এবং ভালোভাবে ধুয়ে ফেলুন। প্রতিদিন ১–২ বার ব্যবহারযোগ্য।", "skinType": "Oily, Combination এবং Acne-prone (ব্রণ ও হোয়াইটহেডস যুক্ত) ত্বকের জন্য সেরা।"}, "AUR-TFS-003": {"ingredients": "Rice Extract (Oryza Sativa), Soapwort Extract, Moringa Oil — ত্বক শুষ্ক না করেই উজ্জ্বলতা (brightening) বাড়ায়।", "howToUse": "অল্প পরিমাণে নিয়ে পানির সাথে ফেনা তৈরি করে পুরো মুখে ১ মিনিট ম্যাসাজ করে ধুয়ে নিন।", "skinType": "Normal, Dry এবং Combination ত্বকের জন্য উপযোগী (Dull skin উজ্জ্বল করতে দারুণ)।"}, "AUR-TFS-004": {"ingredients": "Rice Extract, Rice Bran Oil, Ceramide NP, Shea Butter — ত্বকের ময়েশ্চার ব্যারিয়ার মজবুত করে ও দীর্ঘক্ষণ হাইড্রেটেড রাখে।", "howToUse": "টোনার ও সিরাম ব্যবহারের পর সকাল ও রাতে পরিমাণমতো ক্রিম মুখে ও গলায় আলতো করে লাগিয়ে নিন।", "skinType": "Dry, Normal এবং Dehydrated (রুক্ষ ও টানটান) ত্বকের জন্য উপযোগী।"}, "AUR-ANU-005": {"ingredients": "Rice Extract (70%+), Niacinamide, Ceramides, Panthenol — ত্বককে তাৎক্ষণিক হাইড্রেশন দেয় এবং গ্লাস-স্কিন গ্লো আনে।", "howToUse": "মুখ ধোয়ার পর হাতে বা কটন প্যাডে নিয়ে পুরো মুখে হালকা চাপ দিয়ে (pat করে) শোষণ করান। সকাল ও রাতে ব্যবহার করুন।", "skinType": "All Skin Types — বিশেষ করে Dry, Combination ও Sensitive ত্বকের জন্য চমৎকার।"}, "AUR-IMF-006": {"ingredients": "77.78% Yeoju Rice Extract, Niacinamide, Adenosine — মরা কোষ দূর করে ত্বককে নরম, মসৃণ ও উজ্জ্বল করে।", "howToUse": "ব্যবহারের আগে বোতল ভালো করে ঝাঁকিয়ে নিন (shake well)। ফেসওয়াশের পর হাতে নিয়ে মুখে আলতোভাবে চেপে লাগান।", "skinType": "Dry, Normal, Combination এবং Dull (মলিন) ত্বকের জন্য উপযোগী।"}, "AUR-COS-007": {"ingredients": "92% Snail Secretion Filtrate, Hyaluronic Acid, Panthenol, Allantoin — ক্ষতিগ্রস্ত ত্বক রিপেয়ার করে ও হাইড্রেশন দেয়।", "howToUse": "সকাল ও রাতে সিরামের পর অল্প পরিমাণ নিয়ে মুখে ও গলায় লাগিয়ে হালকা ট্যাপ করে মিশিয়ে নিন।", "skinType": "All Skin Types — Oily, Acne-prone, Dry এবং Sensitive সব ত্বকেই ব্যবহার করা যায়।"}, "AUR-COS-008": {"ingredients": "92% Snail Secretion Filtrate, Sodium Hyaluronate, Betaine, Allantoin — ব্রণের দাগ হালকা করে ও স্কিন ব্যারিয়ার রিপেয়ার করে।", "howToUse": "রুটিনের শেষ ধাপে (ময়েশ্চারাইজার হিসেবে) পরিমাণমতো মুখে লাগিয়ে আঙুলের ডগা দিয়ে হালকা থपथপ করে মিশিয়ে দিন।", "skinType": "All Skin Types — বিশেষ করে Acne-scarred, Combination ও Dehydrated ত্বকের জন্য।"}, "AUR-BOJ-009": {"ingredients": "Rice Bran Water (29%), Ginseng Root Water (5%), Squalane (2%), Niacinamide (2%) — ত্বকে গভীর পুষ্টি ও ন্যাচারাল গ্লো দেয়।", "howToUse": "সকাল ও রাতে ময়েশ্চারাইজার হিসেবে পরিমাণমতো মুখে লাগান। সকালে এর পর অবশ্যই সানস্ক্রিন ব্যবহার করুন।", "skinType": "Dry, Normal এবং Combination ত্বকের জন্য দারুণ উপযোগী।"}, "AUR-BOJ-010": {"ingredients": "Rice Seed Water (30%), Panthenol (Vitamin B5), Hyaluronic Acid, Modern UV Filters (SPF50+ PA++++) — কোনো white cast বা তেলতেলে ভাব ছাড়াই রোদ থেকে সুরক্ষা দেয়।", "howToUse": "সকালে স্কিনকেয়ারের শেষ ধাপে (বাইরে যাওয়ার ১৫ মিনিট আগে) দুই আঙুল পরিমাণ নিয়ে মুখ ও গলায় সমানভাবে লাগান। প্রতি ২–৩ ঘণ্টা পর পুনরায় লাগান।", "skinType": "Oily, Combination, Normal এবং Humid আবহাওয়ায় সব ত্বকের জন্য সেরা।"}, "AUR-SKI-011": {"ingredients": "Madagascar Centella Asiatica Extract, Hyaluronic Acid, Niacinamide, Adenosine (SPF50+ PA++++) — সিরামের মতো হালকা ও আরামদায়ক সান প্রোটেকশন।", "howToUse": "সকালের রুটিনের একদম শেষে মুখ ও গলায় পর্যাপ্ত পরিমাণে লাগান। মেকআপের নিচেও প্রাইমার হিসেবে দারুণ কাজ করে।", "skinType": "All Skin Types — বিশেষ করে Oily, Sensitive ও Acne-prone ত্বকের জন্য।"}, "AUR-SKI-012": {"ingredients": "Madagascar Centella Asiatica Extract, Hyaluronic Acid, Niacinamide (SPF50+ PA++++) — ট্রাভেল-ফ্রেন্ডলি মিনি সাইজ, কোনো white cast নেই।", "howToUse": "বাইরে বের হওয়ার ১৫–২০ মিনিট আগে মুখ ও গলায় লাগিয়ে নিন। ব্যাগে রেখে প্রয়োজনে দিনের বেলা রি-অ্যাপ্লাই করুন।", "skinType": "All Skin Types — Sensitive ও Oily ত্বকের জন্য অত্যন্ত উপযোগী।"}, "AUR-APL-013": {"ingredients": "Glutathione, Niacinamide, Centella Asiatica 3X Complex, Squalane — শরীরের ত্বক উজ্জ্বল, মসৃণ ও ময়েশ্চারাইজড রাখে।", "howToUse": "গোসলের পর হালকা ভেজা শরীরে পরিমাণমতো লোশন নিয়ে ভালোভাবে ম্যাসাজ করুন। প্রতিদিন ব্যবহারে ভালো ফল পাওয়া যায়।", "skinType": "All Skin Types — শরীরের শুষ্ক বা অসম রঙের ত্বকের জন্য উপযোগী।"}, "AUR-APL-014": {"ingredients": "Glutathione, Niacinamide, Centella Asiatica, Collagen, Hyaluronic Acid — কালচে দাগ কমিয়ে ত্বককে উজ্জ্বল ও টানটান করে।", "howToUse": "সকাল ও রাতে মুখ পরিষ্কার ও সিরাম লাগানোর পর ময়েশ্চারাইজার হিসেবে মুখে ও গলায় ব্যবহার করুন।", "skinType": "Normal, Dry, Combination এবং Dull বা Pigmented ত্বকের জন্য।"}, "AUR-COS-015": {"ingredients": "100% Medical-grade Hydrocolloid — পেকে যাওয়া ব্রণের পুঁজ ও তেল শুষে নেয় এবং ব্যাকটেরিয়া থেকে রক্ষা করে।", "howToUse": "মুখ ধুয়ে শুকিয়ে নেওয়ার পর (কোনো ক্রিম বা সিরাম লাগানোর আগে) ব্রণের ওপর একটি প্যাচ লাগিয়ে রাখুন। প্যাচ সাদা হয়ে গেলে বদলে ফেলুন।", "skinType": "All Skin Types — বিশেষ করে সক্রিয় ব্রণ বা পিম্পল যুক্ত ত্বকের জন্য।"}, "AUR-ALH-016": {"ingredients": "Niacinamide, Panthenol (10,000ppm), Madecassoside, Resveratrol, Centella Asiatica — ব্রণ-পরবর্তী লালচে ভাব, দাগ ও দুর্বল ব্যারিয়ার দ্রুত সারিয়ে তোলে।", "howToUse": "রাতে বা সকালে টোনার ও সিরামের পর পরিমাণমতো ক্রিম মুখে লাগান। নন-গ্রীসি হওয়ায় সহজেই মিশে যায়।", "skinType": "Acne-prone, Sensitive, Oily এবং Combination ত্বকের জন্য অত্যন্ত জনপ্রিয়।"}, "AUR-SKI-017": {"ingredients": "Madagascar Centella Asiatica Oil, Jojoba Seed Oil, Sunflower Seed Oil, Olive Oil — ওয়াটারপ্রুফ মেকআপ, সানস্ক্রিন ও ব্ল্যাকহেডস গলিয়ে পরিষ্কার করে।", "howToUse": "শুকনো হাতে ২–৩ পাম্প তেল নিয়ে শুকনো মুখে ১ মিনিট ম্যাসাজ করুন। এরপর হাতে সামান্য পানি নিয়ে মুখ দুধের মতো সাদা হলে ধুয়ে ফেলুন এবং ফেসওয়াশ ব্যবহার করুন।", "skinType": "All Skin Types — Oily, Combination, Dry ও Sensitive ত্বকের ডাবল ক্লিনজিংয়ের জন্য।"}, "AUR-SKI-018": {"ingredients": "Madagascar Centella Asiatica Extract, 6 Botanical Oils (Jojoba, Olive, Sunflower, Bergamot, Pelargonium, Damask Rose) — পোরস ক্লগ না করে গভীর পরিষ্কার করে।", "howToUse": "রাতে শুকনো মুখে ম্যাসাজ করে অল্প পানিতে ইমালসিফাই (সাদা ফেনা) করে ধুয়ে নিন। এরপর আপনার রেগুলার ফেসওয়াশ দিয়ে মুখ ধুয়ে ফেলুন।", "skinType": "All Skin Types — বিশেষ করে সানস্ক্রিন/মেকআপ ব্যবহারকারী ও Blackhead যুক্ত ত্বকের জন্য।"}, "AUR-SKI-019": {"ingredients": "Madewhite™ (Madecassoside), Niacinamide (4%), Tranexamic Acid (2%), Madagascar Centella — জ্বালাপোড়া ছাড়াই কালো দাগ ও মেছতার দাগ হালকা করে।", "howToUse": "টোনার লাগানোর পর ২–৩ ফোঁটা অ্যাম্পুল মুখ ও গলায় লাগিয়ে আলতো করে চেপে দিন। সকাল ও রাতে ব্যবহার করা যায়।", "skinType": "All Skin Types — Sensitive, Acne-mark ও Uneven skin tone-এর জন্য দারুণ।"}, "AUR-APL-020": {"ingredients": "Glutathione, Niacinamide, Centella Asiatica, Panthenol — ত্বকের ময়লা পরিষ্কারের পাশাপাশি ন্যাচারাল ব্রাইটনিং লুক দেয়।", "howToUse": "সকাল ও রাতে ভেজা মুখে অল্প পরিমাণে নিয়ে ফেনা তৈরি করে ৩০–৪৫ সেকেন্ড ম্যাসাজ করে ধুয়ে ফেলুন।", "skinType": "All Skin Types — Normal, Combination এবং Dull ত্বকের জন্য উপযোগী।"}, "AUR-APL-021": {"ingredients": "Glutathione, Niacinamide, Centella 3X Complex, Tea Tree & Lotus Extract — শরীরের ঘাম, ময়লা ও বডি অ্যাকনে কমিয়ে ত্বক উজ্জ্বল রাখে।", "howToUse": "গোসলের সময় ভেজা শরীর বা লুফাতে পরিমাণমতো নিয়ে ফেনা তৈরি করে ম্যাসাজ করুন, তারপর পরিষ্কার পানি দিয়ে ধুয়ে ফেলুন।", "skinType": "All Skin Types — প্রতিদিনের ব্যবহারের জন্য নিরাপদ।"}, "AUR-APL-022": {"ingredients": "Low-molecular Fish Collagen Peptide, Vitamin C, Hyaluronic Acid, Biotin — ভেতর থেকে ত্বকের ইলাস্টিসিটি, গ্লো ও চুল-নখের স্বাস্থ্য ভালো রাখে।", "howToUse": "প্রতিদিন ১–২টি ট্যাবলেট পর্যাপ্ত পানির সাথে সেবন করুন (প্যাকেটের নির্দেশনা অনুযায়ী)।", "skinType": "সব ধরনের ত্বকের ভেতর থেকে পুষ্টি ও অ্যান্টি-এজিং কেয়ারের জন্য।"}, "AUR-ANU-023": {"ingredients": "Niacinamide (10%), Tranexamic Acid (4%), Alpha Arbutin (2%), Hyaluronic Acid, Ceramides — পুরনো ব্রণের কালো দাগ ও হাইপারপিগমেন্টেশন দ্রুত হালকা করে।", "howToUse": "টোনারের পর ২–৩ ফোঁটা সিরাম মুখে লাগান (প্রথম সপ্তাহে শুধু রাতে ব্যবহার করা ভালো, পরে সকাল-রাত)। সকালে অবশ্যই সানস্ক্রিন লাগাবেন।", "skinType": "Oily, Combination, Normal এবং Dark spots/PIH যুক্ত ত্বকের জন্য।"}, "AUR-ANU-024": {"ingredients": "Azelaic Acid (10%), Hyaluronic Acid, Panthenol, Gentle Centella Complex — লালচে ভাব (redness), ব্রণ ও পোরস শান্ত করে।", "howToUse": "মুখ পরিষ্কার ও টোনারের পর ১–২ ফোঁটা সিরাম পুরো মুখে বা শুধু লালচে/ব্রণযুক্ত অংশে লাগান। এরপর ময়েশ্চারাইজার ব্যবহার করুন।", "skinType": "Sensitive, Rosacea-prone, Redness এবং Acne-prone ত্বকের জন্য।"}, "AUR-KSC-025": {"ingredients": "Retinal Liposome (2%), Fermented Bean Extract, Peptides, Niacinamide — চোখের নিচের কালো দাগ, ফোলাভাব ও সূক্ষ্ম বলিরেখা কমায়।", "howToUse": "শুধু রাতে মুখ ধোয়ার পর মটরদানার সমান অল্প পরিমাণ নিয়ে অনামিকা (ring finger) দিয়ে চোখের চারপাশে আলতো করে ট্যাপ করে লাগান।", "skinType": "All Skin Types — Dark circles ও Fine lines যুক্ত ত্বকের জন্য।"}, "AUR-ARE-026": {"ingredients": "Stabilized Vitamin C, Niacinamide, Glutathione, Ferulic Acid — রোদে পোড়া কালচে ভাব দূর করে ও ত্বকে ইনস্ট্যান্ট গ্লো আনে।", "howToUse": "সকালে (সানস্ক্রিনের আগে) বা রাতে টোনারের পর ২–৩ ফোঁটা সিরাম মুখে লাগিয়ে মিশিয়ে নিন।", "skinType": "Normal, Combination, Dry এবং Dull skin-এর জন্য উপযোগী।"}, "AUR-COS-027": {"ingredients": "96.3% Snail Secretion Filtrate, Sodium Hyaluronate, Panthenol, Arginine — ত্বকে গভীর আর্দ্রতা দেয়, লালচে ভাব কমায় এবং গ্লাস-স্কিন এফেক্ট তৈরি করে।", "howToUse": "হালকা ভেজা মুখে টোনারের পর ২ পাম্প এসেন্স নিয়ে আলতোভাবে থপথপ করে লাগান, এরপর ময়েশ্চারাইজার দিয়ে সিল করুন।", "skinType": "All Skin Types — Dry, Oily, Acne-prone ও Sensitive সবার জন্য নিরাপদ।"}, "AUR-SKI-028": {"ingredients": "Fermented Centella (Probio-Cica), Ceramide NP, Macadamia Seed Oil, Shea Butter — অতি সংবেদনশীল ও ক্ষতিগ্রস্ত স্কিন ব্যারিয়ার গভীরভাবে সারিয়ে তোলে।", "howToUse": "সকাল ও রাতে সিরামের পর পরিমাণমতো ক্রিম মুখে ও গলায় লাগিয়ে হালকা ম্যাসাজ করুন।", "skinType": "Dry, Very Sensitive, Compromised barrier এবং শীতকালীন রুক্ষ ত্বকের জন্য।"}, "AUR-NEL-029": {"ingredients": "Fermented Extracts, Niacinamide, Alpha Arbutin, Vitamin E — আন্ডারআর্ম, হাঁটু ও কনুইয়ের কালচে দাগ হালকা করে ও ত্বক মসৃণ রাখে।", "howToUse": "পরিষ্কার ও শুষ্ক আন্ডারআর্ম বা কাঙ্ক্ষিত জায়গায় দিনে ১–২ বার অল্প পরিমাণ ক্রিম হালকা ম্যাসাজ করে লাগান।", "skinType": "All Skin Types — সেনসিটিভ আন্ডারআর্ম এরিয়ার জন্যও কোমল।"}};
     const CATEGORY_GUIDE_FALLBACK = {
       Cleanser: {
         ingredients: "Gentle Surfactants, Botanical Soothing Extracts — ত্বক শুষ্ক না করে গভীরভাবে পরিষ্কার করে।",
@@ -2131,7 +2200,11 @@
           const p = PRODUCTS.find(item => item.id === id);
           return p ? { id: p.id, name: p.name, brand: p.brand, qty, price: getEffectivePrice(p), lineTotal: getEffectivePrice(p) * qty } : { id, qty };
         });
-        const total = items.reduce((sum, item) => sum + (item.lineTotal || 0), 0);
+        const subtotal = items.reduce((sum, item) => sum + (item.lineTotal || 0), 0);
+        const discount = Math.min(subtotal, Number(state.couponDiscount) || 0);
+        const deliveryCharge = Number(state.deliveryCharge) || 0;
+        const total = Math.max(0, subtotal - discount) + deliveryCharge;
+        const couponCode = state.couponCode || "";
         const itemsSummary = items.map(i => `${i.name || i.id} x${i.qty}`).join(", ");
 
         const originalBtnText = orderSubmitBtn.textContent;
@@ -2147,7 +2220,7 @@
             const res = await fetch("/api/pay/sslcommerz", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ orderRef, name, phone, email, address, items, itemsSummary, total })
+              body: JSON.stringify({ orderRef, name, phone, email, address, items, itemsSummary, subtotal, deliveryCharge, couponCode, discount, total })
             });
             const data = await res.json();
             if (!res.ok || !data.gatewayUrl) {
@@ -2161,7 +2234,7 @@
               const res = await fetch("/api/orders/cod", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ orderRef, name, phone, address, items, itemsSummary, total })
+                body: JSON.stringify({ orderRef, name, phone, email, address, items, itemsSummary, subtotal, deliveryCharge, couponCode, discount, total })
               });
               if (!res.ok) throw new Error("Server error saving COD order.");
               const data = await res.json();
@@ -2181,6 +2254,146 @@
           orderSubmitBtn.textContent = originalBtnText;
         }
       });
+
+      // Initialize Meta Facebook Pixel if configured
+      (function initFbPixel() {
+        const pid = window.__INITIAL_PIXEL_ID__ || "";
+        if (!pid) return;
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        try { window.fbq('init', pid); window.fbq('track', 'PageView'); } catch {}
+      })();
+
+      // Promo Code Apply
+      document.getElementById("applyCouponBtn")?.addEventListener("click", async () => {
+        const code = (document.getElementById("couponCodeInput")?.value || "").trim();
+        const subtotal = Object.entries(state.cart).reduce((s, [id, q]) => {
+          const p = PRODUCTS.find(x => x.id === id);
+          return s + (p ? getEffectivePrice(p) * q : 0);
+        }, 0);
+        const msgEl = document.getElementById("couponStatusMsg");
+        try {
+          const res = await fetch("/api/coupons/validate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code, subtotal })
+          });
+          const data = await res.json();
+          if (data.valid) {
+            state.couponCode = data.code;
+            state.couponDiscount = Number(data.discount) || 0;
+            if (msgEl) { msgEl.textContent = data.message; msgEl.className = "text-[11px] font-medium text-emerald-700"; }
+          } else {
+            state.couponCode = "";
+            state.couponDiscount = 0;
+            if (msgEl) { msgEl.textContent = data.message || "Invalid code"; msgEl.className = "text-[11px] font-medium text-rose-600"; }
+          }
+          renderCart();
+        } catch { showToast("Could not validate promo code."); }
+      });
+
+      // Customer Account Modal & Auth
+      let custToken = "";
+      let custInfo = null;
+      try {
+        custToken = localStorage.getItem("aureva_cust_token") || "";
+        custInfo = JSON.parse(localStorage.getItem("aureva_cust_info") || "null");
+      } catch {}
+
+      function syncCustomerUi() {
+        const lbl = document.getElementById("customerHeaderLabel");
+        const authV = document.getElementById("custAuthView");
+        const logV = document.getElementById("custLoggedView");
+        if (custToken && custInfo) {
+          if (lbl) lbl.textContent = custInfo.name.split(" ")[0];
+          if (authV) authV.classList.add("hidden");
+          if (logV) logV.classList.remove("hidden");
+          document.getElementById("custProfileName").textContent = custInfo.name;
+          document.getElementById("custProfilePhone").textContent = custInfo.phone;
+          if (document.getElementById("orderName") && !document.getElementById("orderName").value) document.getElementById("orderName").value = custInfo.name || "";
+          if (document.getElementById("orderPhone") && !document.getElementById("orderPhone").value) document.getElementById("orderPhone").value = custInfo.phone || "";
+          if (document.getElementById("orderEmail") && !document.getElementById("orderEmail").value) document.getElementById("orderEmail").value = custInfo.email || "";
+          if (document.getElementById("orderAddress") && !document.getElementById("orderAddress").value) document.getElementById("orderAddress").value = custInfo.address || "";
+          loadCustomerOrders();
+        } else {
+          if (lbl) lbl.textContent = "Account";
+          if (authV) authV.classList.remove("hidden");
+          if (logV) logV.classList.add("hidden");
+        }
+      }
+
+      async function loadCustomerOrders() {
+        if (!custToken) return;
+        const box = document.getElementById("custOrdersList");
+        if (!box) return;
+        try {
+          const res = await fetch("/api/customers/orders", { headers: { Authorization: `Bearer ${custToken}` } });
+          if (!res.ok) return;
+          const data = await res.json();
+          const list = data.orders || [];
+          box.innerHTML = list.length === 0
+            ? '<p class="text-[#645E56] py-3">No orders placed with this phone number yet.</p>'
+            : list.map(o => `<div class="p-3 rounded-xl bg-white border border-[#E6DEC8] space-y-1"><div class="flex justify-between font-bold"><span>${o.orderRef}</span><span>৳${Number(o.total || 0).toLocaleString()}</span></div><p class="text-[11px] text-[#645E56]">${o.paymentMethod} • ${o.paymentStatus}</p>${o.courier ? `<p class="text-[11px] text-emerald-700">Courier: ${o.courier.provider} (${o.courier.trackingCode}) ${o.courier.trackingUrl ? `<a href="${o.courier.trackingUrl}" target="_blank" class="underline font-semibold">Track →</a>` : ""}</p>` : ""}</div>`).join("");
+        } catch {}
+      }
+
+      document.getElementById("openCustomerModalBtn")?.addEventListener("click", () => {
+        document.getElementById("custLoginForm")?.reset();
+        document.getElementById("custRegForm")?.reset();
+        syncCustomerUi();
+        document.getElementById("customerModal").classList.remove("hidden");
+      });
+      document.getElementById("closeCustomerModalBtn")?.addEventListener("click", () => {
+        document.getElementById("customerModal").classList.add("hidden");
+      });
+      document.getElementById("custTabLoginBtn")?.addEventListener("click", () => {
+        document.getElementById("custTabLoginBtn").className = "py-2 rounded-lg bg-[#1F1D1A] text-white";
+        document.getElementById("custTabRegBtn").className = "py-2 rounded-lg text-[#463E38]";
+        document.getElementById("custLoginForm").classList.remove("hidden");
+        document.getElementById("custRegForm").classList.add("hidden");
+      });
+      document.getElementById("custTabRegBtn")?.addEventListener("click", () => {
+        document.getElementById("custTabRegBtn").className = "py-2 rounded-lg bg-[#1F1D1A] text-white";
+        document.getElementById("custTabLoginBtn").className = "py-2 rounded-lg text-[#463E38]";
+        document.getElementById("custRegForm").classList.remove("hidden");
+        document.getElementById("custLoginForm").classList.add("hidden");
+      });
+      document.getElementById("custLoginForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const phone = document.getElementById("custLoginPhone").value.trim();
+        const password = document.getElementById("custLoginPass").value;
+        const res = await fetch("/api/customers/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone, password }) });
+        const data = await res.json();
+        if (res.ok && data.token) {
+          custToken = data.token; custInfo = data.customer;
+          try { localStorage.setItem("aureva_cust_token", custToken); localStorage.setItem("aureva_cust_info", JSON.stringify(custInfo)); } catch {}
+          syncCustomerUi();
+          showToast(`Welcome back, ${custInfo.name}!`);
+        } else { showToast(data.error || "Login failed."); }
+      });
+      document.getElementById("custRegForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+          name: document.getElementById("custRegName").value.trim(),
+          phone: document.getElementById("custRegPhone").value.trim(),
+          email: document.getElementById("custRegEmail").value.trim(),
+          address: document.getElementById("custRegAddress").value.trim(),
+          password: document.getElementById("custRegPass").value
+        };
+        const res = await fetch("/api/customers/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const data = await res.json();
+        if (res.ok && data.token) {
+          custToken = data.token; custInfo = data.customer;
+          try { localStorage.setItem("aureva_cust_token", custToken); localStorage.setItem("aureva_cust_info", JSON.stringify(custInfo)); } catch {}
+          syncCustomerUi();
+          showToast("Account created!");
+        } else { showToast(data.error || "Registration failed."); }
+      });
+      document.getElementById("custLogoutBtn")?.addEventListener("click", () => {
+        custToken = ""; custInfo = null;
+        try { localStorage.removeItem("aureva_cust_token"); localStorage.removeItem("aureva_cust_info"); } catch {}
+        syncCustomerUi();
+      });
+      syncCustomerUi();
 
       document.getElementById("consultForm").addEventListener("submit", async (e) => {
         e.preventDefault();

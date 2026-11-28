@@ -87,9 +87,30 @@ async function initUpstashSync() {
   console.log("Upstash permanent database synced!");
 }
 
+const LEGACY_SKU_MAP = {"AUR-SK-001": "AUR-COS-001", "AUR-SK-002": "AUR-COS-002", "AUR-SK-003": "AUR-TFS-003", "AUR-SK-004": "AUR-TFS-004", "AUR-SK-005": "AUR-ANU-005", "AUR-SK-006": "AUR-IMF-006", "AUR-SK-007": "AUR-COS-007", "AUR-SK-008": "AUR-COS-008", "AUR-SK-009": "AUR-BOJ-009", "AUR-SK-010": "AUR-BOJ-010", "AUR-SK-011": "AUR-SKI-011", "AUR-SK-012": "AUR-SKI-012", "AUR-SK-013": "AUR-APL-013", "AUR-SK-014": "AUR-APL-014", "AUR-SK-015": "AUR-COS-015", "AUR-SK-016": "AUR-ALH-016", "AUR-SK-017": "AUR-SKI-017", "AUR-SK-018": "AUR-SKI-018", "AUR-SK-019": "AUR-SKI-019", "AUR-SK-020": "AUR-APL-020", "AUR-SK-021": "AUR-APL-021", "AUR-SK-022": "AUR-APL-022", "AUR-SK-023": "AUR-ANU-023", "AUR-SK-024": "AUR-ANU-024", "AUR-SK-025": "AUR-KSC-025", "AUR-SK-026": "AUR-ARE-026", "AUR-SK-027": "AUR-COS-027", "AUR-SK-030": "AUR-SKI-028", "AUR-SK-031": "AUR-NEL-029"};
 function getProducts() {
   if (fs.existsSync(PRODUCTS_FILE)) {
-    return readJson(PRODUCTS_FILE, []);
+    const list = readJson(PRODUCTS_FILE, []);
+    let changed = false;
+    const brandMap = {
+      "cosrx": "COS", "skin1004": "SKI", "beauty of joseon": "BOJ", "anua": "ANU",
+      "aplb": "APL", "the face shop": "TFS", "i'm from": "IMF", "dr. althea": "ALH",
+      "ksecret": "KSC", "arencia": "ARE", "nella": "NEL"
+    };
+    list.forEach(p => {
+      if (LEGACY_SKU_MAP[p.id]) {
+        p.id = LEGACY_SKU_MAP[p.id];
+        changed = true;
+      } else if (/^AUR-SK-\d+$/.test(String(p.id || ""))) {
+        const cb = String(p.brand || "").trim().toLowerCase();
+        const bCode = brandMap[cb] || cb.replace(/[^a-z0-9]/g, "").slice(0, 3).toUpperCase() || "GEN";
+        const num = String(p.id).split("-").pop().padStart(3, "0");
+        p.id = `AUR-${bCode}-${num}`;
+        changed = true;
+      }
+    });
+    if (changed) writeJson(PRODUCTS_FILE, list);
+    return list;
   }
   const defaults = readJson(DEFAULT_PRODUCTS_FILE, []);
   if (defaults.length > 0) {
@@ -198,7 +219,7 @@ app.get("/api/health", (req, res) => {
   const isLive = String(s.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
   res.json({
     ok: true,
-    build: "v35",
+    build: "v36",
     gatewayConfigured: Boolean(s.SSLCOMMERZ_STORE_ID && s.SSLCOMMERZ_STORE_PASSWD && s.SSLCOMMERZ_STORE_ID !== "your_store_id"),
     couriersConfigured: getConfiguredCouriers(s),
     mode: isLive ? "LIVE" : "SANDBOX",
