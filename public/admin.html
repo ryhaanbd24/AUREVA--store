@@ -8,7 +8,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     body { font-family: 'Inter', sans-serif; background: #FAF7F2; color: #1F1D1A; }
+    html.aureva-admin-authed #loginScreen { display: none !important; }
+    html.aureva-admin-authed #panelApp { display: flex !important; }
   </style>
+  <script>
+    try {
+      if (localStorage.getItem("aureva_admin_key")) {
+        document.documentElement.classList.add("aureva-admin-authed");
+      }
+    } catch {}
+  </script>
 </head>
 <body class="min-h-screen">
   <!-- Login Screen -->
@@ -669,10 +678,13 @@
 
         if (!ordersRes.ok) {
           showToast("Invalid Admin Password.");
+          document.documentElement.classList.remove("aureva-admin-authed");
+          try { localStorage.removeItem("aureva_admin_key"); } catch {}
           document.getElementById("loginScreen").classList.remove("hidden");
           document.getElementById("panelApp").classList.add("hidden");
           return false;
         }
+        document.documentElement.classList.add("aureva-admin-authed");
 
         document.getElementById("loginScreen").classList.add("hidden");
         document.getElementById("panelApp").classList.remove("hidden");
@@ -706,7 +718,26 @@
               <td class="px-4 py-3 max-w-[200px]">${o.itemsSummary || "-"}</td>
               <td class="px-4 py-3 font-bold">৳${Number(o.total || 0).toLocaleString()}</td>
               <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full font-medium ${o.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.paymentMethod} • ${o.paymentStatus}</span></td>
-              <td class="px-4 py-3">${o.courier ? `<span class="font-semibold">${o.courier.provider}</span><br><span class="text-[#645E56]">${o.courier.trackingCode}</span>` : '<span class="text-[#645E56]">Not booked</span>'}</td>
+              <td class="px-4 py-3">${o.courier ? (() => {
+                const tc = o.courier.trackingCode || "";
+                const prov = (o.courier.provider || "").toLowerCase();
+                const tUrl = o.courier.trackingUrl || (
+                  prov.includes("steadfast") ? `https://steadfast.com.bd/t/${encodeURIComponent(tc)}` :
+                  prov.includes("pathao") ? "https://merchant.pathao.com/" :
+                  prov.includes("redx") ? "https://redx.com.bd/track-global-parcel/" :
+                  prov.includes("ecourier") ? "https://ecourier.com.bd/tracking/" : ""
+                );
+                return `
+                  <div class="space-y-1">
+                    <span class="font-semibold text-[#1F1D1A]">${o.courier.provider}</span>
+                    <div class="font-mono text-[11px] text-[#645E56]">${tc}</div>
+                    <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                      ${tUrl ? `<a href="${tUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-700 text-white text-[10px] font-semibold hover:bg-emerald-800">Track Link →</a>` : ""}
+                      <button type="button" data-copy-track="${tUrl || tc}" class="copy-track-btn px-2 py-0.5 rounded border border-[#DFD5C3] text-[10px] font-medium hover:bg-[#F2ECE1]">Copy</button>
+                      <button type="button" data-live-track="${o.orderRef}" class="live-track-btn px-2 py-0.5 rounded border border-[#DFD5C3] text-[10px] font-medium hover:bg-[#F2ECE1]">Live Status</button>
+                    </div>
+                  </div>`;
+              })() : '<span class="text-[#645E56]">Not booked</span>'}</td>
               <td class="px-4 py-3">
                 <div class="flex items-center gap-1.5">
                   <select id="prov-${o.orderRef}" class="border border-[#DFD5C3] rounded-lg px-2 py-1 bg-white">
@@ -726,6 +757,23 @@
             const data = await res.json();
             if (data.booked) { showToast(`Booked ${ref} via ${data.courier.provider}`); loadDashboard(); }
             else { showToast(data.reason || "Booking failed."); }
+          });
+        });
+
+        document.querySelectorAll(".copy-track-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const val = btn.getAttribute("data-copy-track") || "";
+            try { await navigator.clipboard.writeText(val); showToast("Tracking link copied!"); }
+            catch { showToast(val); }
+          });
+        });
+
+        document.querySelectorAll(".live-track-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const ref = btn.getAttribute("data-live-track");
+            const res = await fetch(`/api/courier/track/${encodeURIComponent(ref)}`);
+            const data = await res.json();
+            showToast(data.liveDeliveryStatus ? `${ref}: ${data.liveDeliveryStatus}` : `${ref}: ${data.courier?.status || "Status unavailable"}`);
           });
         });
 
@@ -817,6 +865,7 @@
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
       adminKey = "";
+      document.documentElement.classList.remove("aureva-admin-authed");
       try { localStorage.removeItem("aureva_admin_key"); } catch {}
       document.getElementById("panelApp").classList.add("hidden");
       document.getElementById("loginScreen").classList.remove("hidden");
@@ -824,15 +873,33 @@
 
     document.getElementById("refreshBtn").addEventListener("click", loadDashboard);
 
-    document.querySelectorAll(".nav-tab").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.getAttribute("data-tab");
-        document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
-        document.getElementById(target).classList.remove("hidden");
-        document.querySelectorAll(".nav-tab").forEach(b => b.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]");
-        btn.className = "nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold";
+    function activateAdminTab(target) {
+      const panel = document.getElementById(target);
+      if (!panel) return;
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+      panel.classList.remove("hidden");
+      document.querySelectorAll(".nav-tab").forEach(b => {
+        const active = b.getAttribute("data-tab") === target;
+        b.className = active
+          ? "nav-tab px-3.5 py-1.5 rounded-full bg-[#FAF7F2] text-[#1F1D1A] font-semibold"
+          : "nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]";
       });
+      try { localStorage.setItem("aureva_admin_tab", target); } catch {}
+      try { history.replaceState(null, "", "#" + target); } catch {}
+    }
+
+    document.querySelectorAll(".nav-tab").forEach(btn => {
+      btn.addEventListener("click", () => activateAdminTab(btn.getAttribute("data-tab")));
     });
+
+    (function restoreSavedTab() {
+      let saved = "";
+      try {
+        saved = (window.location.hash || "").replace("#", "") || localStorage.getItem("aureva_admin_tab") || "ordersTab";
+      } catch { saved = "ordersTab"; }
+      if (!document.getElementById(saved)) saved = "ordersTab";
+      activateAdminTab(saved);
+    })();
 
     
     let prodImagesList = [];
