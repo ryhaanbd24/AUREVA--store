@@ -94,6 +94,7 @@ async function bookSteadfast(order, codAmount, cfg) {
         provider: "Steadfast",
         consignmentId: String(data.consignment.consignment_id),
         trackingCode: data.consignment.tracking_code,
+        trackingUrl: `https://steadfast.com.bd/t/${encodeURIComponent(data.consignment.tracking_code)}`,
         status: data.consignment.status || "in_review",
         codAmount,
         bookedAt: new Date().toISOString()
@@ -171,6 +172,7 @@ async function bookPathao(order, codAmount, cfg) {
         provider: "Pathao",
         consignmentId: String(data.data.consignment_id),
         trackingCode: String(data.data.consignment_id),
+        trackingUrl: "https://merchant.pathao.com/",
         status: data.data.order_status || "Pending",
         codAmount,
         bookedAt: new Date().toISOString()
@@ -226,6 +228,7 @@ async function bookRedx(order, codAmount, cfg) {
         provider: "RedX",
         consignmentId: String(data.tracking_id),
         trackingCode: String(data.tracking_id),
+        trackingUrl: "https://redx.com.bd/track-global-parcel/",
         status: "pickup-pending",
         codAmount,
         bookedAt: new Date().toISOString()
@@ -285,6 +288,7 @@ async function bookEcourier(order, codAmount, cfg) {
         provider: "eCourier",
         consignmentId: String(data.ID),
         trackingCode: String(data.ID),
+        trackingUrl: "https://ecourier.com.bd/tracking/",
         status: "placed",
         codAmount,
         bookedAt: new Date().toISOString()
