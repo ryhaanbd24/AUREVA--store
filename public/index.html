@@ -73,6 +73,11 @@
             বাংলা
           </button>
 
+          <button id="openCustomerModalBtn" type="button" class="px-2.5 py-1.5 rounded-full border border-[#D8CEBA] text-xs font-medium text-[#1F1D1A] hover:bg-[#F2ECE1] transition-colors inline-flex items-center gap-1">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+            <span id="customerHeaderLabel">Account</span>
+          </button>
+
           <button id="openCartBtn" type="button" class="relative flex items-center gap-2 bg-[#1F1D1A] text-[#FAF7F2] px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-[#36322D] transition-colors">
             <i data-lucide="shopping-bag" class="w-4 h-4"></i>
             <span class="hidden sm:inline" data-i18n="bag">Bag</span>
@@ -621,10 +626,20 @@
           </div>
         </div>
 
+        <div class="flex items-center gap-2">
+          <input id="couponCodeInput" type="text" placeholder="Promo / Coupon Code" class="flex-1 px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#DFD5C3] text-xs uppercase focus:outline-none focus:border-[#8C7355]" />
+          <button id="applyCouponBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#1F1D1A] text-white text-xs font-semibold hover:bg-[#36322D]">Apply</button>
+        </div>
+        <p id="couponStatusMsg" class="hidden text-[11px] font-medium"></p>
+
         <div class="space-y-1.5 text-sm">
           <div class="flex justify-between text-[#463E38]">
             <span>Subtotal</span>
             <span id="cartSubtotal">৳0</span>
+          </div>
+          <div id="cartDiscountRow" class="hidden flex justify-between text-emerald-700 font-medium">
+            <span>Promo Discount</span>
+            <span id="cartDiscountVal">-৳0</span>
           </div>
           <div class="flex justify-between text-[#463E38]">
             <span>Delivery Charge</span>
@@ -697,6 +712,50 @@
           Pay Now (Card / bKash / Nagad)
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- Customer Account Modal (Login, Register & Order History) -->
+  <div id="customerModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#FAF7F2] rounded-3xl max-w-md w-full p-5 sm:p-6 border border-[#E6DEC8] shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="font-serif-editorial text-2xl font-semibold text-[#1F1D1A]">My Aureva Account</h3>
+        <button id="closeCustomerModalBtn" type="button" class="p-1.5 rounded-full hover:bg-[#E6DEC8]"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div id="custAuthView" class="space-y-4">
+        <div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#EFE5D8] text-xs font-semibold">
+          <button id="custTabLoginBtn" type="button" class="py-2 rounded-lg bg-[#1F1D1A] text-white">Login</button>
+          <button id="custTabRegBtn" type="button" class="py-2 rounded-lg text-[#463E38]">Register</button>
+        </div>
+        <form id="custLoginForm" class="space-y-3 text-xs">
+          <input id="custLoginPhone" type="tel" required placeholder="Phone Number (01XXXXXXXXX)" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custLoginPass" type="password" required placeholder="Password" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DFD5C3]" />
+          <button type="submit" class="w-full py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold">Sign In</button>
+        </form>
+        <form id="custRegForm" class="hidden space-y-3 text-xs">
+          <input id="custRegName" type="text" required placeholder="Full Name" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegPhone" type="tel" required placeholder="Phone Number (01XXXXXXXXX)" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegEmail" type="email" placeholder="Email (Optional)" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegAddress" type="text" placeholder="Delivery Address" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegPass" type="password" required placeholder="Create Password" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <button type="submit" class="w-full py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold">Create Account</button>
+        </form>
+      </div>
+
+      <div id="custLoggedView" class="hidden space-y-4 text-xs">
+        <div class="p-3.5 rounded-2xl bg-white border border-[#E6DEC8] flex items-center justify-between">
+          <div>
+            <p id="custProfileName" class="font-bold text-sm text-[#1F1D1A]"></p>
+            <p id="custProfilePhone" class="text-[#645E56]"></p>
+          </div>
+          <button id="custLogoutBtn" type="button" class="px-3 py-1.5 rounded-full border border-[#DFD5C3] font-semibold hover:bg-[#F2ECE1]">Logout</button>
+        </div>
+        <div class="space-y-2">
+          <p class="font-bold uppercase tracking-wider text-[#463E38]">My Order History</p>
+          <div id="custOrdersList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -972,7 +1031,9 @@
       skinType: "oily",
       concern: "acne",
       quickViewId: null,
-      visibleCount: 12
+      visibleCount: 12,
+      couponCode: "",
+      couponDiscount: 0
     };
 
     const categories = ["All", "Cleanser", "Toner", "Serum", "Cream", "Sunscreen", "Body Care", "Eye Care", "Treatment", "Supplement"];
@@ -1175,6 +1236,7 @@
       state.cart[id] = current + 1;
       renderCart();
       showToast(`Added "${prod.name}" to your bag.`);
+      if (typeof window.fbq === "function") { try { window.fbq("track", "AddToCart", { content_name: prod.name, value: getEffectivePrice(prod), currency: "BDT" }); } catch {} }
     }
 
     function updateCartQty(id, delta) {
@@ -1233,7 +1295,14 @@
         `;
       }).join("");
 
-      const total = subtotal + state.deliveryCharge;
+      const disc = Math.min(subtotal, Number(state.couponDiscount) || 0);
+      const total = Math.max(0, subtotal - disc) + state.deliveryCharge;
+      const discRow = document.getElementById("cartDiscountRow");
+      const discVal = document.getElementById("cartDiscountVal");
+      if (discRow && discVal) {
+        discRow.classList.toggle("hidden", disc <= 0);
+        discVal.textContent = `-৳${disc.toLocaleString()}`;
+      }
       document.getElementById("cartSubtotal").textContent = `৳${subtotal.toLocaleString()}`;
       document.getElementById("cartDelivery").textContent = `৳${state.deliveryCharge}`;
       document.getElementById("cartTotal").textContent = `৳${total.toLocaleString()}`;
@@ -2131,7 +2200,11 @@
           const p = PRODUCTS.find(item => item.id === id);
           return p ? { id: p.id, name: p.name, brand: p.brand, qty, price: getEffectivePrice(p), lineTotal: getEffectivePrice(p) * qty } : { id, qty };
         });
-        const total = items.reduce((sum, item) => sum + (item.lineTotal || 0), 0);
+        const subtotal = items.reduce((sum, item) => sum + (item.lineTotal || 0), 0);
+        const discount = Math.min(subtotal, Number(state.couponDiscount) || 0);
+        const deliveryCharge = Number(state.deliveryCharge) || 0;
+        const total = Math.max(0, subtotal - discount) + deliveryCharge;
+        const couponCode = state.couponCode || "";
         const itemsSummary = items.map(i => `${i.name || i.id} x${i.qty}`).join(", ");
 
         const originalBtnText = orderSubmitBtn.textContent;
@@ -2147,7 +2220,7 @@
             const res = await fetch("/api/pay/sslcommerz", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ orderRef, name, phone, email, address, items, itemsSummary, total })
+              body: JSON.stringify({ orderRef, name, phone, email, address, items, itemsSummary, subtotal, deliveryCharge, couponCode, discount, total })
             });
             const data = await res.json();
             if (!res.ok || !data.gatewayUrl) {
@@ -2161,7 +2234,7 @@
               const res = await fetch("/api/orders/cod", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ orderRef, name, phone, address, items, itemsSummary, total })
+                body: JSON.stringify({ orderRef, name, phone, email, address, items, itemsSummary, subtotal, deliveryCharge, couponCode, discount, total })
               });
               if (!res.ok) throw new Error("Server error saving COD order.");
               const data = await res.json();
@@ -2181,6 +2254,144 @@
           orderSubmitBtn.textContent = originalBtnText;
         }
       });
+
+      // Initialize Meta Facebook Pixel if configured
+      (function initFbPixel() {
+        const pid = window.__INITIAL_PIXEL_ID__ || "";
+        if (!pid) return;
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        try { window.fbq('init', pid); window.fbq('track', 'PageView'); } catch {}
+      })();
+
+      // Promo Code Apply
+      document.getElementById("applyCouponBtn")?.addEventListener("click", async () => {
+        const code = (document.getElementById("couponCodeInput")?.value || "").trim();
+        const subtotal = Object.entries(state.cart).reduce((s, [id, q]) => {
+          const p = PRODUCTS.find(x => x.id === id);
+          return s + (p ? getEffectivePrice(p) * q : 0);
+        }, 0);
+        const msgEl = document.getElementById("couponStatusMsg");
+        try {
+          const res = await fetch("/api/coupons/validate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code, subtotal })
+          });
+          const data = await res.json();
+          if (data.valid) {
+            state.couponCode = data.code;
+            state.couponDiscount = Number(data.discount) || 0;
+            if (msgEl) { msgEl.textContent = data.message; msgEl.className = "text-[11px] font-medium text-emerald-700"; }
+          } else {
+            state.couponCode = "";
+            state.couponDiscount = 0;
+            if (msgEl) { msgEl.textContent = data.message || "Invalid code"; msgEl.className = "text-[11px] font-medium text-rose-600"; }
+          }
+          renderCart();
+        } catch { showToast("Could not validate promo code."); }
+      });
+
+      // Customer Account Modal & Auth
+      let custToken = "";
+      let custInfo = null;
+      try {
+        custToken = localStorage.getItem("aureva_cust_token") || "";
+        custInfo = JSON.parse(localStorage.getItem("aureva_cust_info") || "null");
+      } catch {}
+
+      function syncCustomerUi() {
+        const lbl = document.getElementById("customerHeaderLabel");
+        const authV = document.getElementById("custAuthView");
+        const logV = document.getElementById("custLoggedView");
+        if (custToken && custInfo) {
+          if (lbl) lbl.textContent = custInfo.name.split(" ")[0];
+          if (authV) authV.classList.add("hidden");
+          if (logV) logV.classList.remove("hidden");
+          document.getElementById("custProfileName").textContent = custInfo.name;
+          document.getElementById("custProfilePhone").textContent = custInfo.phone;
+          if (document.getElementById("orderName") && !document.getElementById("orderName").value) document.getElementById("orderName").value = custInfo.name || "";
+          if (document.getElementById("orderPhone") && !document.getElementById("orderPhone").value) document.getElementById("orderPhone").value = custInfo.phone || "";
+          if (document.getElementById("orderEmail") && !document.getElementById("orderEmail").value) document.getElementById("orderEmail").value = custInfo.email || "";
+          if (document.getElementById("orderAddress") && !document.getElementById("orderAddress").value) document.getElementById("orderAddress").value = custInfo.address || "";
+          loadCustomerOrders();
+        } else {
+          if (lbl) lbl.textContent = "Account";
+          if (authV) authV.classList.remove("hidden");
+          if (logV) logV.classList.add("hidden");
+        }
+      }
+
+      async function loadCustomerOrders() {
+        if (!custToken) return;
+        const box = document.getElementById("custOrdersList");
+        if (!box) return;
+        try {
+          const res = await fetch("/api/customers/orders", { headers: { Authorization: `Bearer ${custToken}` } });
+          if (!res.ok) return;
+          const data = await res.json();
+          const list = data.orders || [];
+          box.innerHTML = list.length === 0
+            ? '<p class="text-[#645E56] py-3">No orders placed with this phone number yet.</p>'
+            : list.map(o => `<div class="p-3 rounded-xl bg-white border border-[#E6DEC8] space-y-1"><div class="flex justify-between font-bold"><span>${o.orderRef}</span><span>৳${Number(o.total || 0).toLocaleString()}</span></div><p class="text-[11px] text-[#645E56]">${o.paymentMethod} • ${o.paymentStatus}</p>${o.courier ? `<p class="text-[11px] text-emerald-700">Courier: ${o.courier.provider} (${o.courier.trackingCode}) ${o.courier.trackingUrl ? `<a href="${o.courier.trackingUrl}" target="_blank" class="underline font-semibold">Track →</a>` : ""}</p>` : ""}</div>`).join("");
+        } catch {}
+      }
+
+      document.getElementById("openCustomerModalBtn")?.addEventListener("click", () => {
+        syncCustomerUi();
+        document.getElementById("customerModal").classList.remove("hidden");
+      });
+      document.getElementById("closeCustomerModalBtn")?.addEventListener("click", () => {
+        document.getElementById("customerModal").classList.add("hidden");
+      });
+      document.getElementById("custTabLoginBtn")?.addEventListener("click", () => {
+        document.getElementById("custTabLoginBtn").className = "py-2 rounded-lg bg-[#1F1D1A] text-white";
+        document.getElementById("custTabRegBtn").className = "py-2 rounded-lg text-[#463E38]";
+        document.getElementById("custLoginForm").classList.remove("hidden");
+        document.getElementById("custRegForm").classList.add("hidden");
+      });
+      document.getElementById("custTabRegBtn")?.addEventListener("click", () => {
+        document.getElementById("custTabRegBtn").className = "py-2 rounded-lg bg-[#1F1D1A] text-white";
+        document.getElementById("custTabLoginBtn").className = "py-2 rounded-lg text-[#463E38]";
+        document.getElementById("custRegForm").classList.remove("hidden");
+        document.getElementById("custLoginForm").classList.add("hidden");
+      });
+      document.getElementById("custLoginForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const phone = document.getElementById("custLoginPhone").value.trim();
+        const password = document.getElementById("custLoginPass").value;
+        const res = await fetch("/api/customers/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone, password }) });
+        const data = await res.json();
+        if (res.ok && data.token) {
+          custToken = data.token; custInfo = data.customer;
+          try { localStorage.setItem("aureva_cust_token", custToken); localStorage.setItem("aureva_cust_info", JSON.stringify(custInfo)); } catch {}
+          syncCustomerUi();
+          showToast(`Welcome back, ${custInfo.name}!`);
+        } else { showToast(data.error || "Login failed."); }
+      });
+      document.getElementById("custRegForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+          name: document.getElementById("custRegName").value.trim(),
+          phone: document.getElementById("custRegPhone").value.trim(),
+          email: document.getElementById("custRegEmail").value.trim(),
+          address: document.getElementById("custRegAddress").value.trim(),
+          password: document.getElementById("custRegPass").value
+        };
+        const res = await fetch("/api/customers/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const data = await res.json();
+        if (res.ok && data.token) {
+          custToken = data.token; custInfo = data.customer;
+          try { localStorage.setItem("aureva_cust_token", custToken); localStorage.setItem("aureva_cust_info", JSON.stringify(custInfo)); } catch {}
+          syncCustomerUi();
+          showToast("Account created!");
+        } else { showToast(data.error || "Registration failed."); }
+      });
+      document.getElementById("custLogoutBtn")?.addEventListener("click", () => {
+        custToken = ""; custInfo = null;
+        try { localStorage.removeItem("aureva_cust_token"); localStorage.removeItem("aureva_cust_info"); } catch {}
+        syncCustomerUi();
+      });
+      syncCustomerUi();
 
       document.getElementById("consultForm").addEventListener("submit", async (e) => {
         e.preventDefault();
