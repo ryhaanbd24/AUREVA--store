@@ -198,7 +198,7 @@ app.get("/api/health", (req, res) => {
   const isLive = String(s.SSLCOMMERZ_IS_LIVE).toLowerCase() === "true";
   res.json({
     ok: true,
-    build: "v30",
+    build: "v35",
     gatewayConfigured: Boolean(s.SSLCOMMERZ_STORE_ID && s.SSLCOMMERZ_STORE_PASSWD && s.SSLCOMMERZ_STORE_ID !== "your_store_id"),
     couriersConfigured: getConfiguredCouriers(s),
     mode: isLive ? "LIVE" : "SANDBOX",
@@ -233,11 +233,40 @@ app.get("/api/products", (req, res) => {
 });
 
 // Admin Product Management (Add & Delete)
+function generateStructuredSku({ brand }, products) {
+  const brandMap = {
+    "cosrx": "COS", "skin1004": "SKI", "beauty of joseon": "BOJ", "anua": "ANU",
+    "aplb": "APL", "the face shop": "TFS", "i'm from": "IMF", "dr. althea": "ALH",
+    "ksecret": "KSC", "arencia": "ARE", "nella": "NEL"
+  };
+  const cb = String(brand || "").trim().toLowerCase();
+  const bCode = brandMap[cb] || cb.replace(/[^a-z0-9]/g, "").slice(0, 3).toUpperCase() || "GEN";
+
+  let maxNum = 0;
+  const existing = new Set();
+  (Array.isArray(products) ? products : []).forEach(p => {
+    const id = String(p.id || "").trim().toUpperCase();
+    existing.add(id);
+    const m = id.match(/^AUR-[A-Z0-9]+-(\d+)$/);
+    if (m) {
+      const n = Number(m[1]);
+      if (n > maxNum) maxNum = n;
+    }
+  });
+  let next = maxNum + 1;
+  let candidate = `AUR-${bCode}-${String(next).padStart(3, "0")}`;
+  while (existing.has(candidate)) {
+    next++;
+    candidate = `AUR-${bCode}-${String(next).padStart(3, "0")}`;
+  }
+  return candidate;
+}
+
 app.post("/api/products", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
 
-  const { name, brand, category, size, price, offerPrice, costPrice, isCombo, comboTag, stock, desc, imageUrl, images, ingredients, howToUse, skinType } = req.body || {};
+  const { id: customSku, name, brand, category, size, price, offerPrice, costPrice, isCombo, comboTag, stock, desc, imageUrl, images, ingredients, howToUse, skinType } = req.body || {};
   if (!name || !brand || !category || !price) {
     return res.status(400).json({ error: "Name, brand, category, and price are required." });
   }
@@ -245,7 +274,7 @@ app.post("/api/products", (req, res) => {
   const products = getProducts();
   const parsedOffer = Number(offerPrice);
   const newProduct = {
-    id: "AUR-SK-" + Date.now().toString().slice(-5),
+    id: (customSku && String(customSku).trim() && !products.some(p => p.id.toUpperCase() === String(customSku).trim().toUpperCase())) ? String(customSku).trim().toUpperCase() : generateStructuredSku({ brand, name, size }, products),
     name: String(name).trim(),
     brand: String(brand).trim(),
     category: String(category).trim(),
@@ -474,6 +503,19 @@ app.post("/api/customers/login", (req, res) => {
   res.json({ status: "success", token: signCustomerToken(cleanPhone), customer: { name: c.name, phone: c.phone, email: c.email, address: c.address } });
 });
 
+app.get("/api/customers", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+  const customers = readJson(CUSTOMERS_FILE, []).map(c => ({
+    name: c.name || "",
+    phone: c.phone || "",
+    email: c.email || "",
+    address: c.address || "",
+    createdAt: c.createdAt || ""
+  }));
+  res.json(customers);
+});
+
 app.get("/api/customers/orders", (req, res) => {
   const auth = req.headers.authorization || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : (req.query.token || "");
@@ -501,7 +543,55 @@ app.post("/api/courier/book-bulk", async (req, res) => {
   res.json({ status: "success", bookedCount, failedCount, results });
 });
 
-// Daily/Monthly Sales, Profit & Loss & Low-Stock Reports
+function isOrderDelivered(o) {
+  if (!o) return false;
+  if (String(o.deliveryStatus || "").toUpperCase() === "DELIVERED") return true;
+  const st = String(o.courier?.liveStatus || o.courier?.status || "").toLowerCase();
+  return st.includes("delivered") && !st.includes("partial") && !st.includes("cancel") && !st.includes("return") && !st.includes("un") && !st.includes("not");
+}
+
+app.post("/api/orders/:orderRef/delivery-status", (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+  const orders = readJson(ORDERS_FILE, []);
+  const idx = orders.findIndex(o => o.orderRef === req.params.orderRef);
+  if (idx === -1) return res.status(404).json({ error: "Order not found" });
+  const nextStatus = String(req.body?.deliveryStatus || "DELIVERED").toUpperCase();
+  orders[idx].deliveryStatus = nextStatus;
+  if (orders[idx].courier) orders[idx].courier.status = nextStatus === "DELIVERED" ? "delivered" : nextStatus.toLowerCase();
+  writeJson(ORDERS_FILE, orders);
+  res.json({ status: "success", order: orders[idx] });
+});
+
+app.post("/api/reports/sync-deliveries", async (req, res) => {
+  const key = req.query.key || req.headers["x-admin-key"];
+  if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
+  const orders = readJson(ORDERS_FILE, []);
+  const settings = getSettings();
+  let checked = 0;
+  let newlyDelivered = 0;
+  for (let i = 0; i < orders.length; i++) {
+    const o = orders[i];
+    if (!o.courier || !o.courier.trackingCode) continue;
+    if (String(o.deliveryStatus || "").toUpperCase() === "DELIVERED") continue;
+    checked++;
+    const live = await trackParcel(o, settings);
+    if (live) {
+      orders[i].courier.liveStatus = String(live);
+      orders[i].courier.status = String(live);
+      if (isOrderDelivered(orders[i])) {
+        orders[i].deliveryStatus = "DELIVERED";
+        newlyDelivered++;
+      } else if (/cancel|return/i.test(String(live))) {
+        orders[i].deliveryStatus = "CANCELLED";
+      }
+    }
+  }
+  if (checked > 0) writeJson(ORDERS_FILE, orders);
+  res.json({ status: "success", checked, newlyDelivered });
+});
+
+// Daily/Monthly Sales, Profit & Loss & Low-Stock Reports (Successful Deliveries Only)
 app.get("/api/reports/summary", (req, res) => {
   const key = req.query.key || req.headers["x-admin-key"];
   if (key !== (getSettings().ADMIN_KEY || ADMIN_KEY)) return res.status(401).json({ error: "Unauthorized" });
@@ -519,12 +609,23 @@ app.get("/api/reports/summary", (req, res) => {
 
   let todaySales = 0, todayOrders = 0, todayProfit = 0;
   let monthSales = 0, monthOrders = 0, monthProfit = 0;
-  let totalSales = 0, totalCost = 0;
+  let totalSales = 0, totalCost = 0, deliveredCount = 0;
+  let pendingOrders = 0, pendingSales = 0;
   const dailyMap = {};
   const monthlyMap = {};
+  const deliveredOrders = [];
 
   orders.forEach(o => {
     const rev = Number(o.total) || 0;
+    if (!isOrderDelivered(o)) {
+      if (String(o.deliveryStatus || "").toUpperCase() !== "CANCELLED") {
+        pendingOrders++;
+        pendingSales += rev;
+      }
+      return;
+    }
+
+    deliveredCount++;
     const ordCost = Array.isArray(o.items)
       ? o.items.reduce((s, it) => s + (Number(it.lineCost) || ((costLookup[it.id] || 0) * (Number(it.qty) || 1))), 0)
       : 0;
@@ -542,16 +643,30 @@ app.get("/api/reports/summary", (req, res) => {
 
     monthlyMap[mKey] = monthlyMap[mKey] || { period: mKey, orders: 0, sales: 0, cost: 0, profit: 0 };
     monthlyMap[mKey].orders++; monthlyMap[mKey].sales += rev; monthlyMap[mKey].cost += ordCost; monthlyMap[mKey].profit += ordProfit;
+
+    deliveredOrders.push({
+      orderRef: o.orderRef,
+      date: dKey,
+      name: o.name,
+      phone: o.phone,
+      courier: o.courier?.provider || o.paymentMethod,
+      trackingCode: o.courier?.trackingCode || "-",
+      sales: rev,
+      cost: ordCost,
+      profit: ordProfit
+    });
   });
 
   const lowStock = products.filter(p => Number(p.stock) <= 2).sort((a, b) => Number(a.stock) - Number(b.stock));
-  const daily = Object.values(dailyMap).sort((a, b) => b.period.localeCompare(a.period)).slice(0, 14);
+  const daily = Object.values(dailyMap).sort((a, b) => b.period.localeCompare(a.period)).slice(0, 30);
   const monthly = Object.values(monthlyMap).sort((a, b) => b.period.localeCompare(a.period)).slice(0, 12);
 
   res.json({
     today: { orders: todayOrders, sales: todaySales, profit: todayProfit },
     month: { orders: monthOrders, sales: monthSales, profit: monthProfit },
-    overall: { orders: orders.length, sales: totalSales, cost: totalCost, profit: totalSales - totalCost },
+    overall: { orders: deliveredCount, sales: totalSales, cost: totalCost, profit: totalSales - totalCost },
+    pending: { orders: pendingOrders, sales: pendingSales },
+    deliveredOrders,
     lowStock,
     daily,
     monthly
