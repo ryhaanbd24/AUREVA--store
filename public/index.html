@@ -728,17 +728,17 @@
           <button id="custTabLoginBtn" type="button" class="py-2 rounded-lg bg-[#1F1D1A] text-white">Login</button>
           <button id="custTabRegBtn" type="button" class="py-2 rounded-lg text-[#463E38]">Register</button>
         </div>
-        <form id="custLoginForm" class="space-y-3 text-xs">
-          <input id="custLoginPhone" type="tel" required placeholder="Phone Number (01XXXXXXXXX)" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DFD5C3]" />
-          <input id="custLoginPass" type="password" required placeholder="Password" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DFD5C3]" />
+        <form id="custLoginForm" autocomplete="off" class="space-y-3 text-xs">
+          <input id="custLoginPhone" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="tel" required placeholder="Phone Number (01XXXXXXXXX)" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custLoginPass" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');" type="password" required placeholder="Password" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DFD5C3]" />
           <button type="submit" class="w-full py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold">Sign In</button>
         </form>
-        <form id="custRegForm" class="hidden space-y-3 text-xs">
-          <input id="custRegName" type="text" required placeholder="Full Name" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
-          <input id="custRegPhone" type="tel" required placeholder="Phone Number (01XXXXXXXXX)" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
-          <input id="custRegEmail" type="email" placeholder="Email (Optional)" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
-          <input id="custRegAddress" type="text" placeholder="Delivery Address" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
-          <input id="custRegPass" type="password" required placeholder="Create Password" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+        <form id="custRegForm" autocomplete="off" class="hidden space-y-3 text-xs">
+          <input id="custRegName" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="text" required placeholder="Full Name" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegPhone" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="tel" required placeholder="Phone Number (01XXXXXXXXX)" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegEmail" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="email" placeholder="Email (Optional)" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegAddress" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" type="text" placeholder="Delivery Address" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
+          <input id="custRegPass" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');" type="password" required placeholder="Create Password" class="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DFD5C3]" />
           <button type="submit" class="w-full py-2.5 rounded-full bg-[#1F1D1A] text-white font-semibold">Create Account</button>
         </form>
       </div>
@@ -2337,6 +2337,8 @@
       }
 
       document.getElementById("openCustomerModalBtn")?.addEventListener("click", () => {
+        document.getElementById("custLoginForm")?.reset();
+        document.getElementById("custRegForm")?.reset();
         syncCustomerUi();
         document.getElementById("customerModal").classList.remove("hidden");
       });

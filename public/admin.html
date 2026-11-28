@@ -52,6 +52,7 @@
         <button data-tab="designTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Frontend Design</button>
         <button data-tab="reportsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Reports &amp; Stock</button>
         <button data-tab="couponsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Coupons</button>
+        <button data-tab="customersTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Customers</button>
         <button data-tab="settingsTab" class="nav-tab px-3.5 py-1.5 rounded-full bg-[#2E2A25] text-[#FAF7F2] hover:bg-[#3D3730]">Payment &amp; Courier Setup</button>
         <a href="/" class="px-3 py-1.5 rounded-full border border-[#4A443C] hover:bg-[#2E2A25]">View Store</a>
         <button id="logoutBtn" class="px-3 py-1.5 rounded-full border border-red-400/50 text-red-200 hover:bg-red-900/30">Logout</button>
@@ -128,6 +129,7 @@
         <div class="bg-white rounded-2xl border border-[#E6DEC8] p-6 space-y-4">
           <h2 class="font-semibold text-base">Add New Product</h2>
           <form id="addProductForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <input id="addProdSkuInput" name="id" type="text" placeholder="Auto SKU (e.g. AUR-SK-032)" class="px-3 py-2 rounded-xl border border-[#DFD5C3] bg-[#FAF7F2] font-mono uppercase" />
             <input name="name" type="text" required placeholder="Product Name (e.g. COSRX Toner 150ml)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <input name="brand" type="text" required placeholder="Brand (e.g. COSRX)" class="px-3 py-2 rounded-xl border border-[#DFD5C3]" />
             <select name="category" required class="px-3 py-2 rounded-xl border border-[#DFD5C3] bg-white">
@@ -503,6 +505,16 @@
 
       <!-- TAB: REPORTS & STOCK -->
       <section id="reportsTab" class="tab-panel hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-[#E6DEC8] p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div>
+            <p class="font-bold text-sm text-[#1F1D1A]">Successful Deliveries Sales &amp; Profit Report</p>
+            <p id="repPendingNote" class="text-[#645E56] mt-0.5">Only confirmed delivered orders are counted in sales &amp; profit. Pending / In-transit: 0 orders</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="syncDeliveriesBtn" type="button" class="px-4 py-2 rounded-full bg-emerald-700 text-white font-semibold hover:bg-emerald-800">Sync Courier Delivery Statuses</button>
+            <button id="exportSalesCsvBtn" type="button" class="px-4 py-2 rounded-full border border-[#DFD5C3] font-semibold hover:bg-[#F2ECE1]">Export CSV</button>
+          </div>
+        </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white p-4 rounded-2xl border border-[#E6DEC8]">
             <p class="text-xs text-[#645E56]">Today's Sales</p>
@@ -569,6 +581,29 @@
             </div>
           </div>
         </div>
+
+        <div class="bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+          <div class="px-5 py-4 border-b border-[#E6DEC8] flex items-center justify-between">
+            <h2 class="font-semibold text-sm">Complete Delivered Orders Sales Ledger</h2>
+            <span id="repDeliveredCountBadge" class="text-xs px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-semibold">0 Delivered</span>
+          </div>
+          <div class="overflow-x-auto max-h-96 overflow-y-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+                <tr>
+                  <th class="px-4 py-2.5">Date</th>
+                  <th class="px-4 py-2.5">Order Ref</th>
+                  <th class="px-4 py-2.5">Customer</th>
+                  <th class="px-4 py-2.5">Courier / Tracking</th>
+                  <th class="px-4 py-2.5">Sales</th>
+                  <th class="px-4 py-2.5">Cost</th>
+                  <th class="px-4 py-2.5">Net Profit</th>
+                </tr>
+              </thead>
+              <tbody id="repDeliveredLedgerBody" class="divide-y divide-[#EFE8D8]"></tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- TAB: COUPONS & PROMO CODES -->
@@ -603,6 +638,29 @@
               <tbody id="couponsBody" class="divide-y divide-[#EFE8D8]"></tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <!-- TAB: REGISTERED CUSTOMERS -->
+      <section id="customersTab" class="tab-panel hidden bg-white rounded-2xl border border-[#E6DEC8] overflow-hidden">
+        <div class="px-5 py-4 border-b border-[#E6DEC8] flex items-center justify-between">
+          <h2 class="font-semibold text-sm">Registered Customers</h2>
+          <span id="statCustomersBadge" class="text-xs px-3 py-1 rounded-full bg-[#F2ECE1] font-semibold text-[#1F1D1A]">Total Accounts: 0</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#F2ECE1] text-[#645E56] uppercase">
+              <tr>
+                <th class="px-4 py-3">Name</th>
+                <th class="px-4 py-3">Phone</th>
+                <th class="px-4 py-3">Email</th>
+                <th class="px-4 py-3">Address</th>
+                <th class="px-4 py-3">Orders</th>
+                <th class="px-4 py-3">Joined</th>
+              </tr>
+            </thead>
+            <tbody id="customersBody" class="divide-y divide-[#EFE8D8]"></tbody>
+          </table>
         </div>
       </section>
 
@@ -804,7 +862,7 @@
 
     async function loadDashboard() {
       try {
-        const [healthRes, ordersRes, consultsRes, settingsRes, productsRes, siteCfgRes, reportsRes, couponsRes] = await Promise.all([
+        const [healthRes, ordersRes, consultsRes, settingsRes, productsRes, siteCfgRes, reportsRes, couponsRes, customersRes] = await Promise.all([
           fetch("/api/health"),
           fetch(`/api/orders?key=${encodeURIComponent(adminKey)}`),
           fetch(`/api/consultations?key=${encodeURIComponent(adminKey)}`),
@@ -812,7 +870,8 @@
           fetch("/api/products"),
           fetch("/api/site-config"),
           fetch(`/api/reports/summary?key=${encodeURIComponent(adminKey)}`),
-          fetch(`/api/coupons?key=${encodeURIComponent(adminKey)}`)
+          fetch(`/api/coupons?key=${encodeURIComponent(adminKey)}`),
+          fetch(`/api/customers?key=${encodeURIComponent(adminKey)}`)
         ]);
 
         if (!ordersRes.ok) {
@@ -836,6 +895,7 @@
         const siteCfg = await siteCfgRes.json();
         const reportData = reportsRes.ok ? await reportsRes.json() : null;
         const coupons = couponsRes.ok ? await couponsRes.json() : [];
+        const customers = customersRes.ok ? await customersRes.json() : [];
 
         const activeCouriers = Object.entries(health.couriersConfigured || {})
           .filter(([, ok]) => ok)
@@ -860,7 +920,12 @@
               <td class="px-4 py-3"><p class="font-medium">${o.name}</p><p class="text-[#645E56]">${o.phone}</p><p class="text-[#645E56] truncate max-w-[180px]">${o.address}</p></td>
               <td class="px-4 py-3 max-w-[200px]">${o.itemsSummary || "-"}</td>
               <td class="px-4 py-3 font-bold">৳${Number(o.total || 0).toLocaleString()}</td>
-              <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full font-medium ${o.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.paymentMethod} • ${o.paymentStatus}</span></td>
+              <td class="px-4 py-3 space-y-1">
+                <span class="inline-block px-2 py-0.5 rounded-full font-medium ${o.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.paymentMethod} • ${o.paymentStatus}</span>
+                <div>${String(o.deliveryStatus || "").toUpperCase() === "DELIVERED" || (o.courier && /delivered/i.test(String(o.courier.status || "")) && !/partial|cancel|return/i.test(String(o.courier.status || "")))
+                  ? '<span class="inline-block px-2 py-0.5 rounded-full bg-emerald-700 text-white text-[10px] font-semibold">DELIVERED</span>'
+                  : `<button type="button" data-mark-deliv="${o.orderRef}" class="mark-deliv-btn px-2 py-0.5 rounded-full border border-[#DFD5C3] text-[10px] font-medium hover:bg-emerald-50">Confirm Delivered</button>`}</div>
+              </td>
               <td class="px-4 py-3">${o.courier ? (() => {
                 const tc = o.courier.trackingCode || "";
                 const prov = (o.courier.provider || "").toLowerCase();
@@ -948,6 +1013,7 @@
         });
 
         window.__adminProducts = products;
+        updateAddSkuPreview();
         document.querySelectorAll(".edit-prod-btn").forEach(btn => {
           btn.addEventListener("click", () => {
             const id = btn.getAttribute("data-edit-prod");
@@ -998,6 +1064,13 @@
           const lowList = reportData.lowStock || [];
           document.getElementById("repLowStockCount").textContent = lowList.length;
           window.__repData = reportData;
+          const pend = reportData.pending || { orders: 0, sales: 0 };
+          document.getElementById("repPendingNote").textContent = `Only confirmed delivered orders are counted in sales & profit. Pending / In-transit: ${pend.orders} orders (৳${Number(pend.sales || 0).toLocaleString()})`;
+          const delivRows = reportData.deliveredOrders || [];
+          document.getElementById("repDeliveredCountBadge").textContent = `${delivRows.length} Delivered`;
+          document.getElementById("repDeliveredLedgerBody").innerHTML = delivRows.length === 0
+            ? '<tr><td colspan="7" class="px-4 py-6 text-center text-[#645E56]">No confirmed delivered orders yet. Use "Sync Courier Delivery Statuses" or "Confirm Delivered" on an order.</td></tr>'
+            : delivRows.map(d => `<tr><td class="px-4 py-2.5">${d.date}</td><td class="px-4 py-2.5 font-semibold">${d.orderRef}</td><td class="px-4 py-2.5">${d.name} (${d.phone})</td><td class="px-4 py-2.5">${d.courier} • ${d.trackingCode}</td><td class="px-4 py-2.5 font-semibold">৳${Number(d.sales).toLocaleString()}</td><td class="px-4 py-2.5 text-[#645E56]">৳${Number(d.cost).toLocaleString()}</td><td class="px-4 py-2.5 font-bold ${d.profit >= 0 ? "text-emerald-700" : "text-rose-600"}">৳${Number(d.profit).toLocaleString()}</td></tr>`).join("");
           renderRepBreakdown("daily");
           document.getElementById("repLowStockBody").innerHTML = lowList.length === 0
             ? '<tr><td colspan="3" class="px-4 py-6 text-center text-[#645E56]">All products are well stocked!</td></tr>'
@@ -1010,7 +1083,19 @@
           });
         }
 
-        document.getElementById("couponsBody").innerHTML = coupons.length === 0
+        const custBadge = document.getElementById("statCustomersBadge");
+        if (custBadge) custBadge.textContent = `Total Accounts: ${customers.length}`;
+        const custBody = document.getElementById("customersBody");
+        if (custBody) {
+          custBody.innerHTML = customers.length === 0
+            ? '<tr><td colspan="6" class="px-4 py-6 text-center text-[#645E56]">No customer accounts registered yet.</td></tr>'
+            : customers.map(c => {
+                const ordCount = orders.filter(o => String(o.phone || "").trim() === String(c.phone || "").trim()).length;
+                return `<tr><td class="px-4 py-3 font-semibold">${c.name}</td><td class="px-4 py-3 font-mono">${c.phone}</td><td class="px-4 py-3">${c.email || "-"}</td><td class="px-4 py-3 max-w-[200px] truncate">${c.address || "-"}</td><td class="px-4 py-3 font-bold">${ordCount}</td><td class="px-4 py-3 text-[#645E56]">${c.createdAt ? new Date(c.createdAt).toLocaleString() : "-"}</td></tr>`;
+              }).join("");
+        }
+
+                document.getElementById("couponsBody").innerHTML = coupons.length === 0
           ? '<tr><td colspan="4" class="px-4 py-6 text-center text-[#645E56]">No promo codes created yet.</td></tr>'
           : coupons.map(c => `<tr><td class="px-4 py-3 font-mono font-bold">${c.code}</td><td class="px-4 py-3">${c.type === "percent" ? c.value + "%" : "৳" + c.value}</td><td class="px-4 py-3">${c.minOrder ? "৳" + Number(c.minOrder).toLocaleString() : "None"}</td><td class="px-4 py-3"><button type="button" data-del-coupon="${c.code}" class="del-coupon-btn px-2.5 py-1 rounded bg-red-600 text-white">Delete</button></td></tr>`).join("");
         document.querySelectorAll(".del-coupon-btn").forEach(btn => {
@@ -1020,7 +1105,19 @@
           });
         });
 
-        document.querySelectorAll(".print-inv-btn").forEach(btn => {
+        document.querySelectorAll(".mark-deliv-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const ref = btn.dataset.markDeliv;
+            const res = await fetch(`/api/orders/${encodeURIComponent(ref)}/delivery-status?key=${encodeURIComponent(adminKey)}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ deliveryStatus: "DELIVERED" })
+            });
+            if (res.ok) { showToast(`${ref} confirmed as Delivered!`); loadDashboard(); }
+          });
+        });
+
+                document.querySelectorAll(".print-inv-btn").forEach(btn => {
           btn.addEventListener("click", () => {
             const ord = (window.__adminOrders || []).find(x => x.orderRef === btn.dataset.inv);
             if (ord) printOrderInvoice(ord);
@@ -1416,6 +1513,27 @@
         ? '<tr><td colspan="5" class="px-4 py-6 text-center text-[#645E56]">No sales data yet.</td></tr>'
         : rows.map(r => `<tr><td class="px-4 py-2.5 font-medium">${r.period}</td><td class="px-4 py-2.5">${r.orders}</td><td class="px-4 py-2.5 font-semibold">৳${Number(r.sales).toLocaleString()}</td><td class="px-4 py-2.5 text-[#645E56]">৳${Number(r.cost).toLocaleString()}</td><td class="px-4 py-2.5 font-bold ${r.profit >= 0 ? "text-emerald-700" : "text-rose-600"}">৳${Number(r.profit).toLocaleString()}</td></tr>`).join("");
     }
+    document.getElementById("syncDeliveriesBtn")?.addEventListener("click", async () => {
+      const btn = document.getElementById("syncDeliveriesBtn");
+      btn.disabled = true; btn.textContent = "Syncing...";
+      const res = await fetch(`/api/reports/sync-deliveries?key=${encodeURIComponent(adminKey)}`, { method: "POST" });
+      const data = await res.json();
+      btn.disabled = false; btn.textContent = "Sync Courier Delivery Statuses";
+      showToast(`Checked ${data.checked || 0} orders • ${data.newlyDelivered || 0} newly delivered.`);
+      loadDashboard();
+    });
+
+    document.getElementById("exportSalesCsvBtn")?.addEventListener("click", () => {
+      const rows = (window.__repData && window.__repData.deliveredOrders) || [];
+      const header = "Date,OrderRef,Customer,Phone,Courier,Tracking,Sales,Cost,Profit\n";
+      const body = rows.map(r => [r.date, r.orderRef, `"${(r.name || "").replace(/"/g, '""')}"`, r.phone, r.courier, r.trackingCode, r.sales, r.cost, r.profit].join(",")).join("\n");
+      const blob = new Blob([header + body], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "aureva-sales-report.csv";
+      a.click();
+    });
+
     document.getElementById("repDailyBtn")?.addEventListener("click", () => renderRepBreakdown("daily"));
     document.getElementById("repMonthlyBtn")?.addEventListener("click", () => renderRepBreakdown("monthly"));
 
@@ -1466,6 +1584,38 @@
       </body></html>`);
       win.document.close();
     }
+
+    function computePreviewSku(brand) {
+      const brandMap = {
+        "cosrx": "COS", "skin1004": "SKI", "beauty of joseon": "BOJ", "anua": "ANU",
+        "aplb": "APL", "the face shop": "TFS", "i'm from": "IMF", "dr. althea": "ALH",
+        "ksecret": "KSC", "arencia": "ARE", "nella": "NEL"
+      };
+      const cb = String(brand || "").trim().toLowerCase();
+      const bCode = brandMap[cb] || cb.replace(/[^a-z0-9]/g, "").slice(0, 3).toUpperCase() || "BRD";
+      let maxNum = 0;
+      (window.__adminProducts || []).forEach(p => {
+        const m = String(p.id || "").trim().toUpperCase().match(/^AUR-[A-Z0-9]+-(\d+)$/);
+        if (m && Number(m[1]) > maxNum) maxNum = Number(m[1]);
+      });
+      return `AUR-${bCode}-${String(maxNum + 1).padStart(3, "0")}`;
+    }
+
+    function updateAddSkuPreview() {
+      const f = document.getElementById("addProductForm");
+      const skuInp = document.getElementById("addProdSkuInput");
+      if (!f || !skuInp) return;
+      const preview = computePreviewSku(
+        f.elements.namedItem("brand")?.value,
+        f.elements.namedItem("name")?.value,
+        f.elements.namedItem("size")?.value
+      );
+      skuInp.placeholder = `Auto SKU: ${preview}`;
+    }
+
+    ["name", "brand", "size"].forEach(field => {
+      document.querySelector(`#addProductForm [name="${field}"]`)?.addEventListener("input", updateAddSkuPreview);
+    });
 
     if (adminKey) loadDashboard();
   </script>
